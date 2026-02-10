@@ -65,7 +65,7 @@ const albums = [
         id: "Beyond-r-rule-ripper",
         title: "Beyond R: Rule Ripper",
         artist: "Sonos Vitae",
-        productionDate: "2025",
+        productionDate: "December 13, 2025025",
         genre: "Soundtrack",
         description: `Original Soundtrack for a "Beyond R: Rule Ripper"
 
@@ -76,8 +76,8 @@ const albums = [
         It is in fact my first soundtrack in my career so there was a lot of trial and error at the beginning.This OST was made over the course of 3-4 years with monthly breaks, with many tracks written at the very start and others at the very end of the project.There was a lot of progress throughout the years, some tracks were constantly changing over time, for example "Prodding Cues" version in the game is the fourth iteration.Overall I didn't want to completely change original compositions. When I was recomposing them I wanted to keep the main Idea and structure while adding more complexity and better instrumentation.
 
         I hope you enjoy the game as well as the music and I hope we will meet again in the future!
-        credits
-        released December 13, 2025
+
+        credits:
 
         Music / Composition / Production / Mastering - Filip Bogusłowicz
         Electric Guitar - Marek Szorc

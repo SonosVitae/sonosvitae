@@ -17,6 +17,7 @@ const navSlide = () => {
 
     burger.addEventListener('click', () => {
         nav.classList.toggle('nav-active');
+        document.body.classList.toggle('no-scroll');
 
         // Animate links
         navLinks.forEach((link, index) => {
@@ -184,6 +185,7 @@ function openModal(album) {
         modal.style.display = "flex";
         document.body.style.overflow = "hidden"; // Prevent background scrolling
         document.documentElement.style.overflow = "hidden";
+        document.querySelector('nav').classList.add('nav-hidden');
     }
 }
 
@@ -192,6 +194,7 @@ function closeModal() {
     modal.style.display = "none";
     document.body.style.overflow = "auto";
     document.documentElement.style.overflow = "auto";
+    document.querySelector('nav').classList.remove('nav-hidden');
     // Clear iframe to stop playback
     bandcampContainer.innerHTML = "";
 }

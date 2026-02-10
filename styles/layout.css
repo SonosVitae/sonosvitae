@@ -8,10 +8,18 @@ nav {
     font-family: "Poppins", sans-serif;
     font-weight: 400;
     font-style: normal;
-    position: relative;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
     /* Ensure z-index works */
-    z-index: 100;
+    z-index: 1000;
     /* Keep nav above content */
+    transition: transform 0.3s ease-in-out;
+}
+
+.nav-hidden {
+    transform: translateY(-100%);
 }
 
 .logo {
@@ -233,21 +241,6 @@ h2 {
 }
 
 /* Responsive */
-@media screen and (max-width:1024px) {
-    .nav-links {
-        width: 40%;
-    }
-
-    .container h1 {
-        margin-top: 2em;
-        font-size: 10em;
-    }
-
-    .leaves {
-        top: 65vh;
-        height: 100vw;
-    }
-}
 
 @media screen and (max-width:1024px) and (max-height: 600px) {
     .container h1 {
@@ -281,7 +274,7 @@ h2 {
     }
 }
 
-@media screen and (max-width:768px) {
+@media screen and (max-width:1024px) {
     body {
         overflow-x: hidden;
     }
@@ -382,4 +375,7 @@ h2 {
         top: 110vh;
     }
 }
-.nav-active { transform: translatex(0%); }
+
+.nav-active {
+    transform: translatex(0%);
+}
