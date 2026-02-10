@@ -1,115 +1,157 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, minimum-scale=1.0">
-    <link rel="stylesheet" href="styles/style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap" rel="stylesheet">
-    <title>Sonos Vitae</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0">
+  <link rel="stylesheet" href="styles/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <title>Sonos Vitae</title>
 </head>
+
 <body>
-    <nav>
-        <div class="logo">
-            <h4>Sonos Vitae</a></h4>
-        </div>
-        <ul class="nav-links">
-            <li><a href="#">Home</a></li>
-            <li><a href="#">About</a></li>
-            <li><a href="#">Music</a></li>
-            <li><a href="#">Art</a></li>
-        </ul>
-        <div class="burger">
-            <div class="line1"></div>
-            <div class="line2"></div>
-            <div class="line3"></div>
-        </div>
-    </nav>
-
-    <div class="container">
-        <h1 class="lax lax_preset_fadeOut:0:0">SONOS VITAE</h1>
-        <div class="line lax lax_preset_fadeOut:0:0"></div>
-    </div>  
-
-    <h2>All of my music so far</h2>
-    <div class="filter">
-          <h3 class="visually-hidden">Filter by the type music</h3>
-          <button class='filter-btn active' data-filter="all">All</button>
-          <button class='filter-btn' data-filter="album">Album</button>
-          <button class='filter-btn' data-filter="ost">Soundtrack</button>
-          <button class='filter-btn' data-filter="single">Single</button>
+  <nav>
+    <div class="logo">
+      <h4>Sonos Vitae</a></h4>
     </div>
-
-    <ul class="musiclist">
-      <li class="music" data-category="album">
-        <img src="assets/albums/bloom-cover.webp" onclick="openFullImg(this.src)">
-        <h3 class="albumname">Eternal Bloom</h3>
-      </li>
-
-      <li class="music" data-category="album">
-        <img src="assets/albums/sonosvitae-cover.webp" onclick="openFullImg(this.src)">
-        <h3 class="albumname">Sonos Vitae</h3>
-      </li>
-
-      <li class="music" data-category="single">
-        <img src="assets/albums/crystalclear-cover.webp" onclick="openFullImg(this.src)">
-        <h3 class="albumname">Crystal Clear</h3>
-      </li>
-
-      <li class="music" data-category="ost">
-        <img src="assets/albums/isaac-cover.webp" onclick="openFullImg(this.src)">
-        <h3 class="albumname">Epiphany</h3>
-      </li>
-
-      <li class="music" data-category="all"></li>
-
-      <li class="music" data-category="all"></li>
-
-      <li class="music" data-category="all"></li>
-
-      <li class="music" data-category="all"></li>
-
+    <ul class="nav-links">
+      <li><a href="#">Home</a></li>
+      <li><a href="#">About</a></li>
+      <li><a href="#">Music</a></li>
+      <li><a href="#">Art</a></li>
     </ul>
+    <div class="burger">
+      <div class="line1"></div>
+      <div class="line2"></div>
+      <div class="line3"></div>
+    </div>
+  </nav>
 
-<div id="fullImgBox" class="full-img" style="display: none;">
-  <img id="fullImg" src="">
-  <div class="x" onclick="closeFullImg()">
-    <div class="line4"></div>
-    <div class="line5"></div>
-    <div class="line6"></div>
+  <div class="container">
+    <h1 class="lax lax_preset_fadeOut:0:0">SONOS VITAE</h1>
+    <div class="line lax lax_preset_fadeOut:0:0"></div>
   </div>
-</div>
+
+  <h2>All of my music so far</h2>
+  <div class="filter">
+    <h3 class="visually-hidden">Filter by the type music</h3>
+    <button class='filter-btn active' data-filter="all">All</button>
+    <button class='filter-btn' data-filter="album">Album</button>
+    <button class='filter-btn' data-filter="ost">Soundtrack</button>
+    <button class='filter-btn' data-filter="single">Single</button>
+  </div>
+
+  <ul class="musiclist">
+    <li class="music" data-category="album" data-id="eternal-bloom">
+      <img src="assets/albums/bloom-cover.webp">
+      <h3 class="albumname">Eternal Bloom</h3>
+    </li>
+
+    <li class="music" data-category="album" data-id="sonos-vitae">
+      <img src="assets/albums/sonosvitae-cover.webp">
+      <h3 class="albumname">Sonos Vitae</h3>
+    </li>
+
+    <li class="music" data-category="single" data-id="crystal-clear">
+      <img src="assets/albums/crystalclear-cover.webp">
+      <h3 class="albumname">Crystal Clear</h3>
+    </li>
+
+    <li class="music" data-category="ost" data-id="ashes-of-epiphany">
+      <img src="assets/albums/isaac-cover.webp">
+      <h3 class="albumname">Ashes of Epiphany</h3>
+    </li>
+
+    <li class="music" data-category="all"></li>
+
+    <li class="music" data-category="all"></li>
+
+    <li class="music" data-category="all"></li>
+
+    <li class="music" data-category="all"></li>
+
+  </ul>
+
+  <div id="fullImgBox" class="full-img" style="display: none;">
+    <img id="fullImg" src="">
+    <div class="x" onclick="closeFullImg()">
+      <div class="line4"></div>
+      <div class="line5"></div>
+      <div class="line6"></div>
+    </div>
+  </div>
+
+  <!-- Album Preview Modal -->
+  <div id="albumModal" class="modal">
+    <div class="modal-content">
+      <span class="close-modal">&times;</span>
+      <div class="modal-body">
+        <div class="album-content-left">
+          <!-- Cover -->
+          <img src="" alt="Album Cover" class="modal-cover">
+
+          <!-- Details moved under cover -->
+          <div class="album-header">
+            <h2 class="modal-title"></h2>
+            <div class="album-meta">
+              <span class="modal-artist"></span>
+              <p class="album-date"></p>
+            </div>
+            <div class="album-links">
+              <span class="download-link">download</span>
+              <span class="share-link">share</span>
+              <span class="bc-link">bc</span>
+            </div>
+          </div>
+
+          <p class="modal-description"></p>
+        </div>
+
+        <div class="album-content-right">
+          <!-- Bandcamp Player -->
+          <div class="music-player">
+            <div id="bandcamp-embed-container">
+              <!-- Iframe will be injected here -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
 
-    <!-- Parallax Elements -->
-    <img src="assets/images/green.jpg" alt="green" class="green">
-    <img src="assets/images/leaves.png" alt="leaves" class="leaves">
-    <div class="cover"></div>
+  <!-- Parallax Elements -->
+  <img src="assets/images/green.jpg" alt="green" class="green">
+  <img src="assets/images/leaves.png" alt="leaves" class="leaves">
+  <div class="cover"></div>
 
-    <!-- JavaScript for Navigation and Parallax -->
-    <script src="scripts/app.js"></script>
+  <!-- JavaScript for Navigation and Parallax -->
+  <script src="scripts/albums.js"></script>
+  <script src="scripts/app.js"></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/lax.js" ></script>
-    <script>
-      window.onload = function () {
-        lax.init()
-    
-        // Add a driver that we use to control our animations
-        lax.addDriver('scrollY', function () {
-          return window.scrollY
-        })
-    
-        // Add animation bindings to elements
-        lax.addElements('.selector', {
-          scrollY: {
-            translateX: [
-              ["elInY", "elCenterY", "elOutY"],
-              [0, 'screenWidth/2', 'screenWidth'],
-            ]
-          }
-        })
-      }
-    </script>
+  <script src="https://cdn.jsdelivr.net/npm/lax.js"></script>
+  <script>
+    window.onload = function () {
+      lax.init()
+
+      // Add a driver that we use to control our animations
+      lax.addDriver('scrollY', function () {
+        return window.scrollY
+      })
+
+      // Add animation bindings to elements
+      lax.addElements('.selector', {
+        scrollY: {
+          translateX: [
+            ["elInY", "elCenterY", "elOutY"],
+            [0, 'screenWidth/2', 'screenWidth'],
+          ]
+        }
+      })
+    }
+  </script>
 </body>
+
 </html>

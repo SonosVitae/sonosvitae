@@ -1,0 +1,85 @@
+/* Album Grid */
+.musiclist {
+    width: 72%;
+    margin: clamp(75px, 20vw, 100px) auto 10vw;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-gap: 50px;
+    justify-items: center;
+}
+
+.music {
+    width: 90%;
+    margin: 0px;
+    padding: 0px;
+}
+
+.music img {
+    width: 100%;
+    cursor: pointer;
+    border-radius: 25px;
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+    transition: transform 0.2s ease-in, filter 0.2s ease-in, box-shadow 0.2s ease-in;
+}
+
+.musiclist img:hover {
+    transform: scale(1.05);
+    filter: brightness(1.1);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+}
+
+.albumname {
+    text-align: center;
+    color: rgb(160, 195, 155);
+    font-family: poppins;
+    letter-spacing: 2px;
+}
+
+li::marker {
+    content: "";
+}
+
+.musiclist:not(:last-child):not(:has(+ [hidden])) {
+    padding-bottom: 2rem;
+    margin-bottom: 2rem;
+}
+
+/* Filters */
+.filter {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    border: 0;
+    padding: 0;
+}
+
+.filter-btn {
+    cursor: pointer;
+    text-transform: uppercase;
+    background: transparent;
+    border: 0;
+    border-radius: 0.25rem;
+    padding: 0.25rem 1rem;
+    color: rgb(160, 195, 155);
+}
+
+.filter-btn:hover,
+.filter-btn:focus {
+    background-color: #6fa552;
+}
+
+.filter-btn.active {
+    background: rgb(51, 83, 0);
+    color: rgb(255, 255, 255);
+    box-shadow: 0 0 0.5rem rgb(0 0 0 / 0.2);
+}
+
+@media only screen and (max-width: 514px) {
+    .musiclist {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        margin: clamp(50px, 10vw, 75px) auto 2vw;
+    }
+}

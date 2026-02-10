@@ -1,5 +1,5 @@
 // Parallax Scroll
-window.addEventListener('scroll', function() {
+window.addEventListener('scroll', function () {
     const scrollTop = window.pageYOffset;
 
     // Move the background slower
@@ -83,18 +83,77 @@ function filterEvents(filter) {
     });
 }
 
-var fullImgBox = document.getElementById("fullImgBox");
-var fullImg = document.getElementById("fullImg");
+// Album Modal Logic
+const modal = document.getElementById("albumModal");
+const closeModalBtn = document.querySelector(".close-modal");
+const modalTitle = document.querySelector(".modal-title");
+const modalArtist = document.querySelector(".modal-artist");
+const modalDate = document.querySelector(".album-date");
+const modalDesc = document.querySelector(".modal-description");
+const modalCover = document.querySelector(".modal-cover");
+const bandcampContainer = document.getElementById("bandcamp-embed-container");
 
-function openFullImg(pic){
-    fullImgBox.style.display = "flex";
-    fullImg.src = pic;
+
+// Open Modal
+document.querySelectorAll('.music').forEach(item => {
+    item.addEventListener('click', function () {
+        // Don't open if clicking on empty items (placeholders)
+        if (!this.hasAttribute('data-id')) return;
+
+        const albumId = this.getAttribute('data-id');
+        const album = albums.find(a => a.id === albumId);
+
+        if (album) {
+            openModal(album);
+        }
+    });
+});
+
+function openModal(album) {
+
+    // Populate Data
+    modalTitle.textContent = album.title;
+    modalArtist.textContent = "by " + album.artist;
+    modalDate.textContent = album.productionDate;
+    modalDesc.textContent = album.description;
+    modalCover.src = album.coverUrl;
+
+    // Inject Bandcamp Player
+    // Default to Sonos Vitae ID if not present (or handle error)
+    const bcId = album.bandcampId || "3867229439";
+    const bcLink = album.bandcampLink || "https://sonosvitae.bandcamp.com";
+
+    // Construct Iframe
+    // Using the style provided by user: style="border: 0; width: 100%; height: 472px;"
+    // artwork=none because we already show the cover in the modal
+    // Changed height to 100% to fill the new larger container
+    const iframeHtml = `<iframe style="border: 0; width: 100%; height: 100%; min-height: 472px;" 
+        src="https://bandcamp.com/EmbeddedPlayer/album=${bcId}/size=large/bgcol=333333/linkcol=4ec5ec/artwork=none/transparent=true/" 
+        seamless>
+        <a href="${bcLink}">${album.title} by ${album.artist}</a>
+    </iframe>`;
+
+    bandcampContainer.innerHTML = iframeHtml;
+
+    // Show Modal
+    modal.style.display = "flex";
+    document.body.style.overflow = "hidden"; // Prevent background scrolling
+    document.documentElement.style.overflow = "hidden";
 }
 
-function closeFullImg(){
-    fullImgBox.style.display = "none";
+// Close Modal
+function closeModal() {
+    modal.style.display = "none";
+    document.body.style.overflow = "auto";
+    document.documentElement.style.overflow = "auto";
+    // Clear iframe to stop playback
+    bandcampContainer.innerHTML = "";
 }
 
-function onclick(event) {
-    closeFullImg()
-}
+closeModalBtn.addEventListener('click', closeModal);
+
+window.addEventListener('click', (e) => {
+    if (e.target === modal) {
+        closeModal();
+    }
+});

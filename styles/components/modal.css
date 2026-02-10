@@ -1,0 +1,249 @@
+/* Modal Overlay */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 200;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    /* Ensure modal itself is the scroll container */
+    background-color: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(5px);
+    align-items: center;
+    justify-content: center;
+    max-height: 95vh;
+}
+
+/* Modal Content Container */
+.modal-content {
+    background: linear-gradient(135deg, rgba(20, 20, 20, 0.98), rgba(40, 40, 40, 0.98));
+    margin: 20px auto;
+    padding: 30px;
+    /* Reduced padding */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    width: 90%;
+    max-width: 1000px;
+    /* Reduced max-width from 1400px */
+    border-radius: 15px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+}
+
+.close-modal {
+    color: #aaa;
+    position: absolute;
+    top: 15px;
+    right: 25px;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.close-modal:hover,
+.close-modal:focus {
+    color: #fff;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Modal Body - Split Layout (3/5 and 2/5) */
+.modal-body {
+    display: flex;
+    flex-direction: row;
+    gap: 30px;
+    height: 550px;
+    /* Reduced height, still enough for embed */
+}
+
+/* Left Column: Cover + Info (3/5) */
+.album-content-left {
+    flex: 1.5;
+    /* 3/5 of space approx */
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    /* Align contents left */
+    overflow: hidden;
+}
+
+/* Right Column: Embed (2/5) */
+.album-content-right {
+    flex: 1;
+    /* 2/5 of space approx */
+    display: flex;
+    align-items: center;
+    /* Center Vertically */
+    justify-content: center;
+    height: 100%;
+}
+
+/* Scrollable Description */
+.modal-description {
+    font-size: 0.95em;
+    line-height: 1.6;
+    color: #ddd;
+    margin-bottom: 0px;
+    white-space: pre-line;
+    text-align: left;
+    width: 100%;
+    overflow-y: auto;
+    flex-grow: 1;
+    padding-right: 10px;
+}
+
+.modal-description::-webkit-scrollbar {
+    width: 6px;
+}
+
+.modal-description::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.modal-description::-webkit-scrollbar-thumb {
+    background: #555;
+    border-radius: 3px;
+}
+
+/* Left Column Internal Scrollbar removal */
+.album-content-left::-webkit-scrollbar {
+    display: none;
+}
+
+/* Album Cover */
+.modal-cover {
+    width: 100%;
+    max-width: 200px;
+    /* Smaller cover */
+    border-radius: 10px;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.5);
+    margin-bottom: 20px;
+    align-self: flex-start;
+    /* Ensure left alignment */
+    flex-shrink: 0;
+}
+
+/* Header Info */
+.album-header {
+    width: 100%;
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    flex-shrink: 0;
+}
+
+.modal-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 2em;
+    font-weight: 700;
+    color: #fff;
+    margin: 0 0 5px 0;
+    text-align: left;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.album-meta {
+    display: flex;
+    justify-content: flex-start;
+    gap: 15px;
+    width: 100%;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+}
+
+.modal-artist {
+    color: #ff69b4;
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+.album-date {
+    font-size: 0.9em;
+    color: #bbb;
+    margin: 0;
+    text-align: left;
+    padding-top: 2px;
+}
+
+.album-links {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.album-links span {
+    margin: 0;
+    font-size: 0.9em;
+    color: #aeaeae;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: color 0.2s;
+}
+
+.album-links span:hover {
+    color: #fff;
+}
+
+/* Bandcamp Embed Container */
+#bandcamp-embed-container {
+    width: 100%;
+    border-radius: 10px;
+    overflow: hidden;
+    background: transparent;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    /* Remove fixed/min heights to allow centering */
+    height: auto;
+    /* Or set specific height if needed for embed to render correctly */
+    min-height: 472px;
+}
+
+#bandcamp-embed-container iframe {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* Responsive Modal */
+@media screen and (max-width: 900px) {
+    .modal-body {
+        flex-direction: column;
+        height: auto;
+        max-height: 80vh;
+        overflow-y: auto;
+    }
+
+    .album-content-left {
+        overflow-y: visible;
+        padding-right: 0;
+        align-items: center;
+    }
+
+    .modal-cover {
+        align-self: center;
+        max-width: 250px;
+    }
+
+    .album-header,
+    .album-meta,
+    .modal-description {
+        align-items: center;
+        text-align: center;
+        justify-content: center;
+    }
+
+    .album-content-right {
+        width: 100%;
+    }
+
+    .modal-content {
+        padding: 20px;
+        width: 95%;
+    }
+}
