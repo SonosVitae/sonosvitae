@@ -79,9 +79,6 @@ nav {
     transform: rotate(45deg) translate(-5px, -6px);
 }
 
-.nav-active {
-    transform: translatex(0%);
-}
 
 /* Container & Hero */
 .container {
@@ -316,6 +313,9 @@ h2 {
     .burger {
         display: block;
         margin-right: 4vw;
+        position: relative;
+        z-index: 201;
+        /* Higher than nav-links */
     }
 
     .nav-links a {
@@ -382,3 +382,4 @@ h2 {
         top: 110vh;
     }
 }
+.nav-active { transform: translatex(0%); }
