@@ -8,6 +8,10 @@ nav {
     font-family: "Poppins", sans-serif;
     font-weight: 400;
     font-style: normal;
+    position: relative;
+    /* Ensure z-index works */
+    z-index: 100;
+    /* Keep nav above content */
 }
 
 .logo {
@@ -151,7 +155,9 @@ h2 {
     position: absolute;
     top: 0;
     left: 0;
-    width: 100vw;
+    left: 0;
+    width: 100%;
+    /* Changed from 100vw to prevent horizontal scroll */
     height: 100vh;
     object-fit: cover;
 }
@@ -292,12 +298,14 @@ h2 {
         display: flex;
         flex-direction: column;
         align-items: center;
-        width: 35%;
+        width: 60%;
+        /* Increased from 35% for better visibility */
         transform: translatex(100%);
         transition: transform 0.1s ease-in;
         justify-content: flex-start;
         padding-top: 5%;
-        z-index: 2;
+        z-index: 200;
+        /* Increased to ensure visibility */
     }
 
     .nav-links li {
@@ -323,7 +331,7 @@ h2 {
 
     .leaves {
         top: 60vh;
-        height: 100vw;
+        height: 100vh;
     }
 
     .secondary {
@@ -343,7 +351,7 @@ h2 {
 
     .leaves {
         top: 79vh;
-        height: 100vw;
+        height: 100vh;
     }
 
     .secondary {
@@ -363,7 +371,7 @@ h2 {
 
     .leaves {
         top: 75vh;
-        height: 100vw;
+        height: 100vh;
     }
 
     .secondary {

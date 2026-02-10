@@ -3,7 +3,7 @@
     width: 72%;
     margin: clamp(75px, 20vw, 100px) auto 10vw;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     grid-gap: 50px;
     justify-items: center;
 }
@@ -79,7 +79,11 @@ li::marker {
 
 @media only screen and (max-width: 514px) {
     .musiclist {
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        /* Force 2 columns with smaller min-width */
+        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+        grid-gap: 20px;
         margin: clamp(50px, 10vw, 75px) auto 2vw;
+        width: 90%;
+        /* Utilize more screen width */
     }
 }
