@@ -14,6 +14,7 @@
 </head>
 
 <body>
+  <div class="mobile-scroll-fix"></div>
   <nav>
     <div class="logo">
       <h4>Sonos Vitae</a></h4>
@@ -34,6 +35,7 @@
   <div class="container">
     <h1 class="lax lax_preset_fadeOut:0:0">SONOS VITAE</h1>
     <div class="line lax lax_preset_fadeOut:0:0"></div>
+    <div class="hero-fade"></div>
   </div>
 
   <h2>All of my music so far</h2>
@@ -48,6 +50,25 @@
   <ul class="musiclist">
     <!-- Albums will be injected here dynamically by scripts/app.js -->
   </ul>
+
+  <!-- About Me Section -->
+  <section class="about-section">
+    <div class="about-content">
+      <h2>About Me</h2>
+      <p>
+        Sonos Vitae is an exploration of sound and emotion. Through a blend of atmospheric textures and melodic
+        storytelling, the music aims to transport listeners to otherworldly landscapes.
+      </p>
+      <p>
+        Currently focusing on creating immersive soundscapes that bridge the gap between ambient, electronic, and
+        cinematic compositions. Every track is a journey, designed to evoke deep feelings and inspire imagination.
+      </p>
+    </div>
+    <div class="about-images">
+      <div class="about-placeholder-img"></div>
+      <div class="about-placeholder-img"></div>
+    </div>
+  </section>
 
 
   <div id="fullImgBox" class="full-img" style="display: none;">
@@ -103,7 +124,14 @@
   <!-- Parallax Elements -->
   <img src="assets/images/green.jpg" alt="green" class="green">
   <img src="assets/images/leaves.png" alt="leaves" class="leaves">
-  <div class="cover"></div>
+  <div class="cover">
+    <div class="parallax-shapes">
+      <div class="parallax-shape shape-1"></div>
+      <div class="parallax-shape shape-2"></div>
+      <div class="parallax-shape shape-3"></div>
+      <div class="parallax-shape shape-4"></div>
+    </div>
+  </div>
 
   <!-- JavaScript for Navigation and Parallax -->
   <script src="scripts/albums.js"></script>
@@ -125,6 +153,40 @@
           translateX: [
             ["elInY", "elCenterY", "elOutY"],
             [0, 'screenWidth/2', 'screenWidth'],
+          ]
+        }
+      })
+
+      // Parallax Shapes Animation
+      lax.addElements('.shape-1', {
+        scrollY: {
+          translateY: [
+            ["elInY", "elOutY"],
+            [0, -150]
+          ]
+        }
+      })
+      lax.addElements('.shape-2', {
+        scrollY: {
+          translateY: [
+            ["elInY", "elOutY"],
+            [0, -300]
+          ]
+        }
+      })
+      lax.addElements('.shape-3', {
+        scrollY: {
+          translateY: [
+            ["elInY", "elOutY"],
+            [0, -100]
+          ]
+        }
+      })
+      lax.addElements('.shape-4', {
+        scrollY: {
+          translateY: [
+            ["elInY", "elOutY"],
+            [0, -250]
           ]
         }
       })

@@ -91,6 +91,19 @@ function renderAlbumGrid() {
             openModal(album);
         });
 
+        // Dynamic Background Color on Hover
+        li.addEventListener('mouseenter', () => {
+            const root = document.documentElement;
+            if (album.color) {
+                root.style.setProperty('--shape-color', album.color);
+            }
+        });
+
+        li.addEventListener('mouseleave', () => {
+            const root = document.documentElement;
+            root.style.setProperty('--shape-color', 'rgba(162, 209, 73, 0.8)'); // Default Green
+        });
+
         musicListContainer.appendChild(li);
     });
 }

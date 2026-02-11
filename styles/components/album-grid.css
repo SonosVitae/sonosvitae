@@ -10,7 +10,10 @@
 
 .music {
     width: 90%;
-    margin: 0px;
+    max-width: 350px;
+    /* Prevent becoming too large */
+    margin: 0 auto;
+    /* Center in grid cell */
     padding: 0px;
 }
 
@@ -75,6 +78,19 @@ li::marker {
     background: rgb(51, 83, 0);
     color: rgb(255, 255, 255);
     box-shadow: 0 0 0.5rem rgb(0 0 0 / 0.2);
+}
+
+@media only screen and (max-width: 1400px) {
+    .musiclist {
+        /* Reduce gap and potentially max-width for 1200px screens */
+        grid-gap: 40px;
+        width: 80%;
+    }
+
+    .music {
+        max-width: 260px;
+        /* Smaller max-width as requested */
+    }
 }
 
 @media only screen and (max-width: 1100px) {
