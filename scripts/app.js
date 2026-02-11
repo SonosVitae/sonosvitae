@@ -44,6 +44,7 @@ const modalDescription = document.querySelector('.modal-description');
 const customPlayerContainer = document.querySelector('.music-player');
 const bandcampEmbedContainer = document.getElementById('bandcamp-embed-container');
 const closeBtn = document.querySelector('.close-modal');
+const modalDynamicBg = document.querySelector('.modal-dynamic-bg');
 
 // Create element for Album Type if not exists
 let typeLabel = document.querySelector('.album-type');
@@ -142,6 +143,56 @@ function filterEvents(filter) {
     });
 }
 
+// --- Color Extraction Helper ---
+function getDominantColor(imageElement) {
+    try {
+        const canvas = document.createElement('canvas');
+        const context = canvas.getContext('2d');
+        if (!context) return null;
+
+        canvas.width = 1;
+        canvas.height = 1;
+
+        // Draw image effectively averaging it
+        context.drawImage(imageElement, 0, 0, 1, 1);
+        const [r, g, b] = context.getImageData(0, 0, 1, 1).data;
+
+        // Convert to HSL to adjust lightness for visibility
+        // We want the color to be visible on a dark background, so high lightness.
+        const [h, s, l] = rgbToHsl(r, g, b);
+
+        // Ensure Lightness is at least 70% and Saturation is at least 50% for vibrancy
+        const newL = Math.max(l, 0.7);
+        const newS = Math.max(s, 0.5);
+
+        return `hsl(${h * 360}, ${newS * 100}%, ${newL * 100}%)`;
+    } catch (e) {
+        console.error("Error extracting color", e);
+        return null; // Fallback will be used (css default)
+    }
+}
+
+// RGB to HSL helper
+function rgbToHsl(r, g, b) {
+    r /= 255, g /= 255, b /= 255;
+    var max = Math.max(r, g, b), min = Math.min(r, g, b);
+    var h, s, l = (max + min) / 2;
+
+    if (max == min) {
+        h = s = 0; // achromatic
+    } else {
+        var d = max - min;
+        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+        switch (max) {
+            case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+            case g: h = (b - r) / d + 2; break;
+            case b: h = (r - g) / d + 4; break;
+        }
+        h /= 6;
+    }
+    return [h, s, l];
+}
+
 // --- Modal Logic ---
 
 function openModal(album) {
@@ -151,7 +202,40 @@ function openModal(album) {
     if (modalArtist) modalArtist.textContent = "by " + album.artist;
     if (modalDate) modalDate.textContent = album.productionDate;
     if (modalDescription) modalDescription.textContent = album.description;
-    if (modalCover) modalCover.src = album.coverUrl;
+    if (modalDescription) modalDescription.textContent = album.description;
+    if (modalCover) {
+        modalCover.src = album.coverUrl;
+
+        // Reset color immediately to avoid old color flashing
+        if (modalArtist) modalArtist.style.color = '';
+
+        // Extract color once loaded
+        modalCover.onload = () => {
+            // Prefer manual color if set
+            if (album.color) {
+                if (modalArtist) modalArtist.style.color = album.color;
+                return;
+            }
+
+            const dominantColor = getDominantColor(modalCover);
+            if (modalArtist && dominantColor) {
+                modalArtist.style.color = dominantColor;
+            }
+        };
+        // Handle case where image is cached and onload doesn't fire immediately but is complete
+        if (modalCover.complete) {
+            // Prefer manual color if set
+            if (album.color) {
+                if (modalArtist) modalArtist.style.color = album.color;
+            } else {
+                const dominantColor = getDominantColor(modalCover);
+                if (modalArtist && dominantColor) {
+                    modalArtist.style.color = dominantColor;
+                }
+            }
+        }
+    }
+    if (modalDynamicBg) modalDynamicBg.style.backgroundImage = `url('${album.coverUrl}')`;
 
     // Set Type Label
     if (album.type && typeLabel) {
@@ -160,6 +244,29 @@ function openModal(album) {
     } else if (typeLabel) {
         typeLabel.style.display = 'none';
     }
+
+    // Update Links
+    const downloadLink = document.querySelector('.download-link');
+    const youtubeLink = document.querySelector('.youtube-link');
+    const spotifyLink = document.querySelector('.spotify-link');
+    const tidalLink = document.querySelector('.tidal-link');
+
+    if (downloadLink) {
+        downloadLink.href = album.bandcampLink || "#";
+    }
+    if (youtubeLink) {
+        youtubeLink.href = album.youtubeLink || "#";
+        youtubeLink.style.display = album.youtubeLink ? 'inline' : 'none';
+    }
+    if (spotifyLink) {
+        spotifyLink.href = album.spotifyLink || "#";
+        spotifyLink.style.display = album.spotifyLink ? 'inline' : 'none';
+    }
+    if (tidalLink) {
+        tidalLink.href = album.tidalLink || "#";
+        tidalLink.style.display = album.tidalLink ? 'inline' : 'none';
+    }
+
 
     // Inject Bandcamp Player
     // Default to Sonos Vitae ID if not present (or handle error)

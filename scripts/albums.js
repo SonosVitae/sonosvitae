@@ -21,6 +21,10 @@ const albums = [
         // Replace with actual album ID
         bandcampId: "3867229439",
         bandcampLink: "https://sonosvitae.bandcamp.com/album/eternal-bloom",
+        youtubeLink: "https://youtu.be/fkmBaUfiANU?si=IIPUHNdraut7OqcA",
+        spotifyLink: "https://open.spotify.com/album/6rRqXk2mm2UtrIVlT080aC?si=1PZi_tNtTK6dfs8he-UwwA",
+        tidalLink: "https://tidal.com/album/319964942",
+        color: "#d8bfd8", // Thistle/Light Purple
         type: "ALBUM"
     },
     {
@@ -33,12 +37,16 @@ const albums = [
         coverUrl: "assets/albums/sonosvitae-cover.webp",
         bandcampId: "3867229439", // Provided by user
         bandcampLink: "https://sonosvitae.bandcamp.com/album/sonos-vitae",
+        youtubeLink: "https://youtu.be/QSTXDUHrkK8?si=uulckKh1AfOMQ_Pd",
+        spotifyLink: "https://open.spotify.com/album/1VuZqoILEVf7iPEMB3pm8J?si=-D7L3LaNSOmmRlGjBxk1RA",
+        tidalLink: "https://tidal.com/album/342987472/u",
+        color: "#f0e68c", // Khaki/Gold
         type: "ALBUM"
     },
     {
         id: "crystal-clear",
         title: "Crystal Clear",
-        artist: "Sonos Vitae",
+        artist: "Sonos Vitae, MCXM",
         productionDate: "2024",
         genre: "Electronic",
         description: "A single release exploring crystal clear sound design.",
@@ -46,26 +54,49 @@ const albums = [
         // Replace with actual album ID
         bandcampId: "3867229439",
         bandcampLink: "https://sonosvitae.bandcamp.com/track/crystal-clear",
+        youtubeLink: "https://youtu.be/_oTfSzA9BN4?si=NQv-x5WGbMuZMYH7",
+        spotifyLink: "https://open.spotify.com/album/5jckQK2l3vdFawnsytRIYX?si=KqAyL0CaT2W_azu2qpC0fA",
+        tidalLink: "https://tidal.com/album/292613188/u",
+        color: "#00ffff", // Cyan
         type: "SINGLE"
     },
     {
         id: "ashes-of-epiphany",
         title: "Ashes of Epiphany",
         artist: "Sonos Vitae",
-        productionDate: "2024",
+        productionDate: "October 29, 2024",
         genre: "Soundtrack",
-        description: "Original soundtrack for the Isaac project.",
+        description: `SECOND PART of the Soundtrack made for the "Epiphany" mod.
+        FIRST PART: "Blazes of Epiphany" made by RobertOn
+
+        Tracks are available to download FOR FREE!
+
+        I will be uploading new tracks in the future.
+
+        I split ost in two parts on streaming services because of a mod's long developement time and I wanted for ppl to have smth to listen to!
+
+        This album contains original music composed for the "Epiphany" mod for The Binding of Isaac.
+        It is an unofficial, fan- made soundtrack and is ** not affiliated with, endorsed by, or associated with Edmund McMillen, Nicalis Inc., or The Binding of Isaac ** in any way.
+        All rights to "The Binding of Isaac" belong to their respective owners.
+
+        credits:
+        Music by: Filip Bogusłowicz
+        Cover Art by: TheHGamer`,
         coverUrl: "assets/albums/isaac-cover.webp",
         // Replace with actual album ID
         bandcampId: "3867229439",
         bandcampLink: "https://sonosvitae.bandcamp.com/album/ashes-of-epiphany",
+        youtubeLink: "https://youtube.com/playlist?list=PLGA6s-f1vAVS0CXLeQb9SuWW1lj9Wb-Fo&si=LjWZW0-c720hcr2j",
+        spotifyLink: "https://open.spotify.com/album/73TAzXMaChOAuZ2BM1j2NX?si=9bZjO2sUTuqwlg_QROHprg",
+        tidalLink: "https://tidal.com/album/449116248/u",
+        color: "#ffcb6b", // Light Orange
         type: "SOUNDTRACK"
     },
     {
         id: "Beyond-r-rule-ripper",
         title: "Beyond R: Rule Ripper",
         artist: "Sonos Vitae",
-        productionDate: "December 13, 2025025",
+        productionDate: "December 13, 2025",
         genre: "Soundtrack",
         description: `Original Soundtrack for a "Beyond R: Rule Ripper"
 
@@ -78,7 +109,6 @@ const albums = [
         I hope you enjoy the game as well as the music and I hope we will meet again in the future!
 
         credits:
-
         Music / Composition / Production / Mastering - Filip Bogusłowicz
         Electric Guitar - Marek Szorc
         "Rule Ripper" composed by - Alvaro Suárez
@@ -87,6 +117,10 @@ const albums = [
         // Replace with actual album ID
         bandcampId: "156397314",
         bandcampLink: "https://sonosvitae.bandcamp.com/album/beyond-r-rule-ripper-original-soundtrack",
+        youtubeLink: "https://youtu.be/xk18jFnhs60?si=SDoT_aA4fTflWhs-",
+        spotifyLink: "https://open.spotify.com/album/1pC2bmw2pdRroPyHnIl9Zw?si=SWofShyGRJCXDtN5ZOg8Gw",
+        tidalLink: "https://tidal.com/album/481098140/u",
+        color: "#ff6347", // Tomato/Red
         type: "SOUNDTRACK"
     }
 ];

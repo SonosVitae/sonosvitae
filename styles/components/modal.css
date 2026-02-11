@@ -19,11 +19,12 @@
 
 /* Modal Content Container */
 .modal-content {
-    background: linear-gradient(135deg, rgba(20, 20, 20, 0.98), rgba(40, 40, 40, 0.98));
+    /* background: linear-gradient(135deg, rgba(20, 20, 20, 0.98), rgba(40, 40, 40, 0.98)); removed for dynamic bg */
+    background: transparent;
     margin: 20px auto;
     padding: 30px;
     /* Reduced padding */
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
     width: 90%;
     max-width: 1000px;
     /* Reduced max-width from 1400px */
@@ -32,6 +33,19 @@
     color: #fff;
     position: relative;
     overflow: hidden;
+}
+
+.modal-dynamic-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    filter: blur(50px) brightness(0.3);
+    z-index: -1;
+    transition: background-image 0.3s ease-in-out;
 }
 
 .close-modal {
@@ -172,8 +186,11 @@
 
 .modal-artist {
     color: #ff69b4;
-    font-weight: bold;
-    font-size: 1.1em;
+    font-family: "Grand Hotel", cursive;
+    font-weight: 400;
+    font-size: 1.5em;
+    /* Increased size for readability */
+    font-style: normal;
 }
 
 .album-date {
@@ -192,17 +209,20 @@
     /* Reduced from 15px */
 }
 
-.album-links span {
+.album-links a {
     margin: 0;
-    font-size: 0.9em;
+    font-family: 'Oswald', sans-serif;
+    font-size: 1em;
+    font-weight: 500;
     color: #aeaeae;
     cursor: pointer;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 1.5px;
     transition: color 0.2s;
+    text-decoration: none;
 }
 
-.album-links span:hover {
+.album-links a:hover {
     color: #fff;
 }
 

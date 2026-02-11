@@ -7,7 +7,9 @@
   <link rel="stylesheet" href="styles/style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Grand+Hotel&family=Oswald:wght@400;500;700&family=Poppins:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet">
   <title>Sonos Vitae</title>
 </head>
 
@@ -60,6 +62,7 @@
   <!-- Album Preview Modal -->
   <div id="albumModal" class="modal">
     <div class="modal-content">
+      <div class="modal-dynamic-bg"></div>
       <span class="close-modal">&times;</span>
       <div class="modal-body">
         <div class="album-content-left">
@@ -74,9 +77,10 @@
               <p class="album-date"></p>
             </div>
             <div class="album-links">
-              <span class="download-link">download</span>
-              <span class="share-link">share</span>
-              <span class="bc-link">bc</span>
+              <a class="download-link" target="_blank">Download</a> <!-- leads to bandcamp -->
+              <a class="youtube-link" target="_blank">YouTube</a>
+              <a class="spotify-link" target="_blank">Spotify</a>
+              <a class="tidal-link" target="_blank">Tidal</a>
             </div>
           </div>
 
