@@ -10,6 +10,9 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Grand+Hotel&family=Oswald:wght@400;500;700&family=Poppins:wght@300;400;500;600;700&display=swap"
     rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
   <title>Sonos Vitae</title>
 </head>
 
@@ -55,21 +58,117 @@
   <section class="about-section">
     <div class="about-content">
       <h2>About Me</h2>
-      <p>
-        Sonos Vitae is an exploration of sound and emotion. Through a blend of atmospheric textures and melodic
-        storytelling, the music aims to transport listeners to otherworldly landscapes.
-      </p>
-      <p>
-        Currently focusing on creating immersive soundscapes that bridge the gap between ambient, electronic, and
-        cinematic compositions. Every track is a journey, designed to evoke deep feelings and inspire imagination.
-      </p>
+      <div class="about-text-bg">
+        <p>
+          Sonos Vitae is an exploration of sound and emotion. Through a blend of atmospheric textures and melodic
+          storytelling, the music aims to transport listeners to otherworldly landscapes.
+        </p>
+        <p>
+          Currently focusing on creating immersive soundscapes that bridge the gap between ambient, electronic, and
+          cinematic compositions. Every track is a journey, designed to evoke deep feelings and inspire imagination.
+        </p>
+      </div>
     </div>
-    <div class="about-images">
-      <div class="about-placeholder-img"></div>
-      <div class="about-placeholder-img"></div>
+
+    <div class="about-gallery-container">
+      <div class="about-images">
+        <figure class="about-figure img-front">
+          <img src="assets/images/artist2.webp" alt="Artist Portrait 2" class="about-img">
+          <figcaption>taken by a friend</figcaption>
+        </figure>
+        <figure class="about-figure img-back">
+          <img src="assets/images/artist1.webp" alt="Artist Portrait 1" class="about-img">
+          <figcaption>taken by Michjux Photography</figcaption>
+        </figure>
+      </div>
+      <button class="gallery-arrow" aria-label="Switch photo">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 12h14M12 5l7 7-7 7" />
+        </svg>
+      </button>
     </div>
   </section>
 
+  <!-- Contact Section -->
+  <section class="contact-section">
+    <div class="contact-container">
+      <div class="contact-lights">
+        <div class="light-orb"></div>
+        <div class="light-orb"></div>
+        <div class="light-orb"></div>
+      </div>
+
+      <div class="contact-header">
+        <h2>Want to contact me?</h2>
+        <p>Send me a mail here!</p>
+        <div class="contact-status">
+          Open for new commissions | Currently working on a new soundtrack
+        </div>
+      </div>
+
+      <form class="contact-form" id="contactForm" action="mailto:filip-bog@wp.pl" method="POST" enctype="text/plain">
+        <div class="form-group">
+          <input type="text" name="name" class="form-control" placeholder="Your Name" required>
+        </div>
+        <div class="form-group">
+          <input type="email" name="email" class="form-control" placeholder="Your Email" required>
+        </div>
+        <div class="form-group">
+          <input type="text" name="subject" class="form-control" placeholder="Subject" required>
+        </div>
+        <div class="form-group">
+          <textarea name="message" class="form-control" placeholder="Your Message..." required></textarea>
+        </div>
+        <button type="submit" class="btn-submit">Send Message</button>
+      </form>
+    </div>
+  </section>
+
+
+  <footer class="main-footer">
+    <!-- Replaced static image with CSS-based glowing shapes as requested -->
+    <div class="footer-shapes">
+      <div class="parallax-shape footer-blob-1"></div>
+      <div class="parallax-shape footer-blob-2"></div>
+      <div class="parallax-shape footer-blob-3"></div>
+    </div>
+    <div class="footer-content">
+      <div class="footer-logo">
+        <h2>Sonos Vitae</h2>
+      </div>
+      <div class="footer-socials">
+        <div class="follow-text">Follow me on</div>
+        <div class="social-icons">
+          <a href="#" class="social-link" title="Facebook">
+            <i class="fa-brands fa-facebook-f"></i>
+          </a>
+          <a href="#" class="social-link" title="Bandcamp">
+            <i class="fa-brands fa-bandcamp"></i>
+          </a>
+          <a href="#" class="social-link" title="Soundcloud">
+            <i class="fa-brands fa-soundcloud"></i>
+          </a>
+          <a href="#" class="social-link" title="Spotify">
+            <i class="fa-brands fa-spotify"></i>
+          </a>
+          <a href="#" class="social-link" title="YouTube">
+            <i class="fa-brands fa-youtube"></i>
+          </a>
+          <a href="#" class="social-link" title="Twitter">
+            <i class="fa-brands fa-twitter"></i>
+          </a>
+          <a href="#" class="social-link" title="Instagram">
+            <i class="fa-brands fa-instagram"></i>
+          </a>
+          <a href="#" class="social-link" title="Last.fm">
+            <i class="fa-brands fa-lastfm"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-copyright">@SonosVitae : 2026</div>
+  </footer>
 
   <div id="fullImgBox" class="full-img" style="display: none;">
     <img id="fullImg" src="">
@@ -130,6 +229,8 @@
       <div class="parallax-shape shape-2"></div>
       <div class="parallax-shape shape-3"></div>
       <div class="parallax-shape shape-4"></div>
+      <div class="parallax-shape shape-5"></div>
+      <div class="parallax-shape shape-6"></div>
     </div>
   </div>
 

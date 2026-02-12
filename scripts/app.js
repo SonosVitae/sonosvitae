@@ -328,3 +328,46 @@ window.addEventListener('click', (e) => {
         closeModal();
     }
 });
+
+// --- About Me Gallery Logic ---
+const aboutGalleryContainer = document.querySelector('.about-gallery-container');
+if (aboutGalleryContainer) {
+    const images = aboutGalleryContainer.querySelectorAll('.about-figure');
+    const arrow = aboutGalleryContainer.querySelector('.gallery-arrow');
+
+    function swapImages() {
+        images.forEach(img => {
+            if (img.classList.contains('img-front')) {
+                img.classList.remove('img-front');
+                img.classList.add('img-back');
+            } else {
+                img.classList.remove('img-back');
+                img.classList.add('img-front');
+            }
+        });
+    }
+
+    if (arrow) {
+        arrow.addEventListener('click', swapImages);
+    }
+
+    // Also allow clicking the back image to swap
+    images.forEach(img => {
+        img.addEventListener('click', () => {
+            if (img.classList.contains('img-back')) {
+                swapImages();
+            }
+        });
+    });
+}
+
+// --- Contact Form Logic ---
+const contactForm = document.getElementById('contactForm');
+if (contactForm) {
+    contactForm.addEventListener('submit', (e) => {
+        const subjectInput = contactForm.querySelector('input[name="subject"]');
+        if (subjectInput && !subjectInput.value.startsWith('SITE: ')) {
+            subjectInput.value = `SITE: ${subjectInput.value}`;
+        }
+    });
+}

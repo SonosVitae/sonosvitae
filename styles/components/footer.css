@@ -1,0 +1,189 @@
+/* Footer Section */
+.main-footer {
+    position: relative;
+    width: 100%;
+    margin-top: 100px;
+    padding: 50px 0 30px;
+    overflow: hidden;
+    font-family: "Poppins", sans-serif;
+}
+
+/* Footer Background Shapes (Replacing broken image) */
+.footer-shapes {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.footer-blob-1 {
+    width: 600px;
+    height: 600px;
+    bottom: -200px;
+    left: -100px;
+    background-color: rgba(160, 195, 155, 0.4);
+    /* Green */
+    animation-delay: -2s;
+}
+
+.footer-blob-2 {
+    width: 500px;
+    height: 500px;
+    bottom: -150px;
+    right: -100px;
+    background-color: rgba(78, 197, 236, 0.4);
+    /* Blue-ish */
+    animation-delay: -5s;
+}
+
+.footer-blob-3 {
+    width: 400px;
+    height: 400px;
+    bottom: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(178, 201, 130, 0.4);
+    /* Light Green */
+    animation-delay: -8s;
+}
+
+.footer-content {
+    width: 90%;
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    position: relative;
+    z-index: 10;
+    padding-bottom: 60px;
+
+    /* Restore Blurry Aesthetic */
+    background: rgba(255, 255, 255, 0.02);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 40px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* Left Side: Artist Name */
+.footer-logo h2 {
+    font-family: "Massivertical", sans-serif;
+    font-size: 8em;
+    /* Match Header Scale */
+    color: #b2c982;
+    /* Match Header Color */
+    text-align: left;
+    margin: 0;
+    font-weight: normal;
+    letter-spacing: 5px;
+    line-height: 1;
+    text-shadow: none;
+    /* Clean look like header */
+}
+
+.footer-copyright {
+    position: absolute;
+    bottom: 10px;
+    width: 100%;
+    text-align: center;
+    font-family: "Poppins", sans-serif;
+    font-size: 0.8em;
+    color: rgba(255, 255, 255, 0.5);
+    z-index: 11;
+}
+
+/* Right Side: Socials */
+.footer-socials {
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 15px;
+}
+
+.follow-text {
+    font-size: 1.2em;
+    font-weight: 500;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5), 0 0 20px rgba(78, 197, 236, 0.5);
+    animation: textGlow 3s infinite alternate;
+}
+
+@keyframes textGlow {
+    0% {
+        text-shadow: 0 0 10px rgba(255, 255, 255, 0.5), 0 0 20px rgba(78, 197, 236, 0.5);
+    }
+
+    100% {
+        text-shadow: 0 0 15px rgba(255, 255, 255, 0.8), 0 0 30px rgba(78, 197, 236, 0.8);
+    }
+}
+
+.social-icons {
+    display: flex;
+    gap: 15px;
+}
+
+.social-link {
+    color: #CDE8E5;
+    font-size: 1.5em;
+    /* Icon size */
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    text-decoration: none;
+}
+
+.social-link:hover {
+    background: rgba(160, 195, 155, 0.2);
+    color: #a0c39b;
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(160, 195, 155, 0.3);
+    border-color: #a0c39b;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .footer-content {
+        flex-direction: column;
+        align-items: center;
+        gap: 30px;
+        text-align: center;
+        padding-bottom: 20px;
+    }
+
+    .footer-logo h2 {
+        text-align: center;
+        font-size: 4em;
+    }
+
+    .footer-socials {
+        align-items: center;
+        text-align: center;
+    }
+
+    .social-icons {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .main-footer {
+        padding-bottom: 50px;
+        /* Space for copyright on mobile */
+    }
+}
