@@ -1,66 +1,5 @@
 const albums = [
     {
-        id: "eternal-bloom",
-        title: "Eternal Bloom",
-        artist: "Sonos Vitae",
-        // Using approximate date based on the user screenshot example for style, 
-        // real date can be updated by user.
-        productionDate: "November 8, 2023",
-        genre: "Ambient / Electronic",
-        description: `Step into the realm of beautiful soundscapes filled with Synths, Wind Instruments, Percussion, Plucks and more!
-        "Eternal Bloom" Is an album that will take you on a captivating journey, where you can explore the wonders of the universe.
-        
-        "I started writing this album in the meantime while I was recording instruments for 'Sonos Vitae'. I finished it by the end of the summer.
-        Some tracks were made for different projects so that's why some of them don't fit so well into the 'theme'. But over all, I'm happy with
-        what turned out!
-        I hope u enjoy this release!"
-        
-        Big Thanks:
-        To my family for endless love and support! To my friends Plantixx, Krykszyn, FollowTheCloud and Ada Hope for listening and giving feedback.`,
-        coverUrl: "assets/albums/bloom-cover.webp",
-        // Replace with actual album ID
-        bandcampId: "3867229439",
-        bandcampLink: "https://sonosvitae.bandcamp.com/album/eternal-bloom",
-        youtubeLink: "https://youtu.be/fkmBaUfiANU?si=IIPUHNdraut7OqcA",
-        spotifyLink: "https://open.spotify.com/album/6rRqXk2mm2UtrIVlT080aC?si=1PZi_tNtTK6dfs8he-UwwA",
-        tidalLink: "https://tidal.com/album/319964942",
-        color: "#d8bfd8", // Thistle/Light Purple
-        type: "ALBUM"
-    },
-    {
-        id: "sonos-vitae",
-        title: "Sonos Vitae",
-        artist: "Sonos Vitae",
-        productionDate: "2023",
-        genre: "Orchestral / Cinematic",
-        description: "The self-titled album featuring a collection of orchestral and cinematic pieces.",
-        coverUrl: "assets/albums/sonosvitae-cover.webp",
-        bandcampId: "3867229439", // Provided by user
-        bandcampLink: "https://sonosvitae.bandcamp.com/album/sonos-vitae",
-        youtubeLink: "https://youtu.be/QSTXDUHrkK8?si=uulckKh1AfOMQ_Pd",
-        spotifyLink: "https://open.spotify.com/album/1VuZqoILEVf7iPEMB3pm8J?si=-D7L3LaNSOmmRlGjBxk1RA",
-        tidalLink: "https://tidal.com/album/342987472/u",
-        color: "#f0e68c", // Khaki/Gold
-        type: "ALBUM"
-    },
-    {
-        id: "crystal-clear",
-        title: "Crystal Clear",
-        artist: "Sonos Vitae, MCXM",
-        productionDate: "2024",
-        genre: "Electronic",
-        description: "A single release exploring crystal clear sound design.",
-        coverUrl: "assets/albums/crystalclear-cover.webp",
-        // Replace with actual album ID
-        bandcampId: "3867229439",
-        bandcampLink: "https://sonosvitae.bandcamp.com/track/crystal-clear",
-        youtubeLink: "https://youtu.be/_oTfSzA9BN4?si=NQv-x5WGbMuZMYH7",
-        spotifyLink: "https://open.spotify.com/album/5jckQK2l3vdFawnsytRIYX?si=KqAyL0CaT2W_azu2qpC0fA",
-        tidalLink: "https://tidal.com/album/292613188/u",
-        color: "#00ffff", // Cyan
-        type: "SINGLE"
-    },
-    {
         id: "ashes-of-epiphany",
         title: "Ashes of Epiphany",
         artist: "Sonos Vitae",
@@ -122,5 +61,66 @@ const albums = [
         tidalLink: "https://tidal.com/album/481098140/u",
         color: "#ff6347", // Tomato/Red
         type: "SOUNDTRACK"
-    }
+    },
+    {
+        id: "eternal-bloom",
+        title: "Eternal Bloom",
+        artist: "Sonos Vitae",
+        // Using approximate date based on the user screenshot example for style, 
+        // real date can be updated by user.
+        productionDate: "November 8, 2023",
+        genre: "Ambient / Electronic",
+        description: `Step into the realm of beautiful soundscapes filled with Synths, Wind Instruments, Percussion, Plucks and more!
+        "Eternal Bloom" Is an album that will take you on a captivating journey, where you can explore the wonders of the universe.
+        
+        "I started writing this album in the meantime while I was recording instruments for 'Sonos Vitae'. I finished it by the end of the summer.
+        Some tracks were made for different projects so that's why some of them don't fit so well into the 'theme'. But over all, I'm happy with
+        what turned out!
+        I hope u enjoy this release!"
+        
+        Big Thanks:
+        To my family for endless love and support! To my friends Plantixx, Krykszyn, FollowTheCloud and Ada Hope for listening and giving feedback.`,
+        coverUrl: "assets/albums/bloom-cover.webp",
+        // Replace with actual album ID
+        bandcampId: "3867229439",
+        bandcampLink: "https://sonosvitae.bandcamp.com/album/eternal-bloom",
+        youtubeLink: "https://youtu.be/fkmBaUfiANU?si=IIPUHNdraut7OqcA",
+        spotifyLink: "https://open.spotify.com/album/6rRqXk2mm2UtrIVlT080aC?si=1PZi_tNtTK6dfs8he-UwwA",
+        tidalLink: "https://tidal.com/album/319964942",
+        color: "#d8bfd8", // Thistle/Light Purple
+        type: "ALBUM"
+    },
+    {
+        id: "sonos-vitae",
+        title: "Sonos Vitae",
+        artist: "Sonos Vitae",
+        productionDate: "2023",
+        genre: "Orchestral / Cinematic",
+        description: "The self-titled album featuring a collection of orchestral and cinematic pieces.",
+        coverUrl: "assets/albums/sonosvitae-cover.webp",
+        bandcampId: "3867229439", // Provided by user
+        bandcampLink: "https://sonosvitae.bandcamp.com/album/sonos-vitae",
+        youtubeLink: "https://youtu.be/QSTXDUHrkK8?si=uulckKh1AfOMQ_Pd",
+        spotifyLink: "https://open.spotify.com/album/1VuZqoILEVf7iPEMB3pm8J?si=-D7L3LaNSOmmRlGjBxk1RA",
+        tidalLink: "https://tidal.com/album/342987472/u",
+        color: "#f0e68c", // Khaki/Gold
+        type: "ALBUM"
+    },
+    {
+        id: "crystal-clear",
+        title: "Crystal Clear",
+        artist: "Sonos Vitae, MCXM",
+        productionDate: "2024",
+        genre: "Electronic",
+        description: "A single release exploring crystal clear sound design.",
+        coverUrl: "assets/albums/crystalclear-cover.webp",
+        // Replace with actual album ID
+        bandcampId: "3867229439",
+        bandcampLink: "https://sonosvitae.bandcamp.com/track/crystal-clear",
+        youtubeLink: "https://youtu.be/_oTfSzA9BN4?si=NQv-x5WGbMuZMYH7",
+        spotifyLink: "https://open.spotify.com/album/5jckQK2l3vdFawnsytRIYX?si=KqAyL0CaT2W_azu2qpC0fA",
+        tidalLink: "https://tidal.com/album/292613188/u",
+        color: "#00ffff", // Cyan
+        type: "SINGLE"
+    },
 ];

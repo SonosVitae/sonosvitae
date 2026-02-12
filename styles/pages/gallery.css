@@ -1,0 +1,382 @@
+/* Gallery Page Specific Styles */
+
+/* --- Parallax & Background Reuse --- */
+/* Ensure background blobs from layout.css work here */
+/* Ensure background blobs from layout.css work here */
+html {
+    overflow-y: scroll;
+    /* Force single scrollbar on html */
+    overflow-x: hidden;
+}
+
+body {
+    overflow-x: hidden;
+    /* Prevent horizontal scroll from blobs */
+    overflow-y: visible;
+    /* Let body content scroll naturally with html */
+    height: auto;
+    min-height: 100vh;
+}
+
+/* --- Search Bar Section --- */
+.search-container {
+    width: 100%;
+    margin-top: 100px;
+    /* Space for Navbar */
+    display: flex;
+    justify-content: center;
+    padding: 20px 0;
+    position: relative;
+    z-index: 20;
+}
+
+.search-box {
+    position: relative;
+    width: 60%;
+    max-width: 600px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 15px 25px;
+    border-radius: 50px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    color: white;
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.1em;
+    transition: all 0.3s ease;
+    outline: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.search-input:focus {
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 15px rgba(160, 195, 155, 0.3);
+    border-color: rgba(160, 195, 155, 0.5);
+}
+
+.search-icon {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: rgba(255, 255, 255, 0.6);
+    pointer-events: none;
+}
+
+/* --- Timeline Container --- */
+.gallery-container {
+    width: 90%;
+    max-width: 1600px;
+    margin: 40px auto 100px;
+    position: relative;
+    z-index: 10;
+}
+
+/* --- Year Header --- */
+.year-header {
+    font-family: 'Massivertical', sans-serif;
+    font-size: 6em;
+    color: rgba(255, 255, 255, 0.1);
+    /* Subtle large background text style */
+    text-align: left;
+    margin-bottom: 40px;
+    margin-left: 5%;
+    position: relative;
+    text-shadow: 0 0 20px rgba(160, 195, 155, 0.1);
+}
+
+/* --- Timeline Post Item --- */
+.timeline-post {
+    display: flex;
+    margin-bottom: 80px;
+    position: relative;
+    padding: 20px 0;
+}
+
+/* --- Left Column: Date & Glow (1/3) --- */
+.post-meta {
+    width: 30%;
+    padding-right: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    position: relative;
+}
+
+/* Glow Effect on Left Side */
+.post-meta::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(160, 195, 155, 0.15) 0%, transparent 70%);
+    border-radius: 50%;
+    z-index: -1;
+    pointer-events: none;
+    filter: blur(20px);
+}
+
+.meta-date {
+    font-family: 'Oswald', sans-serif;
+    font-size: 1.5em;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 5px;
+    text-shadow: 0 0 10px rgba(160, 195, 155, 0.5);
+}
+
+.meta-year-small {
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.9em;
+    color: #b2c982;
+    opacity: 0.8;
+}
+
+/* Timeline Dot & Line */
+.timeline-point {
+    position: absolute;
+    right: 0px;
+    /* Aligned to the border of 1/3 */
+    top: 25px;
+    width: 15px;
+    height: 15px;
+    background: #b2c982;
+    border-radius: 50%;
+    box-shadow: 0 0 15px #b2c982;
+    z-index: 5;
+}
+
+.timeline-line {
+    position: absolute;
+    right: 7px;
+    /* Center of point */
+    top: 40px;
+    width: 2px;
+    height: calc(100% + 80px);
+    /* Extend to next post */
+    background: linear-gradient(to bottom, rgba(178, 201, 130, 0.8), rgba(178, 201, 130, 0.1));
+    z-index: 4;
+}
+
+.timeline-post:last-child .timeline-line {
+    display: none;
+    /* No line after last item */
+}
+
+
+/* --- Right Column: Content (2/3) --- */
+.post-content {
+    width: 70%;
+    padding-left: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 30px;
+    position: relative;
+}
+
+/* Glass Box for Content */
+.content-glass-box {
+    flex: 2;
+    /* Takes mostly left space of right column */
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 20px;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    overflow: hidden;
+    /* For truncation */
+}
+
+/* Name Header */
+.post-artist-name {
+    font-family: 'Massivertical', sans-serif;
+    font-size: 2.5em;
+    color: #fff;
+    margin: 0;
+    line-height: 1;
+    letter-spacing: 2px;
+}
+
+/* Image Stack (Preview) */
+.image-stack {
+    position: relative;
+    height: 150px;
+    /* Fixed height for stack */
+    width: 100%;
+    margin-top: 10px;
+}
+
+.stack-img {
+    position: absolute;
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease;
+}
+
+/* Sample Stacking Positions */
+.stack-img:nth-child(1) {
+    left: 0;
+    top: 0;
+    z-index: 3;
+    transform: rotate(-5deg);
+}
+
+.stack-img:nth-child(2) {
+    left: 60px;
+    top: 10px;
+    z-index: 2;
+    transform: rotate(3deg);
+}
+
+.stack-img:nth-child(3) {
+    left: 120px;
+    top: 5px;
+    z-index: 1;
+    transform: rotate(-2deg);
+}
+
+/* Fade/Blur at bottom of stack container to blend */
+.image-stack::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 40px;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0) 0%, transparent 100%);
+    /* Adjust gradient color if necessary, usually transparency is enough if background is dark */
+}
+
+/* Post Text */
+.post-text-container {
+    max-height: 100px;
+    overflow: hidden;
+    position: relative;
+}
+
+.post-text {
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.95em;
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* Fade Text at Bottom */
+.post-text-container::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 40px;
+    background: linear-gradient(to bottom, transparent, rgba(18, 18, 18, 0.9));
+    /* Match body bg approx */
+}
+
+/* Read More Button */
+.read-more-btn {
+    align-self: flex-start;
+    padding: 8px 16px;
+    background: transparent;
+    border: 1px solid #b2c982;
+    color: #b2c982;
+    border-radius: 20px;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.8em;
+    transition: all 0.3s ease;
+}
+
+.read-more-btn:hover {
+    background: #b2c982;
+    color: #000;
+}
+
+/* --- Far Right: Featured Big Image --- */
+.featured-image-container {
+    flex: 1.5;
+    /* Takes slightly less space than tex box */
+    height: 400px;
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+}
+
+.featured-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.featured-image-container:hover .featured-image {
+    transform: scale(1.05);
+}
+
+/* --- Responsive Mobile --- */
+@media (max-width: 900px) {
+    .timeline-post {
+        flex-direction: column;
+    }
+
+    .post-meta {
+        width: 100%;
+        padding-right: 0;
+        align-items: flex-start;
+        /* Move date to left on mobile */
+        margin-bottom: 20px;
+        padding-left: 20px;
+    }
+
+    .post-meta::before {
+        left: -50px;
+        /* Move glow to left edge */
+        right: auto;
+    }
+
+    .timeline-point {
+        left: 0;
+        right: auto;
+    }
+
+    .timeline-line {
+        left: 7px;
+        right: auto;
+    }
+
+    .post-content {
+        width: 100%;
+        padding-left: 20px;
+        /* Align with line */
+        flex-direction: column;
+    }
+
+    .featured-image-container {
+        width: 100%;
+        height: 250px;
+    }
+
+    .stack-img {
+        width: 90px;
+        height: 90px;
+    }
+}

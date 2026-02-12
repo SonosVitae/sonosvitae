@@ -1,6 +1,7 @@
 /* Main Stylesheet */
 /* Imports */
 @import url('base.css');
+@import url('components/navbar.css');
 @import url('layout.css');
 @import url('components/album-grid.css');
 @import url('components/modal.css');

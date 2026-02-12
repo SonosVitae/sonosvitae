@@ -3,10 +3,16 @@ window.addEventListener('scroll', function () {
     const scrollTop = window.pageYOffset;
 
     // Move the background slower
-    document.querySelector('.green').style.transform = `translateY(${scrollTop * 0.6}px)`;
+    const greenBg = document.querySelector('.green');
+    if (greenBg) {
+        greenBg.style.transform = `translateY(${scrollTop * 0.6}px)`;
+    }
 
     // Move the foreground faster
-    document.querySelector('.leaves').style.transform = `translateY(${scrollTop * 0.3}px)`;
+    const leavesBg = document.querySelector('.leaves');
+    if (leavesBg) {
+        leavesBg.style.transform = `translateY(${scrollTop * 0.3}px)`;
+    }
 });
 
 // Navigation Slide-in for Mobile
