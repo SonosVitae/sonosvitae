@@ -161,6 +161,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initParticles();
 
     // 7. Lightbox Init
+    collectImages(data); // Pre-calculate image list
     initLightbox();
 });
 
@@ -186,36 +187,68 @@ function initParticles() {
     }
 }
 
-// --- Lightbox System ---
-let lightbox, lbImg, currentZoom = 1;
-let isDragging = false, startX, startY, translateX = 0, translateY = 0;
+// --- Lightbox Carousel System ---
+let lightbox, lbImg, lbPrevImg, lbNextImg, lbFarLeftImg, lbFarRightImg;
+let allImages = []; // Array of {src, type?}
+let currentIndex = 0;
+let currentZoom = 1, isDragging = false, startX, startY, translateX = 0, translateY = 0;
 
 function initLightbox() {
     lightbox = document.getElementById('lightbox');
     lbImg = document.getElementById('lightbox-img');
-    const closeBtn = document.querySelector('.lightbox-close');
+    lbPrevImg = document.getElementById('lb-img-prev');
+    lbNextImg = document.getElementById('lb-img-next');
+    lbFarLeftImg = document.getElementById('lb-img-far-left');
+    lbFarRightImg = document.getElementById('lb-img-far-right');
 
-    // Close
+    const closeBtn = document.querySelector('.lightbox-close');
+    const prevBtn = document.getElementById('lb-prev-btn');
+    const nextBtn = document.getElementById('lb-next-btn');
+
+    // Controls
     closeBtn.onclick = closeLightbox;
-    lightbox.onclick = (e) => { if (e.target === lightbox) closeLightbox(); };
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLightbox(); });
+    prevBtn.onclick = (e) => { e.stopPropagation(); changeImage(-1); };
+    nextBtn.onclick = (e) => { e.stopPropagation(); changeImage(1); };
+
+    // Close on background click
+    lightbox.onclick = (e) => {
+        if (e.target === lightbox || e.target.classList.contains('lightbox-track')) closeLightbox();
+    };
+
+    // Keyboard support
+    document.addEventListener('keydown', (e) => {
+        if (lightbox.style.display === 'flex') {
+            if (e.key === 'Escape') closeLightbox();
+            if (e.key === 'ArrowLeft') changeImage(-1);
+            if (e.key === 'ArrowRight') changeImage(1);
+        }
+    });
 
     // Zoom Controls
-    document.getElementById('lb-zoom-in').onclick = () => setZoom(currentZoom + 0.2);
-    document.getElementById('lb-zoom-out').onclick = () => setZoom(currentZoom - 0.2);
+    document.getElementById('lb-zoom-in').onclick = (e) => { e.stopPropagation(); setZoom(currentZoom + 0.2); };
+    document.getElementById('lb-zoom-out').onclick = (e) => { e.stopPropagation(); setZoom(currentZoom - 0.2); };
 
     // Wheel Zoom
     lightbox.addEventListener('wheel', (e) => {
-        e.preventDefault();
-        setZoom(currentZoom + (e.deltaY < 0 ? 0.2 : -0.2));
+        if (e.target === lbImg) { // Only zoom if hovering main image
+            e.preventDefault();
+            setZoom(currentZoom + (e.deltaY < 0 ? 0.2 : -0.2));
+        }
     });
 
-    // Panning (Mouse)
+    // Panning (Mouse) - Only for main image
     lbImg.addEventListener('mousedown', (e) => {
+        if (currentZoom <= 1) return; // Only drag if zoomed in
+
         isDragging = true;
         startX = e.clientX - translateX;
         startY = e.clientY - translateY;
         lbImg.style.cursor = 'grabbing';
+
+        // Reverted: lbImg.classList.add('no-transition'); 
+        // User prefers transition behavior or transition is handled otherwise.
+
+        e.preventDefault(); // Prevent default drag
     });
 
     window.addEventListener('mouseup', () => {
@@ -223,33 +256,213 @@ function initLightbox() {
         lbImg.style.cursor = 'grab';
     });
 
+    let rafId = null;
     window.addEventListener('mousemove', (e) => {
         if (!isDragging) return;
         e.preventDefault();
-        translateX = e.clientX - startX;
-        translateY = e.clientY - startY;
-        updateTransform();
+
+        // Use RAF to throttle updates (Fixes Lag)
+        if (rafId) return;
+
+        rafId = requestAnimationFrame(() => {
+            translateX = e.clientX - startX;
+            translateY = e.clientY - startY;
+            updateTransform();
+            rafId = null;
+        });
     });
+
+    // --- Touch Support (Mobile Pan) ---
+    lbImg.addEventListener('touchstart', (e) => {
+        if (currentZoom <= 1) return; // Only drag if zoomed
+        if (e.touches.length !== 1) return; // Single finger pan
+
+        isDragging = true;
+        startX = e.touches[0].clientX - translateX;
+        startY = e.touches[0].clientY - translateY;
+
+        // e.preventDefault(); // Might block scroll/zoom gestures if not careful
+    }, { passive: false });
+
+    window.addEventListener('touchend', () => {
+        isDragging = false;
+    });
+
+    window.addEventListener('touchmove', (e) => {
+        if (!isDragging) return;
+        if (e.touches.length !== 1) return;
+
+        e.preventDefault(); // Prevent scrolling while panning
+
+        if (rafId) return;
+        rafId = requestAnimationFrame(() => {
+            translateX = e.touches[0].clientX - startX;
+            translateY = e.touches[0].clientY - startY;
+            updateTransform();
+            rafId = null;
+        });
+    }, { passive: false });
+}
+
+function collectImages(data) {
+    // Gather all images in order
+    allImages = [];
+    if (data.mainImage) allImages.push(data.mainImage);
+
+    if (data.sections) {
+        data.sections.forEach(sec => {
+            if (sec.images) {
+                sec.images.forEach(img => allImages.push(img));
+            }
+        });
+    }
 }
 
 function openLightbox(src) {
-    lbImg.src = src;
+    // Find index
+    currentIndex = allImages.indexOf(src);
+    if (currentIndex === -1) currentIndex = 0; // Fallback
+
+    updateLightboxUI();
+
+    // Reset Classes ensures correct start state
+    lbFarLeftImg.className = 'lb-anim-img pos-out-left';
+    lbPrevImg.className = 'lb-anim-img pos-left';
+    lbImg.className = 'lb-anim-img pos-center';
+    lbNextImg.className = 'lb-anim-img pos-right';
+    lbFarRightImg.className = 'lb-anim-img pos-out-right';
+
+    // Clear inline transforms
+    lbFarLeftImg.style.transform = '';
+    lbPrevImg.style.transform = '';
+    lbImg.style.transform = '';
+    lbNextImg.style.transform = '';
+    lbFarRightImg.style.transform = '';
+
     lightbox.style.display = 'flex';
-    currentZoom = 1;
-    translateX = 0;
-    translateY = 0;
-    updateTransform();
+    resetZoom();
 }
 
 function closeLightbox() {
     lightbox.style.display = 'none';
+    resetZoom();
+}
+
+function changeImage(dir) {
+    if (!allImages.length) return;
+
+    // Reset Zoom/Pan/Transition before animating
+    resetZoom();
+    // Force transition to be enabled for the slide
+    lbImg.classList.remove('no-transition');
+
+    // Clear inline transforms so CSS classes can drive the animation (Fixes Snap)
+    lbFarLeftImg.style.transform = '';
+    lbPrevImg.style.transform = '';
+    lbImg.style.transform = '';
+    lbNextImg.style.transform = '';
+    lbFarRightImg.style.transform = '';
+
+    // Determine Animation Direction
+    if (dir === 1) {
+        // NEXT
+        // FarRight -> Right
+        lbFarRightImg.className = 'lb-anim-img pos-right';
+        // Right -> Center
+        lbNextImg.className = 'lb-anim-img pos-center';
+        // Center -> Left
+        lbImg.className = 'lb-anim-img pos-left';
+        // Left -> OutLeft
+        lbPrevImg.className = 'lb-anim-img pos-out-left';
+        // FarLeft -> OutLeft (Stay/Hidden)
+        lbFarLeftImg.className = 'lb-anim-img pos-out-left';
+    } else {
+        // PREV
+        // FarLeft -> Left
+        lbFarLeftImg.className = 'lb-anim-img pos-left';
+        // Left -> Center
+        lbPrevImg.className = 'lb-anim-img pos-center';
+        // Center -> Right
+        lbImg.className = 'lb-anim-img pos-right';
+        // Right -> OutRight
+        lbNextImg.className = 'lb-anim-img pos-out-right';
+        // FarRight -> OutRight (Stay/Hidden)
+        lbFarRightImg.className = 'lb-anim-img pos-out-right';
+    }
+
+    // Wait for animation (300ms matches CSS)
+    setTimeout(() => {
+        // Update Index
+        currentIndex += dir;
+        // Loop
+        if (currentIndex < 0) currentIndex = allImages.length - 1;
+        if (currentIndex >= allImages.length) currentIndex = 0;
+
+        // "Teleport" Reset: Update sources and reset positions instantly
+        const allImgs = [lbFarLeftImg, lbPrevImg, lbImg, lbNextImg, lbFarRightImg];
+        allImgs.forEach(img => img.classList.add('no-transition'));
+
+        // 2. Update Sources
+        updateLightboxUI();
+
+        // 3. Reset Classes to Physical Positions
+        lbFarLeftImg.className = 'lb-anim-img pos-out-left no-transition';
+        lbPrevImg.className = 'lb-anim-img pos-left no-transition';
+        lbImg.className = 'lb-anim-img pos-center no-transition';
+        lbNextImg.className = 'lb-anim-img pos-right no-transition';
+        lbFarRightImg.className = 'lb-anim-img pos-out-right no-transition';
+
+        // 4. Re-enable Transition (Force Reflow first)
+        void lbImg.offsetWidth;
+
+        allImgs.forEach(img => img.classList.remove('no-transition'));
+
+        resetZoom();
+
+    }, 300);
+}
+
+function updateLightboxUI() {
+    // 5-Image Carousel Logic
+    const getIdx = (offset) => {
+        let i = currentIndex + offset;
+        while (i < 0) i += allImages.length;
+        while (i >= allImages.length) i -= allImages.length;
+        return i;
+    };
+
+    lbImg.src = allImages[getIdx(0)];
+    lbPrevImg.src = allImages[getIdx(-1)];
+    lbNextImg.src = allImages[getIdx(1)];
+    lbFarLeftImg.src = allImages[getIdx(-2)];
+    lbFarRightImg.src = allImages[getIdx(2)];
+}
+
+function resetZoom() {
+    currentZoom = 1;
+    translateX = 0;
+    translateY = 0;
+
+    // Re-enable interface transitions
+    lbImg.classList.remove('no-transition');
+
+    updateTransform();
 }
 
 function setZoom(val) {
-    currentZoom = Math.max(0.5, Math.min(val, 4)); // Limits
+    currentZoom = Math.max(0.5, Math.min(val, 4));
+
+    // Auto-Reset if close to 1 (Fixes "Stuck" Zoom Out)
+    if (currentZoom < 1.1) {
+        currentZoom = 1;
+        translateX = 0;
+        translateY = 0;
+    }
+
     updateTransform();
 }
 
 function updateTransform() {
-    lbImg.style.transform = `translate(${translateX}px, ${translateY}px) scale(${currentZoom})`;
+    // Must preserve the centering translate(-50%, -50%)
+    lbImg.style.transform = `translate(-50%, -50%) translate(${translateX}px, ${translateY}px) scale(${currentZoom})`;
 }

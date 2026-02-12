@@ -400,6 +400,7 @@ nav.navbar {
 }
 
 /* --- 5. Lightbox --- */
+/* --- 5. Lightbox --- */
 .lightbox {
     display: none;
     position: fixed;
@@ -409,19 +410,118 @@ nav.navbar {
     height: 100%;
     background: rgba(0, 0, 0, 0.95);
     z-index: 2000;
-    /* Increased Z-index to cover navbar */
     justify-content: center;
     align-items: center;
     backdrop-filter: blur(10px);
 }
 
-.lightbox-content {
-    max-height: 90vh;
-    max-width: 90vw;
-    transition: transform 0.2s ease;
-    /* For Zoom */
+.lightbox-track {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    /* Hide flying images */
+    perspective: 1000px;
+}
+
+/* Unified Image Slot */
+/* Unified Image Slot */
+.lb-anim-img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transform-origin: center center;
+    transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1),
+        left 0.3s cubic-bezier(0.25, 0.8, 0.25, 1),
+        opacity 0.3s ease;
+    /* Removed filter transition for performance */
+    will-change: transform, left, opacity;
     border-radius: 5px;
     box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+    object-fit: contain;
+    max-height: 85vh;
+    max-width: 80vw;
+}
+
+/* Positions */
+.pos-center {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+    z-index: 10;
+    pointer-events: auto;
+}
+
+.pos-left {
+    top: 50%;
+    left: 10%;
+    transform: translate(-50%, -50%) scale(0.6);
+    opacity: 0.5;
+    filter: blur(2px) brightness(0.7);
+    z-index: 5;
+    pointer-events: none;
+}
+
+.pos-right {
+    top: 50%;
+    left: 90%;
+    transform: translate(-50%, -50%) scale(0.6);
+    opacity: 0.5;
+    filter: blur(2px) brightness(0.7);
+    z-index: 5;
+    pointer-events: none;
+}
+
+/* Exit/Enter States */
+.pos-out-left {
+    top: 50%;
+    left: -20%;
+    transform: translate(-50%, -50%) scale(0.4);
+    opacity: 0;
+}
+
+.pos-out-right {
+    top: 50%;
+    left: 120%;
+    transform: translate(-50%, -50%) scale(0.4);
+    opacity: 0;
+}
+
+/* Helper to disable transition during reset */
+.no-transition {
+    transition: none !important;
+}
+
+/* Navigation Arrows */
+.lb-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 4em;
+    color: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    z-index: 20;
+    padding: 20px;
+    user-select: none;
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.lb-arrow:hover {
+    color: #b2c982;
+    transform: translateY(-50%) scale(1.1);
+}
+
+.lb-left {
+    left: 20px;
+}
+
+.lb-right {
+    right: 20px;
 }
 
 .lightbox-close {
@@ -431,7 +531,7 @@ nav.navbar {
     font-size: 3em;
     color: #fff;
     cursor: pointer;
-    z-index: 1001;
+    z-index: 2001;
 }
 
 .lightbox-controls {
@@ -462,24 +562,48 @@ nav.navbar {
 @media (max-width: 900px) {
     .main-content-split {
         flex-direction: column-reverse;
-        /* Image on top on mobile? Or Text First? */
-        /* User said "text under images" for preview, but main split? */
-        /* Let's stack: Text top, Image bottom, or vice versa */
-        gap: 20px;
+        /* Image on top */
+        gap: 50px;
+        /* Increased from 20px to 50px for more breathing room */
     }
 
-    .content-right {
-        order: -1;
-        /* Image first on mobile usually looks better */
-        width: 100%;
-    }
-
-    .detail-title {
-        font-size: 3em;
+    /* Force particles to start from very left edge explicitly for mobile */
+    .wind-particle {
+        left: -10vw;
+        /* Ensure they start off-screen */
     }
 
     .section-gallery {
         grid-template-columns: repeat(2, 1fr);
         /* 2 cols on mobile */
+    }
+
+    /* Mobile Lightbox: Arrows at bottom next to controls */
+    .lb-arrow {
+        top: auto;
+        bottom: 13px;
+        /* Even lower to align with buttons */
+        transform: none;
+        padding: 10px;
+        font-size: 3em;
+    }
+
+    /* Disable jumpy hover effect on mobile */
+    .lb-arrow:hover {
+        transform: scale(1.1);
+        /* Scale only, no vertical move */
+        color: #b2c982;
+    }
+
+    .lb-left {
+        left: calc(50% - 130px);
+        /* Moved apart */
+        right: auto;
+    }
+
+    .lb-right {
+        right: calc(50% - 130px);
+        /* Moved apart */
+        left: auto;
     }
 }

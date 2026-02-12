@@ -116,12 +116,23 @@
     <!-- Lightbox Overlay -->
     <div id="lightbox" class="lightbox">
         <span class="lightbox-close">&times;</span>
-        <img id="lightbox-img" class="lightbox-content">
+
+        <!-- Navigation Arrows -->
+        <div class="lb-arrow lb-left" id="lb-prev-btn">&#10094;</div>
+        <div class="lb-arrow lb-right" id="lb-next-btn">&#10095;</div>
+
+        <!-- Images Container -->
+        <div class="lightbox-track">
+            <img id="lb-img-far-left" class="lb-anim-img pos-out-left" alt="Far Previous">
+            <img id="lb-img-prev" class="lb-anim-img pos-left" alt="Previous">
+            <img id="lightbox-img" class="lb-anim-img pos-center" alt="Main">
+            <img id="lb-img-next" class="lb-anim-img pos-right" alt="Next">
+            <img id="lb-img-far-right" class="lb-anim-img pos-out-right" alt="Far Next">
+        </div>
+
         <div class="lightbox-controls">
-            <button id="lb-prev"><i class="fa-solid fa-chevron-left"></i></button>
             <button id="lb-zoom-in"><i class="fa-solid fa-magnifying-glass-plus"></i></button>
             <button id="lb-zoom-out"><i class="fa-solid fa-magnifying-glass-minus"></i></button>
-            <button id="lb-next"><i class="fa-solid fa-chevron-right"></i></button>
         </div>
         <div id="lightbox-caption"></div>
     </div>
