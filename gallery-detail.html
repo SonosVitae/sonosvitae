@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post Details - Sonos Vitae</title>
+    <link rel="stylesheet" href="styles/base.css">
+    <link rel="stylesheet" href="styles/layout.css">
+    <link rel="stylesheet" href="styles/components/navbar.css">
+    <link rel="stylesheet" href="styles/pages/gallery-detail.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;700&family=Poppins:wght@300;400;600&display=swap"
+        rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="logo">
+            <h4>Sonos Vitae</h4>
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="index.html#music">Music</a></li>
+            <li><a href="gallery.html">Gallery</a></li>
+        </ul>
+        <div class="burger">
+            <div class="line1"></div>
+            <div class="line2"></div>
+            <div class="line3"></div>
+        </div>
+    </nav>
+
+    <!-- Background (Reused Green Blur) -->
+    <div class="gallery-bg-image"></div>
+
+    <div class="detail-container">
+
+        <!-- Strips (Moved INSIDE container for alignment) -->
+        <div class="anim-strips">
+            <div class="strip s1"></div>
+            <div class="strip s2"></div>
+            <div class="strip s3"></div>
+        </div>
+
+        <!-- Header Animation Zone -->
+        <div class="header-anim-zone">
+            <!-- Title Content -->
+            <div class="title-block">
+                <div class="title-row">
+                    <a href="gallery.html" class="back-link"><i class="fa-solid fa-arrow-left"></i></a>
+                    <h1 id="detail-title">Post Title</h1>
+                </div>
+                <div class="title-glow-fx"></div>
+            </div>
+            <!-- Wind Particles Container (Right side) -->
+            <div class="particles-container">
+                <!-- Injected via JS -->
+            </div>
+        </div>
+
+        <!-- Main Content Split -->
+        <div class="main-content-split">
+            <!-- Left: Meta & Text -->
+            <div class="content-left">
+                <div class="detail-meta">
+                    <span id="detail-date" class="meta-date">JAN 28, 2026</span>
+                    <span class="meta-separator">|</span>
+                    <span class="meta-location"><i class="fa-solid fa-earth-americas"></i> <span
+                            id="detail-location">Krakow</span></span>
+                </div>
+
+                <div id="detail-main-text" class="main-text">
+                    <!-- Main Description -->
+                </div>
+            </div>
+
+            <!-- Right: Pop-out Image -->
+            <div class="content-right">
+                <div class="pop-out-image-container">
+                    <img id="detail-main-image" src="" alt="Main Preview" class="pop-out-image">
+                    <div class="image-glow"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dynamic Sections -->
+        <div id="detail-sections" class="sections-container">
+            <!-- 
+            Structure:
+            <div class="detail-section">
+                <h2 class="section-subtitle">Subtitle <div class="glowing-line"></div></h2>
+                <p class="section-text">...</p>
+                <div class="section-gallery">
+                    <img ... >
+                </div>
+            </div>
+            -->
+        </div>
+
+        <!-- Downloads Footer -->
+        <div id="detail-downloads" class="downloads-container">
+            <!-- Embeds -->
+        </div>
+
+    </div>
+
+    <!-- Lightbox Overlay -->
+    <div id="lightbox" class="lightbox">
+        <span class="lightbox-close">&times;</span>
+        <img id="lightbox-img" class="lightbox-content">
+        <div class="lightbox-controls">
+            <button id="lb-prev"><i class="fa-solid fa-chevron-left"></i></button>
+            <button id="lb-zoom-in"><i class="fa-solid fa-magnifying-glass-plus"></i></button>
+            <button id="lb-zoom-out"><i class="fa-solid fa-magnifying-glass-minus"></i></button>
+            <button id="lb-next"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+        <div id="lightbox-caption"></div>
+    </div>
+
+    <!-- Core App Logic (Navbar, etc) -->
+    <script src="scripts/app.js"></script>
+    <script src="scripts/gallery-detail.js"></script>
+</body>
+
+</html>

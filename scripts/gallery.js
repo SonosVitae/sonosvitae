@@ -178,54 +178,16 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     ];
 
-    // Open Modal Function
+    // Open Modal / Detail Page Function
     const openModal = (index) => {
-        const data = galleryData[index];
-        if (!data) return;
-
-        // Populate Content
-        document.getElementById('modal-title').innerText = data.title;
-        document.getElementById('modal-date').innerText = data.date;
-        document.getElementById('modal-location').innerText = data.location;
-        document.getElementById('modal-description').innerText = data.description;
-
-        // Populate Attachments
-        const attachContainer = document.getElementById('modal-attachments');
-        attachContainer.innerHTML = '<h3>Attachments</h3>'; // Reset
-        if (data.attachments.length > 0) {
-            data.attachments.forEach(file => {
-                const link = document.createElement('a');
-                link.href = file.link;
-                link.className = 'attachment-link';
-                link.innerHTML = `<i class="fa-solid fa-paperclip"></i> ${file.name}`;
-                attachContainer.appendChild(link);
-            });
-            attachContainer.style.display = 'block';
-        } else {
-            attachContainer.style.display = 'none';
-        }
-
-        // Populate Image Grid
-        const grid = document.getElementById('modal-image-grid');
-        grid.innerHTML = ''; // Reset
-        data.images.forEach(src => {
-            const img = document.createElement('img');
-            img.src = src;
-            img.className = 'gallery-grid-img';
-            img.onerror = () => img.src = 'https://placehold.co/600x400/333/AAA?text=Image+Not+Found';
-
-            // Interaction: Maybe click to fullscreen? (Optional, adds simple zoom)
-            img.onclick = () => {
-                window.open(src, '_blank');
-            };
-
-            grid.appendChild(img);
-        });
-
-        // Show Modal
-        modal.style.display = 'flex';
-        document.body.style.overflow = 'hidden'; // Lock Body Scroll
+        // Redirect to new Detail System
+        window.location.href = `gallery-detail.html?id=${index}`;
     };
+
+    /* 
+       Legacy Modal Code Removed. 
+       The new system uses gallery-detail.html for a dedicated, rich experience.
+    */
 
     // Attach Click Listeners to Posts
     posts.forEach((post, index) => {
@@ -249,9 +211,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // 3. Compact View Click (already has listener, let's update it to open modal!)
         // The existing compact listener (lines 25-38) covers the whole post container.
-        // We can hook into that logic or let the specific elements handle it.
-        // If compact, specific elements are hidden/different.
-        // In compact mode, the whole bar is clickable.
+
+        // 4. Click on Read More Button
+        const readMoreBtn = post.querySelector('.read-more-btn');
+        if (readMoreBtn) {
+            readMoreBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                openModal(index);
+            });
+        }
     });
 
     // Update Compact Click Logic (Override previous placeholder)

@@ -1,0 +1,485 @@
+/* --- Gallery Detail Page Styles --- */
+body {
+    background-color: #121212;
+    color: #fff;
+    font-family: 'Poppins', sans-serif;
+    overflow-x: hidden;
+}
+
+/* Reused Background */
+.gallery-bg-image {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-image: url('../../assets/images/green.jpg');
+    background-size: cover;
+    background-position: center;
+    z-index: -5;
+    filter: blur(15px) brightness(0.4);
+    /* Darker for detail page */
+}
+
+.detail-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 100px 20px 50px;
+    /* Top padding for Navbar */
+    position: relative;
+    z-index: 10;
+}
+
+/* --- Navbar Override (Glass Effect) --- */
+/* --- Navbar Fix (Match Home) --- */
+/* --- Navbar Fix (Match Home) --- */
+nav.navbar {
+    background-color: #1C2C07 !important;
+    /* Force Home Green */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    position: fixed;
+    /* Ensure it's fixed */
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+}
+
+/* --- 1. Header Animation Zone --- */
+.header-anim-zone {
+    position: relative;
+    padding: 60px 0 40px;
+    margin-bottom: 40px;
+    overflow: hidden;
+    /* Contain particles */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Animation: Strips (Left, Fixed to Top, Overlay) */
+/* Animation: Strips (Left, Absolute to Top, Scrollable) */
+/* Animation: Strips (Left, Absolute to Container, Scrollable but Aligned) */
+.anim-strips {
+    position: absolute;
+    /* Absolute relative to .detail-container parent */
+    top: -100px;
+    /* Pull up to cover padding-top of container (100px) + viewport top */
+    /* Container padding is 100px, so -100px reaches top of viewport? */
+    /* Actually padding is inside container, so 'top: 0' of container content box is 100px down? */
+    /* No, .detail-container has padding. Content starts 100px dwon. */
+    /* We need 'top: 0' of the container's Border Box. */
+    /* If container is 'position: relative', absolute child positions from Padding Box origin. */
+    /* So top: -100px is correct to hit the actual visual top. */
+    left: 80px;
+    /* Aligned with title (clearing back button) */
+    width: 250px;
+    height: 60vh;
+    /* Extend longer */
+    z-index: 1;
+    opacity: 0.6;
+    display: flex;
+    gap: 20px;
+    justify-content: flex-start;
+    pointer-events: none;
+}
+
+.strip {
+    position: relative;
+    background: #b2c982;
+    width: 40px;
+    height: 100%;
+    transform: translateY(-100%);
+    box-shadow: 0 0 15px #b2c982;
+    animation: stripSlideDown 1.5s ease-out forwards;
+}
+
+.strip.s1 {
+    animation-delay: 0.1s;
+    height: 100%;
+}
+
+.strip.s2 {
+    animation-delay: 0.2s;
+    height: 80%;
+}
+
+.strip.s3 {
+    animation-delay: 0.3s;
+    height: 60%;
+}
+
+@keyframes stripSlideDown {
+    0% {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+
+    100% {
+        transform: translateY(0);
+        opacity: 0.6;
+    }
+}
+
+/* Animation: Title */
+.title-block {
+    position: relative;
+    z-index: 2;
+    /* Content above strips */
+    padding-left: 20px;
+    max-width: 80%;
+    margin-bottom: 40px;
+}
+
+/* New Title Row (Back Button + H1) */
+.title-row {
+    display: flex;
+    align-items: center;
+    /* Vertical Center */
+    gap: 20px;
+}
+
+/* Back Button (Simplified) */
+.back-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    /* Removed border/background for cleaner look */
+    background: transparent;
+    color: #b2c982;
+    font-size: 2em;
+    /* Bigger Arrow */
+    text-decoration: none;
+    transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.back-link:hover {
+    color: #fff;
+    transform: translateX(-5px);
+    /* Move left on hover */
+    text-shadow: 0 0 10px #b2c982;
+}
+
+#detail-title {
+    font-family: 'Oswald', sans-serif;
+    font-size: 5em;
+    color: #fff;
+    text-shadow: 0 0 20px rgba(178, 201, 130, 0.4);
+    margin: 0;
+    /* Remove default margins for alignment */
+    line-height: 1;
+    text-transform: uppercase;
+    animation: titleGlow 3s infinite alternate;
+}
+
+@keyframes titleGlow {
+    0% {
+        text-shadow: 0 0 20px rgba(178, 201, 130, 0.4);
+        color: #fff;
+    }
+
+    100% {
+        text-shadow: 0 0 40px rgba(178, 201, 130, 0.8), 0 0 10px #fff;
+        color: #eaf5d6;
+    }
+}
+
+/* Animation: Particles (Left to Right, Dots) */
+.particles-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    /* Wide area */
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.wind-particle {
+    position: absolute;
+    background: rgba(178, 201, 130, 0.6);
+    /* Revert to simple dot color */
+    border-radius: 50%;
+    width: 4px;
+    /* Revert to dot */
+    height: 4px;
+    /* Revert to dot */
+    box-shadow: 0 0 8px #b2c982;
+    opacity: 0;
+    left: -50px;
+    /* Start offscreen Left */
+    /* Remove 'right' property from previous edit if it persists in CSS class definition */
+    animation: particleFly 5s linear infinite;
+}
+
+@keyframes particleFly {
+    0% {
+        transform: translateX(0) translateY(0);
+        opacity: 0;
+    }
+
+    10% {
+        opacity: 1;
+    }
+
+    80% {
+        opacity: 0.8;
+    }
+
+    100% {
+        transform: translateX(80vw) translateY(20px);
+        opacity: 0;
+    }
+
+    /* Left to Right (80vw) */
+}
+
+/* --- 2. Main Content Split --- */
+.main-content-split {
+    display: flex;
+    gap: 40px;
+    margin-bottom: 60px;
+    align-items: flex-start;
+    /* Text starts at top */
+}
+
+/* Left: Meta & Text */
+.content-left {
+    flex: 1;
+    position: relative;
+    z-index: 2;
+}
+
+.detail-meta {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+    font-size: 1.1em;
+    color: #ccc;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 10px;
+    width: fit-content;
+}
+
+.meta-date {
+    font-family: 'Oswald', sans-serif;
+    letter-spacing: 1px;
+    color: #fff;
+}
+
+.meta-location i {
+    color: #b2c982;
+    margin-right: 5px;
+}
+
+.main-text {
+    line-height: 1.8;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1.05em;
+}
+
+/* Right: Pop-out Image */
+.content-right {
+    flex: 1.2;
+    /* Slightly larger */
+    position: relative;
+    z-index: 3;
+    /* Pop OUT */
+}
+
+.pop-out-image-container {
+    position: relative;
+    perspective: 1000px;
+    /* Optional for 3D feel */
+}
+
+.pop-out-image {
+    width: 100%;
+    border-radius: 15px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    transform: scale(1.05) translateY(-20px);
+    /* Pop effect */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: transform 0.5s ease;
+}
+
+.pop-out-image:hover {
+    transform: scale(1.08) translateY(-25px);
+}
+
+/* --- 3. Dynamic Sections --- */
+.sections-container {
+    display: flex;
+    flex-direction: column;
+    gap: 60px;
+}
+
+.detail-section {
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 20px;
+    padding: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.section-subtitle {
+    font-family: 'Poppins', sans-serif;
+    font-size: 2em;
+    color: #fff;
+    margin-bottom: 20px;
+    position: relative;
+    display: inline-block;
+}
+
+/* Glowing Separator Line */
+.glowing-line {
+    height: 3px;
+    width: 100%;
+    background: #b2c982;
+    box-shadow: 0 0 10px #b2c982;
+    margin-top: 5px;
+    border-radius: 2px;
+}
+
+.section-text {
+    margin-bottom: 30px;
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 1.6;
+}
+
+.section-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.section-img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.section-img:hover {
+    transform: scale(1.05);
+    box-shadow: 0 5px 20px rgba(178, 201, 130, 0.3);
+    z-index: 2;
+}
+
+/* --- 4. Downloads Footer --- */
+.downloads-container {
+    margin-top: 60px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 40px;
+}
+
+.download-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 15px;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 15px 30px;
+    border-radius: 10px;
+    color: #fff;
+    text-decoration: none;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+    margin-right: 20px;
+    margin-bottom: 10px;
+}
+
+.download-link:hover {
+    background: #b2c982;
+    color: #000;
+    box-shadow: 0 0 20px rgba(178, 201, 130, 0.4);
+}
+
+/* --- 5. Lightbox --- */
+.lightbox {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.95);
+    z-index: 2000;
+    /* Increased Z-index to cover navbar */
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(10px);
+}
+
+.lightbox-content {
+    max-height: 90vh;
+    max-width: 90vw;
+    transition: transform 0.2s ease;
+    /* For Zoom */
+    border-radius: 5px;
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+}
+
+.lightbox-close {
+    position: absolute;
+    top: 30px;
+    right: 30px;
+    font-size: 3em;
+    color: #fff;
+    cursor: pointer;
+    z-index: 1001;
+}
+
+.lightbox-controls {
+    position: absolute;
+    bottom: 30px;
+    display: flex;
+    gap: 20px;
+    z-index: 1001;
+}
+
+.lightbox-controls button {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+    padding: 10px 15px;
+    font-size: 1.2em;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.lightbox-controls button:hover {
+    background: #b2c982;
+    color: #000;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .main-content-split {
+        flex-direction: column-reverse;
+        /* Image on top on mobile? Or Text First? */
+        /* User said "text under images" for preview, but main split? */
+        /* Let's stack: Text top, Image bottom, or vice versa */
+        gap: 20px;
+    }
+
+    .content-right {
+        order: -1;
+        /* Image first on mobile usually looks better */
+        width: 100%;
+    }
+
+    .detail-title {
+        font-size: 3em;
+    }
+
+    .section-gallery {
+        grid-template-columns: repeat(2, 1fr);
+        /* 2 cols on mobile */
+    }
+}
