@@ -1,4 +1,319 @@
-/* Gallery Page Specific Styles */
+/* --- Interactive Timeline Rail --- */
+.timeline-rail {
+    position: fixed;
+    left: 20px;
+    /* PC Default */
+    top: 50%;
+    transform: translateY(-50%);
+    height: 70vh;
+    /* Occupy mostly center */
+    width: 60px;
+    /* Slightly wider for touch targets */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+    /* Increased from 15px for better separation */
+    /* Base gap */
+    z-index: 100;
+    pointer-events: auto;
+    /* Ensure touches work */
+    /* Optional: background for debugging, but user wants just dots? */
+    /* background: rgba(0,0,0,0.2); */
+}
+
+/* Dot Styling */
+/* Dot Styling */
+.rail-dot {
+    width: 12px;
+    height: 12px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    /* Split transitions for better control */
+    transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.2s ease-out, background-color 0.2s ease;
+    cursor: pointer;
+    position: relative;
+    flex-shrink: 0;
+    border: 4px solid transparent;
+    background-clip: padding-box;
+    box-sizing: content-box;
+}
+
+.rail-dot.active,
+.rail-dot.hovered {
+    background: #b2c982;
+    box-shadow: 0 0 10px #b2c982, 0 0 20px rgba(178, 201, 130, 0.6);
+    transform: scale(1.3);
+}
+
+/* Tooltip (Only on hover, or active?) */
+.rail-dot::after {
+    content: attr(data-date);
+    position: absolute;
+    left: 40px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.9em;
+    opacity: 0;
+    pointer-events: none;
+    white-space: nowrap;
+    transition: opacity 0.2s;
+    z-index: 101;
+}
+
+.rail-dot:hover::after {
+    opacity: 1;
+}
+
+/* Adjust tooltip position for Left Rail (PC) */
+.timeline-rail .rail-dot::after {
+    left: 40px;
+    right: auto;
+}
+
+
+/* --- Background Image (Blurred Green) --- */
+.gallery-bg-image {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-image: url('../../assets/images/green.jpg');
+    background-size: cover;
+    background-position: center;
+    z-index: -5;
+    filter: blur(8px) brightness(0.7);
+    mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
+    pointer-events: none;
+}
+
+/* --- View Toggle Button --- */
+.view-toggle-btn {
+    position: absolute;
+    right: -60px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    color: #fff;
+    font-size: 1.2em;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(5px);
+}
+
+.view-toggle-btn:hover {
+    background: #b2c982;
+    color: #000;
+    box-shadow: 0 0 15px rgba(178, 201, 130, 0.5);
+}
+
+.view-toggle-btn.active {
+    background: #b2c982;
+    color: #000;
+}
+
+/* --- Compact View Styles --- */
+.gallery-container.compact .timeline-post {
+    margin-bottom: 30px;
+    align-items: center;
+    cursor: pointer;
+    transition: transform 0.2s ease, background 0.2s ease;
+    border-radius: 50px;
+}
+
+.gallery-container.compact .timeline-post:hover {
+    transform: scale(1.02);
+}
+
+.gallery-container.compact .timeline-post:hover .content-glass-box {
+    background: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 0 20px rgba(160, 195, 155, 0.3);
+}
+
+.gallery-container.compact .post-content {
+    align-items: center;
+    position: relative;
+}
+
+/* Hide Images in Compact View (Modified: Keep featured image for poking effect) */
+.gallery-container.compact .image-stack,
+.gallery-container.compact .read-more-btn {
+    display: none;
+}
+
+/* Show Featured Image Poking Out (Global for PC & Mobile) */
+.gallery-container.compact .featured-image-container {
+    display: block !important;
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 100%;
+    width: 200px;
+    /* Wider on PC */
+    border-radius: 50px;
+    border: none;
+    /* Mask: Fade in from left (transparent) to full opacity (black) */
+    mask-image: linear-gradient(to right, transparent 0%, black 50%);
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, black 50%);
+    z-index: 5;
+    /* Sit ON TOP of the glass box to avoid being blurred */
+    opacity: 0.9;
+    /* Slightly more visible now */
+    pointer-events: none;
+    /* Let clicks pass through */
+}
+
+/* Adjust Text Container */
+.gallery-container.compact .content-glass-box {
+    padding: 15px 40px;
+    padding-right: 150px;
+    /* Keep room for image */
+    border-radius: 50px;
+    flex-direction: row;
+    align-items: center;
+    gap: 20px;
+    background: rgba(255, 255, 255, 0.05);
+    /* Lighter bg */
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+}
+
+/* Structure Check:
+   .timeline-post > .post-content > .featured-image-container
+   .timeline-post > .post-content > .content-glass-box
+   
+   If featured-image-container is sibling of glass-box, absolute positioning works relative to .post-content.
+   .post-content needs position: relative.
+*/
+
+.gallery-container.compact .post-artist-name {
+    font-size: 1.5em;
+    margin: 0;
+    white-space: nowrap;
+    position: relative;
+    z-index: 2;
+}
+
+.gallery-container.compact .post-text-container {
+    max-height: auto;
+    display: none;
+}
+
+/* Adjust Meta for Compact */
+.gallery-container.compact .post-meta {
+    margin-bottom: 0;
+    padding-right: 20px;
+}
+
+.gallery-container.compact .timeline-line {
+    display: none;
+}
+
+/* Responsive Compact */
+@media (max-width: 900px) {
+    .view-toggle-btn {
+        right: 10px;
+        /* Move closer to edge */
+        top: 50%;
+        transform: translateY(-50%);
+        position: absolute;
+        width: 35px;
+        height: 35px;
+        z-index: 50;
+        /* Ensure clickable */
+        background: rgba(255, 255, 255, 0.15);
+        /* Slightly clearer background */
+    }
+
+    .search-icon {
+        right: 50px !important;
+        /* Adjusted to sit snugly next to button */
+    }
+
+    .search-box {
+        padding-right: 0;
+        /* Remove container padding */
+    }
+
+    .search-input {
+        padding-right: 90px;
+        /* Add padding to input so text stops before icons */
+    }
+
+    /* Mobile Rail: Show on Right */
+    .timeline-rail {
+        display: flex;
+        left: unset;
+        /* Force unset to remove PC styling */
+        right: 25px;
+        /* Right side */
+        height: 80vh;
+        width: 40px;
+        /* Reduced width to prevent blocking */
+        align-items: flex-end;
+        /* Align dots to right */
+        pointer-events: none;
+        /* KEY FIX: Let clicks pass through rail container */
+    }
+
+    .timeline-rail .rail-dot {
+        pointer-events: auto;
+        /* Re-enable clicks on dots */
+    }
+
+    /* Flip tooltip to left on mobile */
+    .timeline-rail .rail-dot::after {
+        left: auto;
+        right: 30px;
+        /* Tooltip on left of dot */
+    }
+
+    /* Squeeze content to fit rail */
+    .gallery-container {
+        padding-right: 55px;
+        /* Reduced from 70px to bring posts closer to rail */
+    }
+
+    /* --- Mobile Compact View Refinements --- */
+    .gallery-container.compact .timeline-post {
+        width: 100%;
+        overflow: hidden;
+    }
+
+    .gallery-container.compact .content-glass-box {
+        width: 100%;
+        padding-right: 80px;
+        /* Smaller room for image on mobile */
+    }
+
+    /* Adjust Image for Mobile (Small override) */
+    .gallery-container.compact .featured-image-container {
+        width: 120px;
+        border-radius: 50px;
+        /* Keep round */
+        right: -10px;
+        /* Slight offset */
+        opacity: 0.8;
+    }
+
+    .gallery-container.compact .post-artist-name {
+        font-size: 1.2em;
+    }
+}
 
 /* --- Parallax & Background Reuse --- */
 /* Ensure background blobs from layout.css work here */
@@ -79,14 +394,19 @@ body {
 /* --- Year Header --- */
 .year-header {
     font-family: 'Massivertical', sans-serif;
-    font-size: 6em;
-    color: rgba(255, 255, 255, 0.1);
-    /* Subtle large background text style */
+    font-size: 8em;
+    /* Examples bigger */
+    color: rgba(255, 255, 255, 0.4);
+    /* Much more visible than 0.1 */
+    font-weight: bold;
     text-align: left;
     margin-bottom: 40px;
     margin-left: 5%;
     position: relative;
-    text-shadow: 0 0 20px rgba(160, 195, 155, 0.1);
+    text-shadow: 0 0 30px rgba(160, 195, 155, 0.2);
+    letter-spacing: 5px;
+    /* Optional: Stroke for extra "bold" look without filling? */
+    /* -webkit-text-stroke: 2px rgba(255,255,255,0.1); */
 }
 
 /* --- Timeline Post Item --- */
@@ -202,12 +522,21 @@ body {
 
 /* Name Header */
 .post-artist-name {
-    font-family: 'Massivertical', sans-serif;
+    font-family: 'Poppins', sans-serif;
+    /* Changed from Massivertical for readability */
+    font-weight: 700;
     font-size: 2.5em;
     color: #fff;
     margin: 0;
-    line-height: 1;
-    letter-spacing: 2px;
+    line-height: 1.2;
+    letter-spacing: 1px;
+    cursor: pointer;
+    /* Indicate click ability */
+    transition: color 0.3s ease;
+}
+
+.post-artist-name:hover {
+    color: #b2c982;
 }
 
 /* Image Stack (Preview) */
@@ -330,6 +659,65 @@ body {
 
 .featured-image-container:hover .featured-image {
     transform: scale(1.05);
+}
+
+/* --- Search Highlight --- */
+.highlight {
+    background-color: rgba(178, 201, 130, 0.4);
+    color: #fff;
+    padding: 0 2px;
+    border-radius: 2px;
+    box-shadow: 0 0 5px rgba(178, 201, 130, 0.4);
+}
+
+/* --- Small Screen Adjustments (Phone < 500px) --- */
+@media (max-width: 500px) {
+    .search-box {
+        width: 90% !important;
+        /* Force width */
+        max-width: none;
+    }
+
+    .search-input {
+        font-size: 16px;
+        /* Explicit px to prevent iOS zoom */
+        padding: 12px 90px 12px 20px;
+        /* Preserve right padding for icons */
+    }
+
+    /* Fix Compact View Overlap: Move Image to Top Right (Date Level) */
+    .gallery-container.compact .post-content {
+        position: static;
+        /* Let image reference the parent .timeline-post */
+    }
+
+    .gallery-container.compact .featured-image-container {
+        top: 0;
+        right: 0;
+        height: 60px;
+        /* Approximate date row height */
+        width: 100px;
+        border-radius: 0 50px 0 50px;
+        /* Fancy corner? Or just keep rounded right */
+        border-radius: 0 50px 0 50px;
+    }
+
+    /* Ensure padding for Date so it doesn't hit image */
+    .gallery-container.compact .post-meta {
+        padding-right: 110px;
+        /* Make room for image */
+        min-height: 60px;
+        /* Ensure height for image */
+        justify-content: center;
+        /* Align date visually */
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* Remove right padding from content box since image is moved up */
+    .gallery-container.compact .content-glass-box {
+        padding-right: 20px;
+    }
 }
 
 /* --- Responsive Mobile --- */

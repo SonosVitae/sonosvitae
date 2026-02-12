@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="styles/base.css">
     <link rel="stylesheet" href="styles/components/navbar.css">
     <link rel="stylesheet" href="styles/components/footer.css">
+    <link rel="stylesheet" href="styles/components/modal.css">
     <link rel="stylesheet" href="styles/pages/gallery.css">
 
     <!-- Fonts & Icons -->
@@ -44,6 +45,7 @@
     </nav>
 
     <!-- Background Blobs (Parallax) -->
+    <div class="gallery-bg-image"></div>
     <div class="parallax-wrapper">
         <div class="parallax-shapes">
             <div class="parallax-shape shape-1"></div>
@@ -60,8 +62,14 @@
         <div class="search-box">
             <input type="text" class="search-input" placeholder="Search gallery...">
             <i class="fa-solid fa-magnifying-glass search-icon"></i>
+            <button class="view-toggle-btn" title="Toggle Minimal View">
+                <i class="fa-solid fa-compress"></i>
+            </button>
         </div>
     </div>
+
+    <!-- Interactive Timeline Rail -->
+    <div class="timeline-rail"></div>
 
     <!-- Gallery Timeline -->
     <div class="gallery-container">
@@ -181,7 +189,7 @@
                 </div>
 
                 <div class="featured-image-container">
-                    <img src="assets/images/featured-art.jpg" alt="Featured Art" class="featured-image"
+                    <img src="assets/gallery/toothless-art.webp" alt="Featured Art" class="featured-image"
                         onerror="this.src='https://placehold.co/600x400/181818/ff6347?text=Concept+Art'">
                 </div>
             </div>
@@ -194,13 +202,43 @@
 
     <!-- Scripts -->
     <script src="scripts/app.js"></script>
-    <!-- Simple Footer Loader for demo purpose if not using components -->
-    <script>
-        // Copy footer from index.html if needed or just hardcode for now to match style
-        // For this implementation, I will assume the footer is handled by including the same HTML structure or
-        // simply let the user know to include it.
-        // Ideally, we'd have a component loader.
-    </script>
+    <!-- Gallery Modal (Hidden by default) -->
+    <div id="gallery-modal" class="modal">
+        <div class="modal-content gallery-modal-content">
+            <span class="close-modal">&times;</span>
+            <div class="modal-header">
+                <h2 id="modal-title">Post Title</h2>
+                <div class="modal-meta">
+                    <span id="modal-date">Date</span>
+                    <span class="meta-separator">•</span>
+                    <span id="modal-location">Location</span>
+                </div>
+            </div>
+
+            <div class="modal-body-gallery">
+                <!-- Left: Description & Attachments -->
+                <div class="modal-info-column">
+                    <div id="modal-description" class="gallery-description">
+                        Description text...
+                    </div>
+
+                    <div id="modal-attachments" class="attachments-container">
+                        <h3>Attachments</h3>
+                        <!-- Links injected via JS -->
+                    </div>
+                </div>
+
+                <!-- Right: Image Grid -->
+                <div class="modal-gallery-column">
+                    <div id="modal-image-grid" class="gallery-grid">
+                        <!-- Images injected via JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="scripts/gallery.js"></script>
 </body>
 
 </html>
