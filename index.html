@@ -137,6 +137,17 @@
       <div class="footer-logo">
         <h2>SONOS VITAE</h2>
       </div>
+
+      <div class="footer-newsletter">
+        <h3>Stay Updated</h3>
+        <p>Subscribe for new gallery posts and album releases.</p>
+        <form class="newsletter-form" action="#" method="POST"
+          onsubmit="event.preventDefault(); alert('Thank you for subscribing! (This is a demo)');">
+          <input type="email" placeholder="Your Email" required>
+          <button type="submit">Subscribe</button>
+        </form>
+      </div>
+
       <div class="footer-socials">
         <div class="follow-text">Follow me on</div>
         <div class="social-icons">
@@ -232,11 +243,13 @@
       <div class="parallax-shape shape-5"></div>
       <div class="parallax-shape shape-6"></div>
     </div>
+    <canvas id="particles-canvas"></canvas>
   </div>
 
   <!-- JavaScript for Navigation and Parallax -->
   <script src="scripts/albums.js"></script>
   <script src="scripts/app.js"></script>
+  <script src="scripts/particles.js"></script>
 
   <script src="https://cdn.jsdelivr.net/npm/lax.js"></script>
   <script>

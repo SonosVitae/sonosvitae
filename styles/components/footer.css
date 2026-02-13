@@ -8,7 +8,7 @@
     font-family: "Poppins", sans-serif;
 }
 
-/* Footer Background Shapes (Replacing broken image) */
+/* Footer Background Shapes */
 .footer-shapes {
     position: absolute;
     bottom: 0;
@@ -26,7 +26,6 @@
     bottom: -200px;
     left: -100px;
     background-color: rgba(160, 195, 155, 0.4);
-    /* Green */
     animation-delay: -2s;
 }
 
@@ -36,7 +35,6 @@
     bottom: -150px;
     right: -100px;
     background-color: rgba(78, 197, 236, 0.4);
-    /* Blue-ish */
     animation-delay: -5s;
 }
 
@@ -47,7 +45,6 @@
     left: 50%;
     transform: translateX(-50%);
     background-color: rgba(178, 201, 130, 0.4);
-    /* Light Green */
     animation-delay: -8s;
 }
 
@@ -57,12 +54,8 @@
     margin: 0 auto;
     display: flex;
     justify-content: space-between;
-    align-items: flex-end;
-    position: relative;
-    z-index: 10;
     padding-bottom: 60px;
-
-    /* Restore Blurry Aesthetic */
+    align-items: center;
     background: rgba(255, 255, 255, 0.02);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
@@ -70,22 +63,25 @@
     padding: 40px;
     border: 1px solid rgba(255, 255, 255, 0.05);
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+    position: relative;
 }
 
 /* Left Side: Artist Name */
+.footer-logo {
+    flex: 1;
+}
+
 .footer-logo h2 {
     font-family: "Massivertical", sans-serif;
     font-size: 8em;
-    /* Match Header Scale */
     color: #b2c982;
-    /* Match Header Color */
     text-align: left;
     margin: 0;
     font-weight: normal;
     letter-spacing: 5px;
     line-height: 1;
     text-shadow: none;
-    /* Clean look like header */
 }
 
 .footer-copyright {
@@ -99,13 +95,84 @@
     z-index: 11;
 }
 
+/* Middle: Newsletter */
+.footer-newsletter {
+    flex: 1;
+    margin: 0 40px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 300px;
+}
+
+.footer-newsletter h3 {
+    color: #b2c982;
+    font-size: 1.5em;
+    margin-bottom: 10px;
+    font-weight: 500;
+    letter-spacing: 1px;
+}
+
+.footer-newsletter p {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9em;
+    margin-bottom: 20px;
+    max-width: 300px;
+}
+
+.newsletter-form {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    max-width: 400px;
+}
+
+.newsletter-form input {
+    flex: 1;
+    padding: 12px 20px;
+    border-radius: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.05);
+    color: #fff;
+    font-family: "Poppins", sans-serif;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.newsletter-form input:focus {
+    border-color: #b2c982;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.newsletter-form button {
+    padding: 12px 25px;
+    border-radius: 30px;
+    border: none;
+    background: #b2c982;
+    color: #1a2e05;
+    font-family: "Poppins", sans-serif;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.newsletter-form button:hover {
+    background: #cde8e5;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(178, 201, 130, 0.3);
+}
+
 /* Right Side: Socials */
 .footer-socials {
+    flex: 1;
     text-align: right;
     display: flex;
     flex-direction: column;
     align-items: flex-end;
     gap: 15px;
+    min-width: 200px;
 }
 
 .follow-text {
@@ -129,14 +196,14 @@
 }
 
 .social-icons {
-    display: flex;
-    gap: 15px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
 }
 
 .social-link {
     color: #CDE8E5;
     font-size: 1.5em;
-    /* Icon size */
     transition: all 0.3s ease;
     display: flex;
     align-items: center;
@@ -158,18 +225,93 @@
 }
 
 /* Responsive */
-@media (max-width: 768px) {
+@media (max-width: 1080px) {
     .footer-content {
-        flex-direction: column;
-        align-items: center;
+        flex-wrap: wrap;
+        justify-content: center;
         gap: 30px;
+    }
+
+    .footer-logo,
+    .footer-newsletter,
+    .footer-socials {
+        flex: 1 1 300px;
+        min-width: 280px;
+        max-width: 100%;
         text-align: center;
-        padding-bottom: 20px;
+        align-items: center;
+        margin: 0;
     }
 
     .footer-logo h2 {
         text-align: center;
-        font-size: 4em;
+    }
+
+    .footer-socials {
+        align-items: center;
+    }
+}
+
+@media (max-width: 850px) {
+    .main-footer {
+        margin-top: 30px;
+        /* Reduced top margin to remove "free space" */
+        padding-bottom: 30px;
+    }
+
+    .footer-content {
+        flex-direction: column;
+        align-items: center;
+        gap: 15px !important;
+        /* Force tight gap */
+        text-align: center;
+        padding-bottom: 30px !important;
+        width: 100%;
+        /* Use full width */
+        padding-left: 10px;
+        padding-right: 10px;
+        box-sizing: border-box;
+    }
+
+    .footer-logo,
+    .footer-newsletter,
+    .footer-socials {
+        min-width: 0;
+        width: 100%;
+        margin: 0 !important;
+        padding: 0 !important;
+        flex: 0 0 auto;
+        /* Stop them from growing */
+        min-height: auto;
+        /* Remove any minimum height */
+    }
+
+    .footer-newsletter {
+        margin: 0 !important;
+        padding: 0 !important;
+        flex: 0 0 auto;
+    }
+
+    .newsletter-form {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .newsletter-form input,
+    .newsletter-form button {
+        width: 100%;
+        max-width: 300px;
+    }
+
+    .footer-logo h2 {
+        text-align: center;
+        font-size: 6em;
+        /* Increased to 6em as requested */
+        line-height: 0.8;
+        /* Tighter line height to remove top/bottom space */
+        margin-bottom: 20px !important;
+        /* Slightly more space for bigger text */
+        display: block;
     }
 
     .footer-socials {
@@ -178,12 +320,9 @@
     }
 
     .social-icons {
-        flex-wrap: wrap;
-        justify-content: center;
-    }
-
-    .main-footer {
-        padding-bottom: 50px;
-        /* Space for copyright on mobile */
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px !important;
+        margin-top: 5px;
     }
 }
