@@ -33,7 +33,8 @@ nav {
 .nav-links {
     display: flex;
     justify-content: space-around;
-    width: 30%;
+    width: 45%;
+    /* Increased from 30% to prevent overlap on 1024-1280px screens */
 }
 
 .nav-links li {
