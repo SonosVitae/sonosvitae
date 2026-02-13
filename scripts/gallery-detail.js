@@ -1,105 +1,19 @@
 // Gallery Detail Page Logic
 
-// Shared Data Source (Ideally this would be a separate JSON or exported module)
-// Matching the IDs from gallery.js
-const galleryData = [
-    {
-        id: 0,
-        title: "Studio Update: Vocals",
-        date: "JAN 28, 2026",
-        location: "Home Studio, Krakow",
-        mainImage: "https://placehold.co/1200x800/222/FFF?text=Vocals+Main+Setup",
-        mainText: "Finally laying down the final vocal tracks for the opening track. The acoustics in the new booth are incredible. We spent about 10 hours today just getting the harmonies right.",
-        sections: [
-            {
-                subtitle: "The Setup",
-                text: "We used a Neumann U87 paired with a vintage Avalon preamp. The warmth is undeniable.",
-                images: [
-                    "https://placehold.co/600x400/333/FFF?text=Mic+Close+Up",
-                    "https://placehold.co/600x400/444/FFF?text=Mixing+Board"
-                ]
-            },
-            {
-                subtitle: "Break Time",
-                text: "It wasn't all work. We stopped for some legendary Krakow pizza.",
-                images: [
-                    "https://placehold.co/600x400/555/FFF?text=Pizza+Time",
-                    "https://placehold.co/600x400/666/FFF?text=View+From+Studio"
-                ]
-            }
-        ],
-        attachments: [
-            { name: "Vocal_Demo_Snippet.mp3", link: "#" }
-        ]
-    },
-    {
-        id: 1,
-        title: "Live Performance 2025",
-        date: "OCT 20, 2025",
-        location: "The Underground Club",
-        mainImage: "assets/images/featured-live.jpg",
-        mainText: "First live show in over a year. The energy was electric. Played a mix of old classics and teased 'Ashes of Epiphany'.",
-        sections: [
-            {
-                subtitle: "Soundcheck",
-                text: "Getting the levels right was tricky in this basement venue, but the bass response was massive.",
-                images: [
-                    "https://placehold.co/600x400/111/FFF?text=Soundcheck",
-                    "https://placehold.co/600x400/222/FFF?text=Guitar+Rig"
-                ]
-            },
-            {
-                subtitle: "The Show",
-                text: "The crowd reaction to the new drop was everything we hoped for.",
-                images: [
-                    "https://placehold.co/600x400/333/FFF?text=Crowd+Surfing",
-                    "https://placehold.co/600x400/444/FFF?text=Lights+Show",
-                    "https://placehold.co/600x400/555/FFF?text=Final+Bow"
-                ]
-            }
-        ],
-        attachments: []
-    },
-    {
-        id: 2,
-        title: "Album Concept Art",
-        date: "DEC 15, 2025",
-        location: "Digital Workspace",
-        mainImage: "assets/gallery/toothless-art.webp",
-        mainText: "Working with @TheHGamer on the cover art for 'Ashes of Epiphany'. We're going for a dark, gritty aesthetic that matches the mod's atmosphere.",
-        sections: [
-            {
-                subtitle: "Initial Sketches",
-                text: "The 'Toothless' concept started as a raw charcoal sketch.",
-                images: [
-                    "https://placehold.co/600x800/222/FFF?text=Sketch+V1",
-                    "https://placehold.co/600x800/333/FFF?text=Sketch+V2"
-                ]
-            },
-            {
-                subtitle: "Color Grading",
-                text: "Finding the right shade of toxic green took iterations. We settled on #b2c982 as the primary accent.",
-                images: [
-                    "assets/images/art-1.jpg",
-                    "assets/images/art-2.jpg",
-                    "https://placehold.co/600x600/000/FFF?text=Dark+Palette"
-                ]
-            }
-        ],
-        attachments: [
-            { name: "Concept_Brief.pdf", link: "#" },
-            { name: "Wallpaper_4K.jpg", link: "#" }
-        ]
-    }
-];
+// Gallery Detail Page Logic
 
 document.addEventListener('DOMContentLoaded', () => {
     // 1. Get ID from URL
     const params = new URLSearchParams(window.location.search);
-    const id = parseInt(params.get('id'));
+    const id = params.get('id'); // ID is string now
 
-    // 2. Load Data
-    const data = galleryData.find(p => p.id === id);
+    // 2. Load Data from global galleryPosts (loaded via gallery-data.js)
+    if (typeof galleryPosts === 'undefined') {
+        document.querySelector('.detail-container').innerHTML = '<h1>Error loading data</h1>';
+        return;
+    }
+
+    const data = galleryPosts.find(p => p.id === id);
 
     if (!data) {
         document.querySelector('.detail-container').innerHTML = '<h1>Post not found</h1><a href="gallery.html">Back to Gallery</a>';
@@ -109,38 +23,72 @@ document.addEventListener('DOMContentLoaded', () => {
     // 3. Populate Header
     document.title = `${data.title} - Sonos Vitae`;
     document.getElementById('detail-title').innerText = data.title;
-    document.getElementById('detail-date').innerText = data.date;
-    document.getElementById('detail-location').innerText = data.location || "Unknown";
-    document.getElementById('detail-main-text').innerHTML = `<p>${data.mainText}</p>`;
+    document.getElementById('detail-date').innerText = `${data.date}, ${data.year}`; // Combined date
+    document.getElementById('detail-location').innerText = data.location || "Sonos Vitae World";
+    document.getElementById('detail-main-text').innerHTML = `<p>${data.text}</p>`;
 
     // Main Image
     const mainImg = document.getElementById('detail-main-image');
-    mainImg.src = data.mainImage;
-    mainImg.onclick = () => openLightbox(data.mainImage); // Click main to zoom
+    const hasFeatured = data.featuredImage && typeof data.featuredImage === 'string' && data.featuredImage.trim() !== '';
+
+    if (hasFeatured) {
+        mainImg.src = data.featuredImage;
+        mainImg.onclick = () => openLightbox(data.featuredImage);
+        document.querySelector('.content-right').style.display = 'block';
+    } else {
+        document.querySelector('.content-right').style.display = 'none';
+        // HTML structure handles full width naturally now
+    }
+
+    // 4. Render Sections (Synthesize from stackImages)
+    const sectionsContainer = document.getElementById('detail-sections');
+    sectionsContainer.innerHTML = ''; // Clear defaults
 
     // 4. Render Sections
-    const sectionsContainer = document.getElementById('detail-sections');
-    data.sections.forEach(section => {
-        // Create Section HTML
+    sectionsContainer.innerHTML = ''; // Clear defaults
+
+    if (data.sections && data.sections.length > 0) {
+        data.sections.forEach(sec => {
+            const sectionEl = document.createElement('div');
+            sectionEl.className = 'detail-section';
+
+            let imagesHtml = '';
+            if (sec.images && sec.images.length > 0) {
+                imagesHtml = `<div class="section-gallery">
+                    ${sec.images.map(src =>
+                    `<img src="${src}" class="section-img" onclick="openLightbox('${src}')" alt="Gallery Image">`
+                ).join('')}
+                </div>`;
+            }
+
+            sectionEl.innerHTML = `
+                <h2 class="section-subtitle">${sec.title} <div class="glowing-line"></div></h2>
+                <p class="section-text">${sec.text}</p>
+                ${imagesHtml}
+            `;
+            sectionsContainer.appendChild(sectionEl);
+        });
+
+    } else if (data.stackImages && data.stackImages.length > 0) {
+        // Fallback for posts without sections (backward compatibility)
         const sectionEl = document.createElement('div');
         sectionEl.className = 'detail-section';
 
-        let imagesHtml = '';
-        if (section.images && section.images.length > 0) {
-            imagesHtml = `<div class="section-gallery">
-                ${section.images.slice(0, 6).map(src => // Limit to 6
-                `<img src="${src}" class="section-img" onclick="openLightbox('${src}')" alt="Gallery Image">`
-            ).join('')}
-            </div>`;
-        }
+        const imagesHtml = `<div class="section-gallery">
+            ${data.stackImages.map(src =>
+            `<img src="${src}" class="section-img" onclick="openLightbox('${src}')" alt="Gallery Image">`
+        ).join('')}
+        </div>`;
 
         sectionEl.innerHTML = `
-            <h2 class="section-subtitle">${section.subtitle} <div class="glowing-line"></div></h2>
-            ${section.text ? `<p class="section-text">${section.text}</p>` : ''}
+            <h2 class="section-subtitle">Gallery <div class="glowing-line"></div></h2>
             ${imagesHtml}
         `;
         sectionsContainer.appendChild(sectionEl);
-    });
+    } else {
+        // No sections or stack images? Maybe just text. 
+        // We can leave it empty or add a 'full-width' class to content if needed.
+    }
 
     // 5. Render Downloads
     const downloadsContainer = document.getElementById('detail-downloads');
@@ -307,7 +255,11 @@ function initLightbox() {
 function collectImages(data) {
     // Gather all images in order
     allImages = [];
-    if (data.mainImage) allImages.push(data.mainImage);
+    if (data.featuredImage) allImages.push(data.featuredImage);
+
+    if (data.stackImages && Array.isArray(data.stackImages)) {
+        data.stackImages.forEach(img => allImages.push(img));
+    }
 
     if (data.sections) {
         data.sections.forEach(sec => {
@@ -319,6 +271,11 @@ function collectImages(data) {
 }
 
 function openLightbox(src) {
+    if (!allImages || allImages.length === 0) {
+        console.warn("No images to display in Lightbox");
+        return;
+    }
+
     // Find index
     currentIndex = allImages.indexOf(src);
     if (currentIndex === -1) currentIndex = 0; // Fallback

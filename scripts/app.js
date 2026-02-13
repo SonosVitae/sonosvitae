@@ -121,23 +121,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // --- Filtering Logic ---
 const filterList = document.querySelector('.filter');
-const filterButtons = filterList.querySelectorAll(".filter-btn");
+if (filterList) {
+    const filterButtons = filterList.querySelectorAll(".filter-btn");
 
-filterButtons.forEach((button) => {
-    button.addEventListener("click", (e) => {
-        let confCategory = e.target.getAttribute("data-filter");
+    filterButtons.forEach((button) => {
+        button.addEventListener("click", (e) => {
+            let confCategory = e.target.getAttribute("data-filter");
 
-        if (typeof document.startViewTransition === 'function') {
-            document.startViewTransition(() => {
+            if (typeof document.startViewTransition === 'function') {
+                document.startViewTransition(() => {
+                    updateActiveButton(e.target);
+                    filterEvents(confCategory);
+                });
+            } else {
                 updateActiveButton(e.target);
                 filterEvents(confCategory);
-            });
-        } else {
-            updateActiveButton(e.target);
-            filterEvents(confCategory);
-        }
+            }
+        });
     });
-});
+}
 
 function updateActiveButton(newButton) {
     const currentActive = filterList.querySelector(".active");

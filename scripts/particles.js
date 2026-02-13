@@ -1,11 +1,18 @@
 const canvas = document.getElementById('particles-canvas');
+
+if (!canvas) {
+    // Canvas not found, skip particle system
+    throw new Error("Particles canvas not found. Script disabled for this page.");
+}
+
 const ctx = canvas.getContext('2d');
 
 let particlesArray;
+let canvasRect = canvas.getBoundingClientRect(); // Initialize immediately
 
 // Set canvas size to match the parent container (.cover)
 function setCanvasSize() {
-    // We want the canvas to cover the .cover div
+    // We want the canvas to cover the .cover div if it exists, else full screen
     const coverDiv = document.querySelector('.cover');
     if (coverDiv) {
         canvas.width = coverDiv.clientWidth;
@@ -14,6 +21,7 @@ function setCanvasSize() {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
     }
+    updateCanvasRect(); // Update rect after size change
 }
 
 setCanvasSize();
@@ -37,14 +45,24 @@ window.addEventListener('mousemove', function (event) {
     input.isMoving = true;
 });
 
+// Cache canvas rect to avoid layout thrashing
+// canvasRect declared at top used here
+
+function updateCanvasRect() {
+    canvasRect = canvas.getBoundingClientRect();
+}
+
+window.addEventListener('resize', updateCanvasRect);
+window.addEventListener('scroll', updateCanvasRect);
+
 // Update mouse coordinates relative to canvas
 function updateMouseCoordinates() {
     if (input.x !== null && input.y !== null) {
-        const rect = canvas.getBoundingClientRect();
-        mouse.x = input.x - rect.left;
-        // Subtract dynamic offset (approx 5vh) which seems to correct the layout shift
+        // Use cached rect
+        mouse.x = input.x - canvasRect.left;
+        // Subtract dynamic offset (approx 5vh)
         const offset = window.innerHeight * 0.05;
-        mouse.y = (input.y - rect.top) - offset;
+        mouse.y = (input.y - canvasRect.top) - offset;
     }
 }
 

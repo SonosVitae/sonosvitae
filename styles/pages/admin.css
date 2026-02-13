@@ -1,0 +1,161 @@
+body {
+    background-color: #1a1a1a;
+    color: #e0e0e0;
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.admin-container {
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 20px;
+    background: #252525;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+h1 {
+    text-align: center;
+    color: #b2c982;
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    text-align: center;
+    color: #888;
+    margin-bottom: 30px;
+}
+
+.tabs {
+    display: flex;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #444;
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 15px;
+    background: transparent;
+    border: none;
+    color: #888;
+    cursor: pointer;
+    font-size: 1.1em;
+    transition: all 0.3s ease;
+}
+
+.tab-btn.active {
+    color: #b2c982;
+    border-bottom: 2px solid #b2c982;
+    background: rgba(178, 201, 130, 0.1);
+}
+
+.form-section {
+    display: none;
+    animation: fadeIn 0.5s ease;
+}
+
+.form-section.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    color: #aaa;
+    font-size: 0.9em;
+}
+
+input,
+select,
+textarea {
+    width: 100%;
+    padding: 10px;
+    background: #333;
+    border: 1px solid #444;
+    color: #fff;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+input:focus,
+textarea:focus {
+    border-color: #b2c982;
+    outline: none;
+}
+
+.grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.full-width {
+    grid-column: span 2;
+}
+
+.generate-btn {
+    width: 100%;
+    padding: 15px;
+    background: #b2c982;
+    color: #1a2e05;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.1em;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: background 0.3s;
+}
+
+.generate-btn:hover {
+    background: #cde8e5;
+}
+
+.output-section {
+    margin-top: 40px;
+    background: #111;
+    padding: 20px;
+    border-radius: 5px;
+    border: 1px solid #333;
+}
+
+pre {
+    background: #000;
+    padding: 15px;
+    border-radius: 5px;
+    overflow-x: auto;
+    color: #a5d6a7;
+    font-family: 'Consolas', monospace;
+    white-space: pre-wrap;
+}
+
+#copyBtn {
+    margin-top: 10px;
+    padding: 8px 15px;
+    background: #444;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#copyBtn:hover {
+    background: #555;
+}

@@ -607,6 +607,8 @@ body {
     color: rgba(255, 255, 255, 0.8);
     line-height: 1.6;
     margin: 0;
+    white-space: pre-wrap;
+    /* Preserve newlines */
 }
 
 /* Fade Text at Bottom */
@@ -773,4 +775,69 @@ body {
         width: 90px;
         height: 90px;
     }
+}
+
+/* --- Attachments & Integrity Styles --- */
+.attachment-item {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 10px 15px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    transition: all 0.3s ease;
+}
+
+.attachment-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: #b2c982;
+}
+
+.attachment-item i.fa-file-arrow-down {
+    font-size: 1.5em;
+    color: #b2c982;
+    margin-right: 15px;
+}
+
+.attachment-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.att-name {
+    color: #fff;
+    font-weight: 500;
+}
+
+.att-size {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.8em;
+}
+
+.download-btn {
+    color: #CDE8E5;
+    font-size: 1.2em;
+    transition: color 0.2s;
+}
+
+.download-btn:hover {
+    color: #fff;
+}
+
+.no-attachments {
+    color: rgba(255, 255, 255, 0.4);
+    font-style: italic;
+    font-size: 0.9em;
+}
+
+/* Ensure Modal Display */
+#gallery-modal {
+    display: none;
+    /* Hidden by default */
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    /* Ensure on top */
 }

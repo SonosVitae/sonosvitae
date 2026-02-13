@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Post Details - Sonos Vitae</title>
     <link rel="stylesheet" href="styles/base.css">
-    <link rel="stylesheet" href="styles/layout.css">
     <link rel="stylesheet" href="styles/components/navbar.css">
     <link rel="stylesheet" href="styles/pages/gallery-detail.css">
     <!-- Google Fonts -->
@@ -41,6 +40,7 @@
 
     <!-- Background (Reused Green Blur) -->
     <div class="gallery-bg-image"></div>
+    <canvas id="particles-canvas"></canvas>
 
     <div class="detail-container">
 
@@ -69,6 +69,14 @@
 
         <!-- Main Content Split -->
         <div class="main-content-split">
+            <!-- Right: Pop-out Image (First in DOM for Float) -->
+            <div class="content-right">
+                <div class="pop-out-image-container">
+                    <img id="detail-main-image" src="" alt="Main Preview" class="pop-out-image">
+                    <div class="image-glow"></div>
+                </div>
+            </div>
+
             <!-- Left: Meta & Text -->
             <div class="content-left">
                 <div class="detail-meta">
@@ -80,14 +88,6 @@
 
                 <div id="detail-main-text" class="main-text">
                     <!-- Main Description -->
-                </div>
-            </div>
-
-            <!-- Right: Pop-out Image -->
-            <div class="content-right">
-                <div class="pop-out-image-container">
-                    <img id="detail-main-image" src="" alt="Main Preview" class="pop-out-image">
-                    <div class="image-glow"></div>
                 </div>
             </div>
         </div>
@@ -139,7 +139,9 @@
 
     <!-- Core App Logic (Navbar, etc) -->
     <script src="scripts/app.js"></script>
+    <script src="scripts/gallery-data.js"></script>
     <script src="scripts/gallery-detail.js"></script>
+    <script src="scripts/particles.js"></script>
 </body>
 
 </html>
