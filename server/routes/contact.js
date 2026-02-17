@@ -36,9 +36,26 @@ router.post('/', async (req, res) => {
         const transporter = nodemailer.createTransport({
             service: 'gmail',
             auth: {
-                user: process.env.EMAIL_USER, // aersinic@gmail.com
-                pass: process.env.EMAIL_PASS  // mixs yzcb ugck vsyr
-            }
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASS
+            },
+            // Add Timeout settings to prevent hanging
+            connectionTimeout: 10000, // 10 seconds
+            greetingTimeout: 5000,
+            socketTimeout: 10000
+        });
+
+        // Verify connection configuration
+        await new Promise((resolve, reject) => {
+            transporter.verify(function (error, success) {
+                if (error) {
+                    console.log("Transporter Error:", error);
+                    reject(error);
+                } else {
+                    console.log("Server is ready to take our messages");
+                    resolve(success);
+                }
+            });
         });
 
         // 4. Email Options
