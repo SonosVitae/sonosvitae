@@ -141,6 +141,10 @@ nav {
     .nav-links a {
         margin-right: 0%;
     }
+
+    .nav-links a.nav-highlight {
+        margin-right: 0;
+    }
 }
 
 .nav-active {
