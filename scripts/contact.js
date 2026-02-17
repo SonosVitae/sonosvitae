@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // 3. UI Loading State
         submitBtn.disabled = true;
-        submitBtn.innerText = 'Sending...';
+        submitBtn.innerText = 'Connecting...';
 
         try {
             // 4. Send Request
@@ -55,11 +55,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 contactForm.reset();
                 startCooldown();
             } else {
-                // Handle Backend Errors (including rate limit 429)
-                showStatus(result.msg || 'Failed to send message.', 'error');
-                if (res.status === 429) {
-                    startCooldown(); // Enforce client-side cooldown if backend says so
-                }
+                // DO NOT start cooldown on error
+                showStatus(result.msg || 'Failed to send message. Please try again.', 'error');
             }
 
         } catch (err) {
