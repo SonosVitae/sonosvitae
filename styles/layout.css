@@ -88,9 +88,7 @@ h2 {
 }
 
 .leaves {
-    background-image: url('../assets/images/leaves.png');
-    background-size: cover;
-    background-position: center;
+    /* Image is set via HTML src */
     z-index: -1;
     top: 55vh;
 }
@@ -359,66 +357,33 @@ body {
     }
 
     .leaves {
-        top: 65vh;
-        height: 100vw;
+        top: 55vh;
+        height: 100vh;
+        background-position: center top;
     }
 }
 
 /* Responsive Navbar moved to components/navbar.css */
 
-@media screen and (max-width:540px) {
-    .container h1 {
-        font-size: 8em;
-        margin-top: 0.8em;
-    }
-
-    .leaves {
-        top: 60vh;
-        height: 100vh;
-    }
-
-    .secondary {
-        margin-top: -5em;
-    }
-
-    .cover {
-        top: 80vh;
-    }
-}
-
-@media screen and (max-width:514px) {
-    .container h1 {
-        font-size: 7em;
-        margin-top: 2em;
-    }
-
-    .leaves {
-        top: 79vh;
-        height: 100vh;
-    }
-
-    .secondary {
-        margin-top: -1em;
-    }
-
-    .cover {
-        top: 80vh;
-    }
-}
-
-@media screen and (max-width:376px) {
+/* Consolidated Mobile Styles */
+@media screen and (max-width: 540px) {
     .container h1 {
         font-size: 7em;
         margin-top: 1.5em;
+        /* Adjusted for better spacing */
     }
 
     .leaves {
-        top: 75vh;
+        top: 55vh;
         height: 100vh;
+        width: 100%;
+        /* Force width fill */
+        /* object-fit: fill by default for img */
     }
 
     .secondary {
-        margin-top: -1em;
+        margin-top: -3em;
+        /* Averaged value */
     }
 
     .cover {
@@ -427,3 +392,81 @@ body {
 }
 
 /* .nav-active moved to components/navbar.css */
+
+/* --- Large Screen Scaling --- */
+
+/* Ultrawide (1600px+) */
+@media screen and (min-width: 1600px) {
+    .container {
+        padding: 8vh;
+    }
+
+    .container h1 {
+        font-size: 12em;
+        margin-top: 0.8em;
+    }
+
+    h2 {
+        font-size: 4em;
+        /* Fixed size instead of vw for better control */
+    }
+
+    .subtext {
+        font-size: 1.2em;
+    }
+
+    .leaves {
+        object-position: top center;
+        top: 35vh;
+        /* Raise image */
+    }
+}
+
+/* 2K / Super Ultrawide (2500px+) */
+@media screen and (min-width: 2500px) {
+    .container {
+        padding: 10vh;
+    }
+
+    .container h1 {
+        font-size: 15em;
+        margin-top: 0.6em;
+    }
+
+    h2 {
+        font-size: 5em;
+    }
+
+    .subtext {
+        font-size: 1.5em;
+    }
+
+    .container p {
+        font-size: 1.2em;
+    }
+}
+
+/* 4K (3500px+) */
+@media screen and (min-width: 3500px) {
+    .container {
+        padding: 12vh;
+    }
+
+    .container h1 {
+        font-size: 20em;
+        /* Massive title */
+        margin-top: 0.5em;
+    }
+
+    h2 {
+        font-size: 7em;
+    }
+
+    .subtext {
+        font-size: 2em;
+    }
+
+    .container p {
+        font-size: 1.5em;
+    }
+}

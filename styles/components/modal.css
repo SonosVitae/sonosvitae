@@ -26,7 +26,7 @@
     /* Reduced padding */
     border: 1px solid rgba(255, 255, 255, 0.3);
     width: 90%;
-    max-width: 1000px;
+    max-width: 1200px;
     /* Reduced max-width from 1400px */
     border-radius: 15px;
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
@@ -91,8 +91,7 @@
     flex: 1;
     /* 2/5 of space approx */
     display: flex;
-    align-items: center;
-    /* Center Vertically */
+    /* align-items: center; Removed to allow full height stretch */
     justify-content: center;
     height: 100%;
 }
@@ -353,5 +352,118 @@
         /* Limit modal content height */
         overflow-y: auto;
         /* Enable scrolling for the whole modal content */
+    }
+}
+
+
+/* Ultrawide / Large Screen Support */
+@media screen and (min-width: 1600px) {
+    .modal-content {
+        max-width: 80vw;
+        /* Use 80% of viewport width */
+        padding: 50px;
+    }
+
+    .modal-body {
+        height: 70vh;
+        /* Taller body */
+        gap: 50px;
+    }
+
+    /* Scale up the cover */
+    .modal-cover {
+        width: 350px;
+        height: 350px;
+    }
+
+    /* Scale up Typography */
+    .modal-title {
+        font-size: 4em;
+    }
+
+    .modal-artist {
+        font-size: 2.5em;
+    }
+
+    .album-type-genre {
+        font-size: 1.2em;
+    }
+
+    .modal-description {
+        font-size: 1.2em;
+    }
+
+    .album-links a {
+        font-size: 1.2em;
+    }
+
+    #bandcamp-embed-container {
+        height: 100%;
+        min-height: 600px;
+    }
+}
+
+/* 2K / 1440p+ specific adjustments (2560px and up) */
+@media screen and (min-width: 2500px) {
+    .modal-content {
+        max-width: 85vw;
+        padding: 60px;
+    }
+
+    .modal-body {
+        height: 75vh;
+        gap: 80px;
+    }
+
+    .modal-cover {
+        width: 450px;
+        height: 450px;
+    }
+
+    .modal-title {
+        font-size: 5em;
+    }
+
+    .modal-artist {
+        font-size: 3em;
+    }
+
+    #bandcamp-embed-container {
+        min-height: 700px;
+    }
+}
+
+/* 4K Ultra HD (3840px and up) */
+@media screen and (min-width: 3500px) {
+    .modal-content {
+        max-width: 90vw;
+        padding: 80px;
+    }
+
+    .modal-body {
+        height: 80vh;
+        gap: 100px;
+    }
+
+    .modal-cover {
+        width: 600px;
+        height: 600px;
+    }
+
+    .modal-title {
+        font-size: 7em;
+    }
+
+    .modal-artist {
+        font-size: 4em;
+    }
+
+    .album-type-genre,
+    .modal-description {
+        font-size: 1.5em;
+    }
+
+    #bandcamp-embed-container {
+        min-height: 900px;
     }
 }

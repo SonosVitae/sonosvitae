@@ -48,6 +48,22 @@ nav {
     font-weight: bold;
     font-size: 14px;
     margin-right: 4vw;
+    transition: all 0.3s ease;
+}
+
+/* Gallery Button Highlight (Text Only) */
+.nav-links a.nav-highlight {
+    color: #b2c982;
+    text-shadow: 0 0 10px rgba(178, 201, 130, 0.4);
+    margin-right: 4vw;
+    /* Restore margin */
+}
+
+.nav-links a.nav-highlight:hover {
+    color: #d4eac8;
+    text-shadow: 0 0 15px rgba(178, 201, 130, 0.8), 0 0 30px rgba(178, 201, 130, 0.4);
+    transform: scale(1.1);
+    /* Slight pop */
 }
 
 .burger {
@@ -129,4 +145,58 @@ nav {
 
 .nav-active {
     transform: translatex(0%);
+}
+
+/* --- Large Screen Scaling --- */
+
+/* Ultrawide (1600px+) */
+@media screen and (min-width: 1600px) {
+    nav {
+        min-height: 8vh;
+        /* Reduced from 10vh */
+    }
+
+    .logo {
+        font-size: 26px;
+    }
+
+    .nav-links a {
+        font-size: 18px;
+    }
+}
+
+/* 2K (2500px+) */
+@media screen and (min-width: 2500px) {
+    nav {
+        min-height: 9vh;
+        /* Reduced from 12vh */
+    }
+
+    .logo {
+        font-size: 36px;
+        letter-spacing: 8px;
+    }
+
+    .nav-links a {
+        font-size: 24px;
+        letter-spacing: 5px;
+    }
+}
+
+/* 4K (3500px+) */
+@media screen and (min-width: 3500px) {
+    nav {
+        min-height: 10vh;
+        /* Reduced from 15vh */
+    }
+
+    .logo {
+        font-size: 50px;
+        letter-spacing: 12px;
+    }
+
+    .nav-links a {
+        font-size: 32px;
+        letter-spacing: 7px;
+    }
 }

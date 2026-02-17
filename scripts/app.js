@@ -11,7 +11,7 @@ window.addEventListener('scroll', function () {
     // Move the foreground faster
     const leavesBg = document.querySelector('.leaves');
     if (leavesBg) {
-        leavesBg.style.transform = `translateY(${scrollTop * 0.3}px)`;
+        leavesBg.style.transform = `translateY(${scrollTop * 0.225}px)`;
     }
 });
 
@@ -56,28 +56,74 @@ const modalDynamicBg = document.querySelector('.modal-dynamic-bg');
 // Element for Album Type is now static in HTML: .album-type-genre
 
 // --- Dynamic Grid Generation ---
+// --- Dynamic Grid Generation ---
 const musicListContainer = document.querySelector('.musiclist');
+const INITIAL_ALBUM_LIMIT = 10;
+let isExpanded = false;
 
-window.renderAlbumGrid = function () {
+
+window.renderAlbumGrid = function (filter = 'all') {
+    console.log("Rendering Album Grid...");
+
+    // Determine limit based on screen width
+    // Mobile (< 768px): 2 cols * 3 rows = 6 items
+    // Desktop: 5 cols * 2 rows = 10 items
+    let limit = 10;
+    if (window.innerWidth < 768) {
+        limit = 6;
+    }
+
     // FIX: Re-query container
     const musicListContainer = document.querySelector('.musiclist');
     if (!musicListContainer) return;
-    musicListContainer.innerHTML = ''; // Clear existing static list
 
+    // Check if Show More button exists, if not create wrapper
+    let paginationContainer = document.querySelector('.pagination-container');
+    if (!paginationContainer) {
+        paginationContainer = document.createElement('div');
+        paginationContainer.className = 'pagination-container';
+        musicListContainer.after(paginationContainer); // Place after grid
+    }
+
+    // Clear list but NOT the pagination container (it's outside)
+    musicListContainer.innerHTML = '';
+
+    // Filter albums first if needed (though usually we render all and toggle visibility)
+    // But for "Show More", we are manipulating the *rendered* list from the *full* set.
+    // However, if we filter by category, we should probably ignore the limit or apply it to the filtered set?
+    // Let's assume Limit applies to "All" view primarily.
+
+    let displayedCount = 0;
     let musicIndex = 0;
+    let hasHiddenItems = false;
 
     albums.forEach(album => {
-        const li = document.createElement('li');
-        li.className = 'music';
         // Map types to categories for filtering
         let category = 'album';
         if (album.type === 'SINGLE') category = 'single';
         if (album.type === 'SOUNDTRACK') category = 'ost';
 
+        // Check Filter
+        let isVisible = (filter === 'all' || filter === category || category === 'all');
+        if (!isVisible) return; // Skip non-matching
+
+        // Check Limit (Only if filter is 'all')
+        let shouldRender = true;
+
+        // If we are filtering by specific category, show all of them.
+        // If we are on 'all', respect the limit unless expanded.
+        if (filter === 'all' && !isExpanded) {
+            if (displayedCount >= limit) {
+                shouldRender = false; // We render it but hide it? Or not render?
+                // If we don't render, filterEvents won't find them to unhide later.
+                // Better to render them with a special class.
+            }
+        }
+
+        const li = document.createElement('li');
+        li.className = 'music';
         li.dataset.category = category;
         li.dataset.id = album.id;
-
-        // Add View Transition Name
         li.style.viewTransitionName = `conf-${++musicIndex}`;
 
         li.innerHTML = `
@@ -85,32 +131,63 @@ window.renderAlbumGrid = function () {
             <h3 class="albumname">${album.title}</h3>
         `;
 
-        // Add Click Event
-        li.addEventListener('click', () => {
-            openModal(album);
-        });
+        li.addEventListener('click', () => openModal(album));
 
-        // Dynamic Background Color on Hover
         li.addEventListener('mouseenter', () => {
             const root = document.documentElement;
-            if (album.color) {
-                root.style.setProperty('--shape-color', album.color);
-            }
+            if (album.color) root.style.setProperty('--shape-color', album.color);
         });
 
         li.addEventListener('mouseleave', () => {
             const root = document.documentElement;
-            root.style.setProperty('--shape-color', 'rgba(162, 209, 73, 0.8)'); // Default Green
+            root.style.setProperty('--shape-color', 'rgba(162, 209, 73, 0.8)');
         });
 
+        if (filter === 'all' && !isExpanded && displayedCount >= limit) {
+            li.classList.add('hidden-by-limit');
+            li.style.display = 'none';
+            hasHiddenItems = true;
+        }
+
         musicListContainer.appendChild(li);
+        displayedCount++;
     });
+
+    // Handle "Show More" Button
+    updateShowMoreButton(hasHiddenItems, paginationContainer);
+}
+
+function updateShowMoreButton(show, container) {
+    container.innerHTML = ''; // Clear existing
+    if (show) {
+        const btn = document.createElement('button');
+        btn.className = 'show-more-btn';
+        btn.textContent = 'Show More';
+        btn.onclick = () => {
+            isExpanded = true;
+            document.querySelectorAll('.hidden-by-limit').forEach(el => {
+                el.style.display = 'block'; // Or 'list-item'? block works for li in grid usually
+                el.classList.remove('hidden-by-limit');
+            });
+            btn.remove(); // Remove self
+        };
+        container.appendChild(btn);
+    }
 }
 
 
 // Call render on load
 document.addEventListener('DOMContentLoaded', () => {
     window.renderAlbumGrid();
+});
+
+// Update on Resize (Debounced slightly ideally, but simple for now)
+let resizeTimeout;
+window.addEventListener('resize', () => {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
+        window.renderAlbumGrid();
+    }, 200);
 });
 
 // --- Filtering Logic ---
@@ -122,14 +199,18 @@ if (filterList) {
         button.addEventListener("click", (e) => {
             let confCategory = e.target.getAttribute("data-filter");
 
+            // If filtering, we should likely reset expansion or keep it?
+            // Let's re-render the grid with the new filter.
+            // This is cleaner than toggling hidden attributes manually.
+
             if (typeof document.startViewTransition === 'function') {
                 document.startViewTransition(() => {
                     updateActiveButton(e.target);
-                    filterEvents(confCategory);
+                    window.renderAlbumGrid(confCategory);
                 });
             } else {
                 updateActiveButton(e.target);
-                filterEvents(confCategory);
+                window.renderAlbumGrid(confCategory);
             }
         });
     });
@@ -144,18 +225,8 @@ function updateActiveButton(newButton) {
 }
 
 function filterEvents(filter) {
-    // Query the dynamically created elements
-    const musiclist = document.querySelectorAll(".music");
-
-    musiclist.forEach((music) => {
-        let eventCategory = music.getAttribute("data-category");
-
-        if (filter === "all" || filter === eventCategory || eventCategory == "all") {
-            music.removeAttribute("hidden");
-        } else {
-            music.setAttribute("hidden", "");
-        }
-    });
+    // Deprecated in favor of re-rendering grid
+    return;
 }
 
 // --- Color Extraction Helper ---

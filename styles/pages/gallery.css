@@ -841,3 +841,128 @@ body {
     z-index: 2000;
     /* Ensure on top */
 }
+
+/* --- Large Screen Scaling --- */
+
+/* Ultrawide (1600px+) */
+@media screen and (min-width: 1600px) {
+    .search-container {
+        margin-top: 15vh;
+        /* Push down to clear larger navbar */
+    }
+
+    .gallery-container {
+        max-width: 1400px;
+    }
+
+    .year-header {
+        font-size: 10em;
+    }
+
+    .post-artist-name {
+        font-size: 3em;
+    }
+
+    .post-text {
+        font-size: 1.1em;
+    }
+}
+
+/* 2K (2500px+) */
+@media screen and (min-width: 2500px) {
+    .search-container {
+        margin-top: 18vh;
+        padding: 40px 0;
+    }
+
+    .search-box {
+        max-width: 800px;
+    }
+
+    .search-input {
+        padding: 20px 40px;
+        font-size: 1.4em;
+    }
+
+    .gallery-container {
+        max-width: 1800px;
+        margin-top: 60px;
+    }
+
+    .year-header {
+        font-size: 14em;
+        margin-bottom: 60px;
+    }
+
+    .timeline-post {
+        margin-bottom: 120px;
+    }
+
+    .post-artist-name {
+        font-size: 4em;
+    }
+
+    .post-text {
+        font-size: 1.4em;
+    }
+
+    .meta-date {
+        font-size: 2em;
+    }
+
+    .featured-image-container {
+        height: 500px;
+    }
+
+    .read-more-btn {
+        font-size: 1em;
+        padding: 12px 25px;
+    }
+}
+
+/* 4K (3500px+) */
+@media screen and (min-width: 3500px) {
+    .search-container {
+        margin-top: 20vh;
+    }
+
+    .search-box {
+        max-width: 1200px;
+    }
+
+    .search-input {
+        padding: 30px 60px;
+        font-size: 1.8em;
+        border-radius: 80px;
+    }
+
+    .gallery-container {
+        max-width: 2600px;
+    }
+
+    .year-header {
+        font-size: 20em;
+        margin-bottom: 100px;
+    }
+
+    .timeline-post {
+        margin-bottom: 180px;
+    }
+
+    .post-artist-name {
+        font-size: 6em;
+    }
+
+    .post-text {
+        font-size: 2em;
+    }
+
+    .meta-date {
+        font-size: 3em;
+    }
+
+    .read-more-btn {
+        font-size: 1.5em;
+        padding: 20px 40px;
+    }
+}

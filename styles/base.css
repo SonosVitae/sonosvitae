@@ -4,6 +4,12 @@
     box-sizing: border-box;
 }
 
+html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 9vh;
+    /* Offset for fixed navbar */
+}
+
 html,
 body {
     width: 100%;

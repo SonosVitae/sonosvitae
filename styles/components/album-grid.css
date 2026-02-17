@@ -1,19 +1,18 @@
 /* Album Grid */
 .musiclist {
-    width: 72%;
-    margin: clamp(75px, 20vw, 100px) auto 10vw;
+    width: 90%;
+    margin: clamp(50px, 15vw, 80px) auto 5vw;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    grid-gap: 50px;
+    /* Force 5 columns on standard desktop */
+    grid-template-columns: repeat(5, 1fr);
+    grid-gap: 30px;
     justify-items: center;
 }
 
 .music {
-    width: 90%;
+    width: 100%;
     max-width: 350px;
-    /* Prevent becoming too large */
     margin: 0 auto;
-    /* Center in grid cell */
     padding: 0px;
 }
 
@@ -49,6 +48,36 @@ li::marker {
     margin-bottom: 2rem;
 }
 
+/* Show More Container */
+.pagination-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 100px;
+}
+
+.show-more-btn {
+    background: transparent;
+    border: 1px solid #b2c982;
+    color: #b2c982;
+    font-family: "Poppins", sans-serif;
+    font-size: 1.2em;
+    padding: 15px 40px;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.show-more-btn:hover {
+    background: #b2c982;
+    color: #000;
+    box-shadow: 0 0 20px rgba(178, 201, 130, 0.4);
+    transform: translateY(-3px);
+}
+
+
 /* Filters */
 .filter {
     display: flex;
@@ -80,36 +109,116 @@ li::marker {
     box-shadow: 0 0 0.5rem rgb(0 0 0 / 0.2);
 }
 
+/* --- Responsive Breakpoints --- */
+
+/* Tablet / Small Laptop: 4 columns */
 @media only screen and (max-width: 1400px) {
     .musiclist {
-        /* Reduce gap and potentially max-width for 1200px screens */
-        grid-gap: 40px;
+        grid-template-columns: repeat(4, 1fr);
+        grid-gap: 30px;
+        width: 90%;
+    }
+}
+
+/* Tablet/Mobile Landscape: 4 columns down to 650px */
+@media only screen and (max-width: 850px) {
+    .musiclist {
+        grid-template-columns: repeat(4, 1fr);
+        grid-gap: 20px;
+    }
+}
+
+/* Mobile Portrait: 2 columns below 650px */
+@media only screen and (max-width: 650px) {
+    .musiclist {
+        grid-template-columns: repeat(2, 1fr);
+        grid-gap: 15px;
+        width: 95%;
+    }
+}
+
+/* --- Large Screen Scaling (Maintain 5 columns but scale up) --- */
+
+/* Ultrawide (1600px+) */
+@media screen and (min-width: 1600px) {
+    .musiclist {
         width: 80%;
-        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        /* Reduce width slightly to keep items reasonable size */
+        grid-template-columns: repeat(5, 1fr);
+        grid-gap: 60px;
     }
 
     .music {
-        max-width: 260px;
-        /* Smaller max-width as requested */
+        max-width: 400px;
+    }
+
+    .filter-btn {
+        font-size: 1.1em;
+        padding: 0.5rem 1.5rem;
+    }
+
+    .albumname {
+        font-size: 1.2em;
+    }
+
+    .show-more-btn {
+        font-size: 1.4em;
+        padding: 20px 50px;
     }
 }
 
-@media only screen and (max-width: 1100px) {
+/* 2K (2500px+) */
+@media screen and (min-width: 2500px) {
     .musiclist {
-        /* Tablet/iPad view: smaller than desktop 300px, bigger than phone 130px */
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-        grid-gap: 30px;
-        width: 80%;
+        width: 75%;
+        grid-template-columns: repeat(5, 1fr);
+        grid-gap: 80px;
+    }
+
+    .music {
+        max-width: 500px;
+    }
+
+    .filter-btn {
+        font-size: 1.5em;
+        padding: 0.8rem 2rem;
+        border-radius: 0.5rem;
+    }
+
+    .albumname {
+        font-size: 1.5em;
+    }
+
+    .show-more-btn {
+        font-size: 1.8em;
+        padding: 25px 60px;
     }
 }
 
-@media only screen and (max-width: 600px) {
+/* 4K (3500px+) */
+@media screen and (min-width: 3500px) {
     .musiclist {
-        /* Force 2 columns with smaller min-width */
-        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-        grid-gap: 20px;
-        margin: clamp(50px, 10vw, 75px) auto 2vw;
-        width: 90%;
-        /* Utilize more screen width */
+        width: 70%;
+        grid-template-columns: repeat(5, 1fr);
+        grid-gap: 100px;
+    }
+
+    .music {
+        max-width: 700px;
+    }
+
+    .filter-btn {
+        font-size: 2em;
+        padding: 1rem 3rem;
+        border-radius: 0.8rem;
+    }
+
+    .albumname {
+        font-size: 2em;
+    }
+
+    .show-more-btn {
+        font-size: 2.2em;
+        padding: 30px 80px;
     }
 }
