@@ -16,85 +16,86 @@
         rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
 </head>
 
 <body>
+    <div id="app-content">
+        <!-- Navbar -->
+        <nav class="navbar">
+            <div class="logo">
+                <h4>Sonos Vitae</h4>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="index.html#about">About</a></li> <!-- Fixed Link -->
+                <li><a href="index.html#music">Music</a></li>
+                <li><a href="gallery.html">Gallery</a></li>
+            </ul>
+            <div class="burger">
+                <div class="line1"></div>
+                <div class="line2"></div>
+                <div class="line3"></div>
+            </div>
+        </nav>
 
-    <!-- Navbar -->
-    <nav class="navbar">
-        <div class="logo">
-            <h4>Sonos Vitae</h4>
-        </div>
-        <ul class="nav-links">
-            <li><a href="index.html">Home</a></li>
-            <li><a href="about.html">About</a></li>
-            <li><a href="index.html#music">Music</a></li>
-            <li><a href="gallery.html">Gallery</a></li>
-        </ul>
-        <div class="burger">
-            <div class="line1"></div>
-            <div class="line2"></div>
-            <div class="line3"></div>
-        </div>
-    </nav>
+        <!-- Background (Reused Green Blur) -->
+        <div class="gallery-bg-image"></div>
+        <canvas id="particles-canvas"></canvas>
 
-    <!-- Background (Reused Green Blur) -->
-    <div class="gallery-bg-image"></div>
-    <canvas id="particles-canvas"></canvas>
+        <div class="detail-container">
 
-    <div class="detail-container">
+            <!-- Strips (Moved INSIDE container for alignment) -->
+            <div class="anim-strips">
+                <div class="strip s1"></div>
+                <div class="strip s2"></div>
+                <div class="strip s3"></div>
+            </div>
 
-        <!-- Strips (Moved INSIDE container for alignment) -->
-        <div class="anim-strips">
-            <div class="strip s1"></div>
-            <div class="strip s2"></div>
-            <div class="strip s3"></div>
-        </div>
-
-        <!-- Header Animation Zone -->
-        <div class="header-anim-zone">
-            <!-- Title Content -->
-            <div class="title-block">
-                <div class="title-row">
-                    <a href="gallery.html" class="back-link"><i class="fa-solid fa-arrow-left"></i></a>
-                    <h1 id="detail-title">Post Title</h1>
+            <!-- Header Animation Zone -->
+            <div class="header-anim-zone">
+                <!-- Title Content -->
+                <div class="title-block">
+                    <div class="title-row">
+                        <a href="gallery.html" class="back-link"><i class="fa-solid fa-arrow-left"></i></a>
+                        <!-- Title & Share Injected via JS -->
+                    </div>
+                    <div class="title-glow-fx"></div>
                 </div>
-                <div class="title-glow-fx"></div>
-            </div>
-            <!-- Wind Particles Container (Right side) -->
-            <div class="particles-container">
-                <!-- Injected via JS -->
-            </div>
-        </div>
-
-        <!-- Main Content Split -->
-        <div class="main-content-split">
-            <!-- Right: Pop-out Image (First in DOM for Float) -->
-            <div class="content-right">
-                <div class="pop-out-image-container">
-                    <img id="detail-main-image" src="" alt="Main Preview" class="pop-out-image">
-                    <div class="image-glow"></div>
+                <!-- Wind Particles Container (Right side) -->
+                <div class="particles-container">
+                    <!-- Injected via JS -->
                 </div>
             </div>
 
-            <!-- Left: Meta & Text -->
-            <div class="content-left">
-                <div class="detail-meta">
-                    <span id="detail-date" class="meta-date">JAN 28, 2026</span>
-                    <span class="meta-separator">|</span>
-                    <span class="meta-location"><i class="fa-solid fa-earth-americas"></i> <span
-                            id="detail-location">Krakow</span></span>
+            <!-- Main Content Split -->
+            <div class="main-content-split">
+                <!-- Right: Pop-out Image (First in DOM for Float) -->
+                <div class="content-right">
+                    <div class="pop-out-image-container">
+                        <img id="detail-main-image" src="" alt="Main Preview" class="pop-out-image">
+                        <div class="image-glow"></div>
+                    </div>
                 </div>
 
-                <div id="detail-main-text" class="main-text">
-                    <!-- Main Description -->
+                <!-- Left: Meta & Text -->
+                <div class="content-left">
+                    <div class="detail-meta">
+                        <span id="detail-date" class="meta-date">JAN 28, 2026</span>
+                        <span class="meta-separator">|</span>
+                        <span class="meta-location"><i class="fa-solid fa-earth-americas"></i> <span
+                                id="detail-location">Krakow</span></span>
+                    </div>
+
+                    <div id="detail-main-text" class="main-text">
+                        <!-- Main Description -->
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Dynamic Sections -->
-        <div id="detail-sections" class="sections-container">
-            <!-- 
+            <!-- Dynamic Sections -->
+            <div id="detail-sections" class="sections-container">
+                <!-- 
             Structure:
             <div class="detail-section">
                 <h2 class="section-subtitle">Subtitle <div class="glowing-line"></div></h2>
@@ -104,38 +105,39 @@
                 </div>
             </div>
             -->
+            </div>
+
+            <!-- Downloads Footer -->
+            <div id="detail-downloads" class="downloads-container">
+                <!-- Embeds -->
+            </div>
+
         </div>
 
-        <!-- Downloads Footer -->
-        <div id="detail-downloads" class="downloads-container">
-            <!-- Embeds -->
+        <!-- Lightbox Overlay -->
+        <div id="lightbox" class="lightbox">
+            <span class="lightbox-close">&times;</span>
+
+            <!-- Navigation Arrows -->
+            <div class="lb-arrow lb-left" id="lb-prev-btn">&#10094;</div>
+            <div class="lb-arrow lb-right" id="lb-next-btn">&#10095;</div>
+
+            <!-- Images Container -->
+            <div class="lightbox-track">
+                <img id="lb-img-far-left" class="lb-anim-img pos-out-left" alt="Far Previous">
+                <img id="lb-img-prev" class="lb-anim-img pos-left" alt="Previous">
+                <img id="lightbox-img" class="lb-anim-img pos-center" alt="Main">
+                <img id="lb-img-next" class="lb-anim-img pos-right" alt="Next">
+                <img id="lb-img-far-right" class="lb-anim-img pos-out-right" alt="Far Next">
+            </div>
+
+            <div class="lightbox-controls">
+                <button id="lb-zoom-in"><i class="fa-solid fa-magnifying-glass-plus"></i></button>
+                <button id="lb-zoom-out"><i class="fa-solid fa-magnifying-glass-minus"></i></button>
+            </div>
+            <div id="lightbox-caption"></div>
         </div>
-
-    </div>
-
-    <!-- Lightbox Overlay -->
-    <div id="lightbox" class="lightbox">
-        <span class="lightbox-close">&times;</span>
-
-        <!-- Navigation Arrows -->
-        <div class="lb-arrow lb-left" id="lb-prev-btn">&#10094;</div>
-        <div class="lb-arrow lb-right" id="lb-next-btn">&#10095;</div>
-
-        <!-- Images Container -->
-        <div class="lightbox-track">
-            <img id="lb-img-far-left" class="lb-anim-img pos-out-left" alt="Far Previous">
-            <img id="lb-img-prev" class="lb-anim-img pos-left" alt="Previous">
-            <img id="lightbox-img" class="lb-anim-img pos-center" alt="Main">
-            <img id="lb-img-next" class="lb-anim-img pos-right" alt="Next">
-            <img id="lb-img-far-right" class="lb-anim-img pos-out-right" alt="Far Next">
-        </div>
-
-        <div class="lightbox-controls">
-            <button id="lb-zoom-in"><i class="fa-solid fa-magnifying-glass-plus"></i></button>
-            <button id="lb-zoom-out"><i class="fa-solid fa-magnifying-glass-minus"></i></button>
-        </div>
-        <div id="lightbox-caption"></div>
-    </div>
+    </div> <!-- End App Content -->
 
     <!-- Core App Logic (Navbar, etc) -->
     <script src="scripts/app.js"></script>

@@ -1,154 +1,77 @@
-const canvas = document.getElementById('particles-canvas');
-
-if (!canvas) {
-    // Canvas not found, skip particle system
-    throw new Error("Particles canvas not found. Script disabled for this page.");
-}
-
-const ctx = canvas.getContext('2d');
-
+// Particles.js - SPA Compatible
+let canvas;
+let ctx;
 let particlesArray;
-let canvasRect = canvas.getBoundingClientRect(); // Initialize immediately
-
-// Set canvas size to match the parent container (.cover)
-function setCanvasSize() {
-    // We want the canvas to cover the .cover div if it exists, else full screen
-    const coverDiv = document.querySelector('.cover');
-    if (coverDiv) {
-        canvas.width = coverDiv.clientWidth;
-        canvas.height = coverDiv.clientHeight;
-    } else {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-    }
-    updateCanvasRect(); // Update rect after size change
-}
-
-setCanvasSize();
-
-// Mouse position
+let animationId;
 let mouse = {
     x: null,
     y: null,
-    radius: 100 // interaction radius
-}
-
+    radius: 100
+};
 let input = {
     x: null,
     y: null,
     isMoving: false
-}
-
-window.addEventListener('mousemove', function (event) {
-    input.x = event.clientX;
-    input.y = event.clientY;
-    input.isMoving = true;
-});
-
-// Cache canvas rect to avoid layout thrashing
-// canvasRect declared at top used here
-
-function updateCanvasRect() {
-    canvasRect = canvas.getBoundingClientRect();
-}
-
-window.addEventListener('resize', updateCanvasRect);
-window.addEventListener('scroll', updateCanvasRect);
-
-// Update mouse coordinates relative to canvas
-function updateMouseCoordinates() {
-    if (input.x !== null && input.y !== null) {
-        // Use cached rect
-        mouse.x = input.x - canvasRect.left;
-        // Subtract dynamic offset (approx 5vh)
-        const offset = window.innerHeight * 0.05;
-        mouse.y = (input.y - canvasRect.top) - offset;
-    }
-}
+};
 
 // Create particle class
 class Particle {
-    constructor(x, y, loadingType) {
+    constructor(x, y) {
         this.x = x;
         this.y = y;
-        // Random size for dust
-        this.size = Math.random() * 2 + 0.5; // Small, dust-like
-        // Base density for mass/inertia
+        this.size = Math.random() * 2 + 0.5;
         this.density = (Math.random() * 30) + 1;
-
-        // Random drift velocity
         this.speedX = (Math.random() * 0.5) - 0.25;
         this.speedY = (Math.random() * 0.5) - 0.25;
-
-        // Life cycle for appearing/disappearing
         this.opacity = 0;
         this.opacitySpeed = Math.random() * 0.01 + 0.002;
         this.fadingIn = true;
-        this.maxOpacity = Math.random() * 0.5 + 0.2; // Does not get fully opaque
+        this.maxOpacity = Math.random() * 0.5 + 0.2;
     }
 
     draw() {
+        if (!ctx) return;
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
-
-        // Green, glowy aesthetic
-        // Using rgba(178, 201, 130, opacity) matches #b2c982 (from h1 color) or similar
-        // Let's go with a slightly brighter green for the "glow"
         ctx.fillStyle = 'rgba(178, 201, 130,' + this.opacity + ')';
         ctx.shadowBlur = 5;
         ctx.shadowColor = 'rgba(178, 201, 130, 0.8)';
-
         ctx.fill();
-        ctx.shadowBlur = 0; // Reset for performance if needed, though we want glow
+        ctx.shadowBlur = 0;
     }
 
     update() {
-        // Appearance / Disappearance
         if (this.fadingIn) {
             this.opacity += this.opacitySpeed;
-            if (this.opacity >= this.maxOpacity) {
-                this.fadingIn = false;
-            }
+            if (this.opacity >= this.maxOpacity) this.fadingIn = false;
         } else {
             this.opacity -= this.opacitySpeed;
             if (this.opacity <= 0) {
                 this.fadingIn = true;
-                // Respawn at a random location when fully faded out? 
-                // Alternatively, just let it fade in/out in place.
-                // Let's respawn to keep movement dynamic
                 this.x = Math.random() * canvas.width;
                 this.y = Math.random() * canvas.height;
-                // Randomize movement on respawn
                 this.speedX = (Math.random() * 0.5) - 0.25;
                 this.speedY = (Math.random() * 0.5) - 0.25;
             }
         }
 
-        // Check if mouse is close
         let dx = mouse.x - this.x;
         let dy = mouse.y - this.y;
         let distance = Math.sqrt(dx * dx + dy * dy);
 
-        // Interaction: float away gently
         if (distance < mouse.radius) {
-            // Calculate direction to move away
             const forceDirectionX = dx / distance;
             const forceDirectionY = dy / distance;
-
-            // The closer, the stronger the push
             const force = (mouse.radius - distance) / mouse.radius;
             const directionX = forceDirectionX * force * this.density;
             const directionY = forceDirectionY * force * this.density;
-
             this.x -= directionX;
             this.y -= directionY;
         } else {
-            // No mouse interaction, just drift
             this.x += this.speedX;
             this.y += this.speedY;
         }
 
-        // Boundary check - wrap around
         if (this.x < 0) this.x = canvas.width;
         if (this.x > canvas.width) this.x = 0;
         if (this.y < 0) this.y = canvas.height;
@@ -159,8 +82,8 @@ class Particle {
 }
 
 function init() {
+    if (!canvas) return;
     particlesArray = [];
-    // Number of particles - responsive to screen size
     let numberOfParticles = (canvas.height * canvas.width) / 9000;
     for (let i = 0; i < numberOfParticles; i++) {
         let x = Math.random() * canvas.width;
@@ -170,33 +93,107 @@ function init() {
 }
 
 function animate() {
-    requestAnimationFrame(animate);
+    if (!canvas || !ctx) return;
+    animationId = requestAnimationFrame(animate);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
     updateMouseCoordinates();
-
     for (let i = 0; i < particlesArray.length; i++) {
         particlesArray[i].update();
     }
 }
 
-// Handle resize
-// Handle resize with ResizeObserver to catch all layout changes
-const coverDiv = document.querySelector('.cover');
-if (coverDiv) {
-    const resizeObserver = new ResizeObserver(() => {
-        setCanvasSize();
-        init();
-    });
-    resizeObserver.observe(coverDiv);
-} else {
-    // Fallback if cover not found (unlikely)
-    window.addEventListener('resize', () => {
-        setCanvasSize();
-        init();
-    });
+function setCanvasSize() {
+    if (!canvas) return;
+    const coverDiv = document.querySelector('.cover');
+    if (coverDiv) {
+        canvas.width = coverDiv.clientWidth;
+        canvas.height = coverDiv.clientHeight;
+    } else {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
 }
 
-// Start
-init();
-animate();
+function updateMouseCoordinates() {
+    if (input.x !== null && input.y !== null && canvas) {
+        const rect = canvas.getBoundingClientRect();
+        mouse.x = input.x - rect.left;
+
+        let offset = 0;
+        if (document.querySelector('.cover')) {
+            offset = window.innerHeight * 0.05;
+        }
+
+        mouse.y = (input.y - rect.top) - offset;
+    }
+}
+
+window.addEventListener('mousemove', function (event) {
+    input.x = event.clientX;
+    input.y = event.clientY;
+    input.isMoving = true;
+});
+
+// Resize Observer for element size changes
+let resizeObserver;
+
+function setupResizeObserver() {
+    if (resizeObserver) resizeObserver.disconnect();
+
+    const coverDiv = document.querySelector('.cover');
+    if (coverDiv) {
+        resizeObserver = new ResizeObserver(() => {
+            // Only update if dimensions actually changed to avoid loops
+            if (!canvas) return;
+            if (canvas.width !== coverDiv.clientWidth || canvas.height !== coverDiv.clientHeight) {
+                setCanvasSize();
+                init();
+            }
+        });
+        resizeObserver.observe(coverDiv);
+    }
+}
+
+window.addEventListener('resize', () => {
+    if (canvas) {
+        setCanvasSize();
+        init();
+    }
+});
+
+// Force re-init on full page load (images loaded)
+window.addEventListener('load', () => {
+    if (canvas) {
+        setupResizeObserver(); // Re-bind if needed
+        setCanvasSize();
+        init();
+    }
+});
+
+// Expose Init Globally
+window.initParticles = function () {
+    // Re-query canvas every time to handle SPA navigation
+    canvas = document.getElementById('particles-canvas');
+    if (!canvas) {
+        // If not found, stop animation and return safely (don't throw)
+        if (animationId) cancelAnimationFrame(animationId);
+        return;
+    }
+
+    ctx = canvas.getContext('2d');
+    console.log("Initializing Particles: Canvas found");
+
+    setCanvasSize();
+    setupResizeObserver(); // Start observing bounds
+    init();
+
+    if (animationId) cancelAnimationFrame(animationId);
+    animate();
+}
+
+// Auto-start
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', window.initParticles);
+} else {
+    window.initParticles();
+}

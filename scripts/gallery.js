@@ -5,34 +5,66 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Dynamic Gallery Rendering ---
     const galleryContainer = document.querySelector('.gallery-container');
 
-    // Navigate to Detail Page
+
+
     function openDetail(id) {
         window.location.href = `gallery-detail.html?id=${id}`;
     }
 
-    function renderGallery() {
+    // --- Fetch Data from API ---
+    // --- Fetch Data from API ---
+    // Determine API URL based on current context
+    const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    // If serving from port 5000 (backend), use relative path. Otherwise use absolute localhost:5000.
+    const API_URL = (isLocalhost && window.location.port === '5000')
+        ? '/api/posts'
+        : 'http://localhost:5000/api/posts';
+
+    console.log("Fetching from:", API_URL);
+
+    fetch(API_URL)
+        .then(res => {
+            if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
+            return res.json();
+        })
+        .then(posts => {
+            console.log("Posts fetched:", posts);
+            renderGallery(posts);
+        })
+        .catch(err => {
+            console.error("Error fetching posts:", err);
+            const container = document.querySelector('.gallery-container');
+            if (container) {
+                container.innerHTML = `
+                    <div style="text-align:center; padding: 40px; color: #ff6347;">
+                        <h3>Unable to load posts</h3>
+                        <p>Error: ${err.message}</p>
+                        <p>Running on: ${window.location.host}</p>
+                        <p>Target API: ${API_URL}</p>
+                        <p>Ensure the server (node server.js) is running.</p>
+                    </div>`;
+            }
+        });
+
+    function renderGallery(posts = []) {
         console.log("Render Gallery Called");
+        // Re-query container for safety, though DOMContentLoaded implies it exists
+        const galleryContainer = document.querySelector('.gallery-container');
+
         if (!galleryContainer) {
             console.error("Gallery Container not found!");
             return;
         }
-        if (typeof galleryPosts === 'undefined') {
-            console.error("galleryPosts is undefined! Check gallery-data.js loading.");
-            // Fallback check for window object
-            if (window.galleryPosts) {
-                console.log("Found via window.galleryPosts");
-                galleryPosts = window.galleryPosts;
-            } else {
-                return;
-            }
+        if (posts.length === 0) {
+            galleryContainer.innerHTML = '<p class="no-posts">No posts found. Add some in the Admin Panel!</p>';
+            return;
         }
-        console.log("Gallery Posts Found:", galleryPosts.length);
 
         galleryContainer.innerHTML = ''; // Clear existing content
 
         // Group by Year
         const postsByYear = {};
-        galleryPosts.forEach(post => {
+        posts.forEach(post => {
             if (!postsByYear[post.year]) {
                 postsByYear[post.year] = [];
             }
@@ -102,24 +134,27 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Call render
-    renderGallery();
+    // renderGallery(); // Moved to fetch callback
 
     function initializeInteractions() {
+        console.log("Initializing Interactions");
+
         // --- View Toggle Logic ---
         const toggleBtn = document.querySelector('.view-toggle-btn');
-        const container = document.querySelector('.gallery-container');
+        const galleryContainer = document.querySelector('.gallery-container');
 
-        if (toggleBtn && container) {
+        if (toggleBtn && galleryContainer) {
             const icon = toggleBtn.querySelector('i');
 
             // Remove old listeners to prevent duplicates if re-rendered
             // (In this simple impl, we just assume clean slate or overwrite)
+            toggleBtn.onclick = null; // Clear previous
 
             toggleBtn.onclick = () => {
-                container.classList.toggle('compact');
+                galleryContainer.classList.toggle('compact');
                 toggleBtn.classList.toggle('active');
 
-                if (container.classList.contains('compact')) {
+                if (galleryContainer.classList.contains('compact')) {
                     icon.className = 'fa-solid fa-expand';
                 } else {
                     icon.className = 'fa-solid fa-compress';

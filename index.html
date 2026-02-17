@@ -10,247 +10,262 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Grand+Hotel&family=Oswald:wght@400;500;700&family=Poppins:wght@300;400;500;600;700&display=swap"
     rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.0/color-thief.umd.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
     crossorigin="anonymous" referrerpolicy="no-referrer" />
+
   <title>Sonos Vitae</title>
 </head>
 
 <body>
-  <div class="mobile-scroll-fix"></div>
-  <nav>
-    <div class="logo">
-      <h4>Sonos Vitae</h4>
+  <div id="app-content">
+    <div class="mobile-scroll-fix"></div>
+    <nav>
+      <div class="logo">
+        <h4>Sonos Vitae</h4>
+      </div>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#music">Music</a></li>
+        <li><a href="gallery.html">Gallery</a></li>
+      </ul>
+      <div class="burger">
+        <div class="line1"></div>
+        <div class="line2"></div>
+        <div class="line3"></div>
+      </div>
+    </nav>
+
+    <div class="container">
+      <h1 class="lax lax_preset_fadeOut:0:0">SONOS VITAE</h1>
+      <div class="line lax lax_preset_fadeOut:0:0"></div>
+      <div class="hero-fade"></div>
     </div>
-    <ul class="nav-links">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="#about">About</a></li>
-      <li><a href="#music">Music</a></li>
-      <li><a href="gallery.html">Gallery</a></li>
+
+    <h2 id="music">All of my music so far</h2>
+    <div class="filter">
+      <h3 class="visually-hidden">Filter by the type music</h3>
+      <button class='filter-btn active' data-filter="all">All</button>
+      <button class='filter-btn' data-filter="album">Album</button>
+      <button class='filter-btn' data-filter="ost">Soundtrack</button>
+      <button class='filter-btn' data-filter="single">Single</button>
+    </div>
+
+    <ul class="musiclist">
+      <!-- Albums will be injected here dynamically by scripts/app.js -->
     </ul>
-    <div class="burger">
-      <div class="line1"></div>
-      <div class="line2"></div>
-      <div class="line3"></div>
-    </div>
-  </nav>
 
-  <div class="container">
-    <h1 class="lax lax_preset_fadeOut:0:0">SONOS VITAE</h1>
-    <div class="line lax lax_preset_fadeOut:0:0"></div>
-    <div class="hero-fade"></div>
-  </div>
-
-  <h2 id="music">All of my music so far</h2>
-  <div class="filter">
-    <h3 class="visually-hidden">Filter by the type music</h3>
-    <button class='filter-btn active' data-filter="all">All</button>
-    <button class='filter-btn' data-filter="album">Album</button>
-    <button class='filter-btn' data-filter="ost">Soundtrack</button>
-    <button class='filter-btn' data-filter="single">Single</button>
-  </div>
-
-  <ul class="musiclist">
-    <!-- Albums will be injected here dynamically by scripts/app.js -->
-  </ul>
-
-  <!-- About Me Section -->
-  <section class="about-section" id="about">
-    <div class="about-content">
-      <h2>About Me</h2>
-      <div class="about-text-bg">
-        <p>
-          Sonos Vitae is an exploration of sound and emotion. Through a blend of atmospheric textures and melodic
-          storytelling, the music aims to transport listeners to otherworldly landscapes.
-        </p>
-        <p>
-          Currently focusing on creating immersive soundscapes that bridge the gap between ambient, electronic, and
-          cinematic compositions. Every track is a journey, designed to evoke deep feelings and inspire imagination.
-        </p>
-      </div>
-    </div>
-
-    <div class="about-gallery-container">
-      <div class="about-images">
-        <figure class="about-figure img-front">
-          <img src="assets/images/artist2.webp" alt="Artist Portrait 2" class="about-img">
-          <figcaption>taken by a friend</figcaption>
-        </figure>
-        <figure class="about-figure img-back">
-          <img src="assets/images/artist1.webp" alt="Artist Portrait 1" class="about-img">
-          <figcaption>taken by Michjux Photography</figcaption>
-        </figure>
-      </div>
-      <button class="gallery-arrow" aria-label="Switch photo">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-          stroke-linecap="round" stroke-linejoin="round">
-          <path d="M5 12h14M12 5l7 7-7 7" />
-        </svg>
-      </button>
-    </div>
-  </section>
-
-  <!-- Contact Section -->
-  <section class="contact-section">
-    <div class="contact-container">
-      <div class="contact-lights">
-        <div class="light-orb"></div>
-        <div class="light-orb"></div>
-        <div class="light-orb"></div>
-      </div>
-
-      <div class="contact-header">
-        <h2>Want to contact me?</h2>
-        <p>Send me a mail here!</p>
-        <div class="contact-status">
-          Open for new commissions | Currently working on a new soundtrack
+    <!-- About Me Section -->
+    <section class="about-section" id="about">
+      <div class="about-content">
+        <h2>About Me</h2>
+        <div class="about-text-bg">
+          <p>
+            Sonos Vitae is an exploration of sound and emotion. Through a blend of atmospheric textures and melodic
+            storytelling, the music aims to transport listeners to otherworldly landscapes.
+          </p>
+          <p>
+            Currently focusing on creating immersive soundscapes that bridge the gap between ambient, electronic, and
+            cinematic compositions. Every track is a journey, designed to evoke deep feelings and inspire imagination.
+          </p>
         </div>
       </div>
 
-      <form class="contact-form" id="contactForm" action="mailto:filip-bog@wp.pl" method="POST" enctype="text/plain">
-        <div class="form-group">
-          <input type="text" name="name" class="form-control" placeholder="Your Name" required>
+      <div class="about-gallery-container">
+        <div class="about-images">
+          <figure class="about-figure img-front">
+            <img src="assets/images/artist2.webp" alt="Artist Portrait 2" class="about-img">
+            <figcaption>taken by a friend</figcaption>
+          </figure>
+          <figure class="about-figure img-back">
+            <img src="assets/images/artist1.webp" alt="Artist Portrait 1" class="about-img">
+            <figcaption>taken by Michjux Photography</figcaption>
+          </figure>
         </div>
-        <div class="form-group">
-          <input type="email" name="email" class="form-control" placeholder="Your Email" required>
-        </div>
-        <div class="form-group">
-          <input type="text" name="subject" class="form-control" placeholder="Subject" required>
-        </div>
-        <div class="form-group">
-          <textarea name="message" class="form-control" placeholder="Your Message..." required></textarea>
-        </div>
-        <button type="submit" class="btn-submit">Send Message</button>
-      </form>
-    </div>
-  </section>
-
-
-  <footer class="main-footer">
-    <!-- Replaced static image with CSS-based glowing shapes as requested -->
-    <div class="footer-shapes">
-      <div class="parallax-shape footer-blob-1"></div>
-      <div class="parallax-shape footer-blob-2"></div>
-      <div class="parallax-shape footer-blob-3"></div>
-    </div>
-    <div class="footer-content">
-      <div class="footer-logo">
-        <h2>SONOS VITAE</h2>
+        <button class="gallery-arrow" aria-label="Switch photo">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12h14M12 5l7 7-7 7" />
+          </svg>
+        </button>
       </div>
+    </section>
 
-      <div class="footer-newsletter">
-        <h3>Stay Updated</h3>
-        <p>Subscribe for new gallery posts and album releases.</p>
-        <form class="newsletter-form" action="#" method="POST"
-          onsubmit="event.preventDefault(); alert('Thank you for subscribing! (This is a demo)');">
-          <input type="email" placeholder="Your Email" required>
-          <button type="submit">Subscribe</button>
+    <!-- Contact Section -->
+    <section class="contact-section">
+      <div class="contact-container">
+        <div class="contact-lights">
+          <div class="light-orb"></div>
+          <div class="light-orb"></div>
+          <div class="light-orb"></div>
+        </div>
+
+        <div class="contact-header">
+          <h2>Want to contact me?</h2>
+          <p>Send me a mail here!</p>
+          <div class="contact-status">
+            Open for new commissions | Currently working on a new soundtrack
+          </div>
+        </div>
+
+        <form class="contact-form" id="contactForm" action="mailto:filip-bog@wp.pl" method="POST" enctype="text/plain">
+          <div class="form-group">
+            <input type="text" name="name" class="form-control" placeholder="Your Name" required>
+          </div>
+          <div class="form-group">
+            <input type="email" name="email" class="form-control" placeholder="Your Email" required>
+          </div>
+          <div class="form-group">
+            <input type="text" name="subject" class="form-control" placeholder="Subject" required>
+          </div>
+          <div class="form-group">
+            <textarea name="message" class="form-control" placeholder="Your Message..." required></textarea>
+          </div>
+          <button type="submit" class="btn-submit">Send Message</button>
         </form>
       </div>
+    </section>
 
-      <div class="footer-socials">
-        <div class="follow-text">Follow me on</div>
-        <div class="social-icons">
-          <a href="#" class="social-link" title="Facebook">
-            <i class="fa-brands fa-facebook-f"></i>
-          </a>
-          <a href="#" class="social-link" title="Bandcamp">
-            <i class="fa-brands fa-bandcamp"></i>
-          </a>
-          <a href="#" class="social-link" title="Soundcloud">
-            <i class="fa-brands fa-soundcloud"></i>
-          </a>
-          <a href="#" class="social-link" title="Spotify">
-            <i class="fa-brands fa-spotify"></i>
-          </a>
-          <a href="#" class="social-link" title="YouTube">
-            <i class="fa-brands fa-youtube"></i>
-          </a>
-          <a href="#" class="social-link" title="Twitter">
-            <i class="fa-brands fa-twitter"></i>
-          </a>
-          <a href="#" class="social-link" title="Instagram">
-            <i class="fa-brands fa-instagram"></i>
-          </a>
-          <a href="#" class="social-link" title="Last.fm">
-            <i class="fa-brands fa-lastfm"></i>
-          </a>
-        </div>
+
+    <footer class="main-footer">
+      <!-- Replaced static image with CSS-based glowing shapes as requested -->
+      <div class="footer-shapes">
+        <div class="parallax-shape footer-blob-1"></div>
+        <div class="parallax-shape footer-blob-2"></div>
+        <div class="parallax-shape footer-blob-3"></div>
       </div>
-    </div>
-    <div class="footer-copyright">@SonosVitae : 2026</div>
-  </footer>
-
-  <div id="fullImgBox" class="full-img" style="display: none;">
-    <img id="fullImg" src="">
-    <div class="x" onclick="closeFullImg()">
-      <div class="line4"></div>
-      <div class="line5"></div>
-      <div class="line6"></div>
-    </div>
-  </div>
-
-  <!-- Album Preview Modal -->
-  <div id="albumModal" class="modal">
-    <div class="modal-content">
-      <div class="modal-dynamic-bg"></div>
-      <span class="close-modal">&times;</span>
-      <div class="modal-body">
-        <div class="album-content-left">
-          <!-- Cover -->
-          <img src="" alt="Album Cover" class="modal-cover">
-
-          <!-- Details moved under cover -->
-          <div class="album-header">
-            <h2 class="modal-title"></h2>
-            <div class="album-meta">
-              <span class="modal-artist"></span>
-              <p class="album-date"></p>
-            </div>
-            <div class="album-links">
-              <a class="download-link" target="_blank">Download</a> <!-- leads to bandcamp -->
-              <a class="youtube-link" target="_blank">YouTube</a>
-              <a class="spotify-link" target="_blank">Spotify</a>
-              <a class="tidal-link" target="_blank">Tidal</a>
-            </div>
-          </div>
-
-          <p class="modal-description"></p>
+      <div class="footer-content">
+        <div class="footer-logo">
+          <h2>SONOS VITAE</h2>
         </div>
 
-        <div class="album-content-right">
-          <!-- Bandcamp Player -->
-          <div class="music-player">
-            <div id="bandcamp-embed-container">
-              <!-- Iframe will be injected here -->
-            </div>
+        <div class="footer-newsletter">
+          <h3>Stay Updated</h3>
+          <p>Subscribe for new gallery posts and album releases.</p>
+          <form class="newsletter-form" id="newsletterForm">
+            <input type="email" name="email" placeholder="Your Email" required>
+            <button type="submit">Subscribe</button>
+          </form>
+        </div>
+
+        <div class="footer-socials">
+          <div class="follow-text">Follow me on</div>
+          <div class="social-icons">
+            <a href="https://www.facebook.com/Arsen7750" class="social-link" title="Facebook">
+              <i class="fa-brands fa-facebook-f"></i>
+            </a>
+            <a href="https://sonosvitae.bandcamp.com/" class="social-link" title="Bandcamp">
+              <i class="fa-brands fa-bandcamp"></i>
+            </a>
+            <a href="https://soundcloud.com/sonos_vitae" class="social-link" title="Soundcloud">
+              <i class="fa-brands fa-soundcloud"></i>
+            </a>
+            <a href="https://open.spotify.com/artist/3DsL2vBqr3gJZuRFCWIx8w?si=FkgcqIabRM6Nt1NLyILWEA"
+              class="social-link" title="Spotify">
+              <i class="fa-brands fa-spotify"></i>
+            </a>
+            <a href="https://www.youtube.com/@SonosVitae" class="social-link" title="YouTube">
+              <i class="fa-brands fa-youtube"></i>
+            </a>
+            <a href="https://x.com/SonosVitae" class="social-link" title="Twitter">
+              <i class="fa-brands fa-twitter"></i>
+            </a>
+            <a href="https://www.instagram.com/sonosvitae/" class="social-link" title="Instagram">
+              <i class="fa-brands fa-instagram"></i>
+            </a>
+            <a href="https://www.last.fm/user/SonosVitae" class="social-link" title="Last.fm">
+              <i class="fa-brands fa-lastfm"></i>
+            </a>
           </div>
         </div>
       </div>
+      <div class="footer-copyright">@SonosVitae : 2026</div>
+    </footer>
+
+    <div id="fullImgBox" class="full-img" style="display: none;">
+      <img id="fullImg" src="">
+      <div class="x" onclick="closeFullImg()">
+        <div class="line4"></div>
+        <div class="line5"></div>
+        <div class="line6"></div>
+      </div>
     </div>
-  </div>
+
+    <!-- Album Preview Modal -->
+    <div id="albumModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-dynamic-bg"></div>
+        <span class="close-modal">&times;</span>
+        <div class="modal-body">
+          <div class="album-content-left">
+            <!-- Cover and Title Side-by-Side -->
+            <div class="modal-header-row">
+              <img src="" alt="Album Cover" class="modal-cover">
+              <div class="modal-title-container">
+                <h2 class="modal-title"></h2>
+              </div>
+            </div>
+
+            <div class="album-header">
+              <div class="album-meta">
+                <span class="modal-artist"></span>
+                <p class="album-date"></p>
+              </div>
+              <div class="album-links">
+                <a class="download-link" target="_blank">Download</a>
+                <a class="youtube-link" target="_blank">YouTube</a>
+                <a class="spotify-link" target="_blank">Spotify</a>
+                <a class="tidal-link" target="_blank">Tidal</a>
+              </div>
+            </div>
+
+            <!-- Type/Genre above Description -->
+            <div class="album-type-genre"
+              style="font-size: 0.9em; color: #a2d149; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; display: block;">
+            </div>
+
+            <p class="modal-description"></p>
+          </div>
+
+          <div class="album-content-right">
+            <!-- Title & Type/Genre -->
+            <!-- Right Column Content (Player only) -->
+
+            <!-- Bandcamp Player -->
+            <div class="music-player">
+              <div id="bandcamp-embed-container">
+                <!-- Iframe will be injected here -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
 
-  <!-- Parallax Elements -->
-  <img src="assets/images/green.jpg" alt="green" class="green">
-  <img src="assets/images/leaves.png" alt="leaves" class="leaves">
-  <div class="cover">
-    <div class="parallax-shapes">
-      <div class="parallax-shape shape-1"></div>
-      <div class="parallax-shape shape-2"></div>
-      <div class="parallax-shape shape-3"></div>
-      <div class="parallax-shape shape-4"></div>
-      <div class="parallax-shape shape-5"></div>
-      <div class="parallax-shape shape-6"></div>
+    <!-- Parallax Elements -->
+    <img src="assets/images/green.jpg" alt="green" class="green">
+    <img src="assets/images/leaves.png" alt="leaves" class="leaves">
+    <div class="cover">
+      <div class="parallax-shapes">
+        <div class="parallax-shape shape-1"></div>
+        <div class="parallax-shape shape-2"></div>
+        <div class="parallax-shape shape-3"></div>
+        <div class="parallax-shape shape-4"></div>
+        <div class="parallax-shape shape-5"></div>
+        <div class="parallax-shape shape-6"></div>
+      </div>
+      <canvas id="particles-canvas"></canvas>
     </div>
-    <canvas id="particles-canvas"></canvas>
-  </div>
+  </div> <!-- End App Content -->
 
   <!-- JavaScript for Navigation and Parallax -->
   <script src="scripts/albums.js"></script>
   <script src="scripts/app.js"></script>
   <script src="scripts/particles.js"></script>
-
+  <script src="scripts/contact.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/lax.js"></script>
   <script>
     window.onload = function () {

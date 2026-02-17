@@ -129,16 +129,67 @@
     display: none;
 }
 
-/* Album Cover */
-.modal-cover {
+/* Header Row: Cover + Title Side-by-Side */
+.modal-header-row {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    align-items: flex-end;
+    /* Align to bottom of cover */
+    margin-bottom: 15px;
     width: 100%;
-    max-width: 200px;
-    /* Smaller cover */
+}
+
+.modal-title-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-start;
+    /* Ensure Left Align */
+    text-align: left;
+}
+
+.modal-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 2.2em;
+    font-weight: 700;
+    color: #fff;
+    margin: 0;
+    line-height: 1.1;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    text-align: left;
+    /* Force left align */
+}
+
+.album-type-genre {
+    font-size: 0.9em;
+    color: #cccccc;
+    /* Slightly gray */
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    margin-top: 5px;
+    font-weight: 600;
+}
+
+.genre-small {
+    font-size: 0.8em;
+    /* Smaller than the rest */
+    color: #999;
+    /* Even more gray/faded if desired, or keep same */
+}
+
+/* Album Cover adjustments */
+.modal-cover {
+    width: 180px;
+    /* Fixed width for consistency */
+    height: 180px;
+    object-fit: cover;
     border-radius: 10px;
     box-shadow: 0 8px 15px rgba(0, 0, 0, 0.5);
-    margin-bottom: 20px;
-    align-self: flex-start;
-    /* Ensure left alignment */
+    margin-bottom: 0;
+    /* Remove bottom margin as it's in a flex row */
     flex-shrink: 0;
 }
 
@@ -146,23 +197,10 @@
 .album-header {
     width: 100%;
     margin-bottom: 2px;
-    /* Reduced from 5px */
-    /* Reduced from 10px */
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     flex-shrink: 0;
-}
-
-.modal-title {
-    font-family: 'Poppins', sans-serif;
-    font-size: 2em;
-    font-weight: 700;
-    color: #fff;
-    margin: 0 0 2px 0;
-    text-align: left;
-    text-transform: uppercase;
-    letter-spacing: 1px;
 }
 
 @media screen and (max-width: 900px) {
@@ -274,9 +312,20 @@
         align-items: center;
     }
 
+    .modal-header-row {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .modal-title-container {
+        align-items: center;
+    }
+
     .modal-cover {
         align-self: center;
-        max-width: 250px;
+        width: 200px;
+        height: 200px;
     }
 
     .album-header,

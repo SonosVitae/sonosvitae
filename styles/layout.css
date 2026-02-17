@@ -81,14 +81,14 @@ h2 {
 }
 
 .green {
-    background-image: url('../green.jpg');
+    background-image: url('../assets/images/green.jpg');
     background-size: cover;
     background-position: center;
     z-index: -2;
 }
 
 .leaves {
-    background-image: url('../leaves.png');
+    background-image: url('../assets/images/leaves.png');
     background-size: cover;
     background-position: center;
     z-index: -1;
@@ -271,8 +271,7 @@ body {
     height: 350px;
     top: 15%;
     right: 25%;
-    background-color: rgba(78, 197, 236, 0.6);
-    /* Blue variant */
+    /* Blue variant removed to use dynamic color */
     animation-delay: -3s, -10s;
 }
 
@@ -281,8 +280,7 @@ body {
     height: 250px;
     top: 70%;
     left: 5%;
-    background-color: rgba(123, 78, 236, 0.6);
-    /* Purple variant */
+    /* Purple variant removed to use dynamic color */
     animation-delay: -6s, -15s;
 }
 

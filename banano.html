@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sonos Vitae | Admin Panel</title>
+    <link rel="stylesheet" href="styles/style.css">
+    <link rel="stylesheet" href="styles/components/navbar.css">
+    <link rel="stylesheet" href="styles/pages/admin.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/97f62d1a93.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.0/color-thief.umd.js"></script>
+    <style>
+        /* Extra Admin Styles */
+        .drop-zone {
+            border: 2px dashed #444;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            margin-bottom: 10px;
+            background: #1a1a1a;
+            color: #ccc;
+            transition: border-color 0.3s;
+        }
+
+        .drop-zone:hover,
+        .drop-zone.dragover {
+            border-color: #a2d149;
+            color: #fff;
+        }
+
+        .preview-img {
+            max-width: 100px;
+            max-height: 100px;
+            margin-top: 10px;
+            display: none;
+            border: 1px solid #a2d149;
+        }
+
+        .api-url-input {
+            width: 100%;
+            background: #111;
+            border: 1px solid #333;
+            color: #888;
+            padding: 5px;
+            font-size: 0.8rem;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Login Overlay -->
+    <div id="login-overlay"
+        style="position:fixed; top:0; left:0; width:100%; height:100%; background:#101010; z-index:9999; display:flex; justify-content:center; align-items:center; flex-direction:column;">
+        <h2 style="color:#a2d149; margin-bottom:20px;">Admin Access</h2>
+        <form id="loginForm" style="display:flex; flex-direction:column; gap:15px; width:300px;">
+            <input type="text" name="username" placeholder="Username" required
+                style="padding:10px; background:#222; border:1px solid #444; color:#fff; border-radius:5px;">
+            <input type="password" name="password" placeholder="Password" required
+                style="padding:10px; background:#222; border:1px solid #444; color:#fff; border-radius:5px;">
+            <button type="submit"
+                style="padding:10px; background:#a2d149; color:#000; font-weight:bold; border:none; cursor:pointer; border-radius:5px;">Login</button>
+        </form>
+        <p id="login-error" style="color:#ff6347; margin-top:10px; display:none;"></p>
+    </div>
+
+    <div class="admin-container" id="admin-dashboard" style="display:none;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
+            <h1>Content Manager</h1>
+            <button id="logoutBtn"
+                style="background:#ff6347; padding:5px 15px; border:none; color:white; border-radius:4px; cursor:pointer;">Logout</button>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="gallery">Gallery Posts</button>
+            <button class="tab-btn" data-tab="album">Albums</button>
+            <button class="tab-btn" data-tab="subscribers">Subscribers</button>
+            <button class="tab-btn" data-tab="broadcast"
+                style="background: #a2d149; color: #000; font-weight: bold;">Broadcast</button>
+        </div>
+
+        <!-- Gallery Form -->
+        <div class="form-section active" id="gallery-form-section">
+            <h2>Add New Gallery Post</h2>
+            <form id="galleryForm">
+                <div class="form-group">
+                    <label>ID (Unique)</label>
+                    <input type="text" name="id" required placeholder="e.g. live-show-2026">
+                </div>
+                <div class="form-group">
+                    <label>Title</label>
+                    <input type="text" name="title" required>
+                </div>
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>Year</label>
+                        <input type="number" name="year" value="2026" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Date (Display)</label>
+                        <input type="text" name="date" required placeholder="e.g. JAN 28">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Location</label>
+                    <input type="text" name="location" placeholder="e.g. Krakow, PL">
+                </div>
+                <div class="form-group full-width">
+                    <label>Text Content</label>
+                    <textarea name="text" rows="4" required></textarea>
+                </div>
+
+                <!-- Featured Image Upload -->
+                <div class="form-group">
+                    <label>Featured Image</label>
+                    <div class="drop-zone" id="featured-drop">
+                        <p>Drag & Drop Image Here or Click to Upload</p>
+                        <input type="file" style="display:none;" accept="image/*">
+                    </div>
+                    <img class="preview-img" id="featured-preview">
+                    <input type="text" name="featuredImage" class="api-url-input"
+                        placeholder="Image URL will appear here..." readonly>
+                </div>
+
+                <!-- Stack Images (Multiple?) - Keeping simple for now, user can drag/drop one by one if we enhanced, 
+                     but for MVP let's keep the manual input for stack or simple uploads -->
+                <div class="form-group full-width">
+                    <label>Stack Images (Comma separated URLs)</label>
+                    <input type="text" name="stackImages" placeholder="Upload images below and copy URLs here...">
+                    <!-- Helper Drop Zone -->
+                    <div class="drop-zone" id="helper-drop">
+                        <p>Quick Upload Helper (Drop image to get URL)</p>
+                        <input type="file" style="display:none;" accept="image/*">
+                    </div>
+                    <input type="text" id="helper-url" class="api-url-input" placeholder="Helper URL output" readonly>
+                </div>
+
+                <!-- Attachments -->
+                <div class="form-group full-width">
+                    <label>Attachments (JSON)</label>
+                    <textarea name="attachments" rows="2" placeholder='[{"name":"Demo.mp3","link":"#"}]'></textarea>
+                </div>
+
+                <!-- Sections -->
+                <div class="form-group full-width">
+                    <label>Sections</label>
+                    <div id="sections-container"></div>
+                    <button type="button" id="add-section-btn" class="secondary-btn">+ Add Section</button>
+                </div>
+
+                <input type="hidden" id="edit-mode-id" value="">
+                <div style="display:flex; gap:10px; align-items:center;">
+                    <button type="submit" class="generate-btn">Create Post & Notify Subscribers</button>
+                    <button type="button" id="cancel-edit-btn" class="secondary-btn"
+                        style="display:none; background:#ff6347;">Cancel Edit</button>
+                </div>
+            </form>
+
+            <hr style="border-color:#333; margin: 40px 0;">
+
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                <h2>Manage Existing Posts</h2>
+                <button id="refreshPostsBtn" class="secondary-btn">Refresh List</button>
+            </div>
+
+            <div id="posts-list"
+                style="background:#222; padding:15px; border-radius:5px; max-height:600px; overflow-y:auto; border:1px solid #333;">
+                <p>Loading posts...</p>
+            </div>
+        </div>
+
+        <!-- Album Form -->
+        <div class="form-section" id="album-form-section">
+            <h2>Add New Album</h2>
+            <form id="albumForm">
+                <div class="form-group">
+                    <label>ID (Unique)</label>
+                    <input type="text" name="id" required>
+                </div>
+                <div class="form-group">
+                    <label>Title</label>
+                    <input type="text" name="title" required>
+                </div>
+                <div class="form-group">
+                    <label>Artist</label>
+                    <input type="text" name="artist" value="Sonos Vitae" required>
+                </div>
+                <div class="form-group">
+                    <label>Production Date</label>
+                    <input type="text" name="productionDate" required>
+                </div>
+                <div class="form-group">
+                    <label>Genre</label>
+                    <input type="text" name="genre" required>
+                </div>
+                <div class="form-group">
+                    <label>Type</label>
+                    <select name="type">
+                        <option value="ALBUM">ALBUM</option>
+                        <option value="SINGLE">SINGLE</option>
+                        <option value="SOUNDTRACK">SOUNDTRACK</option>
+                    </select>
+                </div>
+
+                <!-- Cover Upload -->
+                <div class="form-group">
+                    <label>Cover Image</label>
+                    <div class="drop-zone" id="cover-drop">
+                        <p>Drag & Drop Cover Here</p>
+                        <input type="file" style="display:none;" accept="image/*">
+                    </div>
+                    <img class="preview-img" id="cover-preview">
+                    <input type="text" name="coverUrl" class="api-url-input" required readonly>
+                </div>
+
+                <div class="form-group">
+                    <label>Color (Hex)</label>
+                    <input type="color" name="color">
+                </div>
+                <div class="form-group full-width">
+                    <label>Description</label>
+                    <textarea name="description" rows="4"></textarea>
+                </div>
+
+                <h3>Links</h3>
+                <div class="grid-2">
+                    <div class="form-group"><label>Bandcamp ID</label><input type="text" name="bandcampId"></div>
+
+                    <div class="form-group">
+                        <label>Bandcamp Link</label>
+                        <div style="display:flex; gap:5px;">
+                            <input type="text" name="bandcampLink" style="flex:1;">
+                            <a href="#" class="test-link-btn" target="_blank"
+                                style="padding:10px; background:#444; color:#fff; text-decoration:none; border-radius:4px;">🔗</a>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>YouTube Link</label>
+                        <div style="display:flex; gap:5px;">
+                            <input type="text" name="youtubeLink" style="flex:1;">
+                            <a href="#" class="test-link-btn" target="_blank"
+                                style="padding:10px; background:#444; color:#fff; text-decoration:none; border-radius:4px;">🔗</a>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Spotify Link</label>
+                        <div style="display:flex; gap:5px;">
+                            <input type="text" name="spotifyLink" style="flex:1;">
+                            <a href="#" class="test-link-btn" target="_blank"
+                                style="padding:10px; background:#444; color:#fff; text-decoration:none; border-radius:4px;">🔗</a>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Tidal Link</label>
+                        <div style="display:flex; gap:5px;">
+                            <input type="text" name="tidalLink" style="flex:1;">
+                            <a href="#" class="test-link-btn" target="_blank"
+                                style="padding:10px; background:#444; color:#fff; text-decoration:none; border-radius:4px;">🔗</a>
+                        </div>
+                    </div>
+                </div>
+
+                <input type="hidden" id="album-edit-mode-id" value="">
+
+                <div style="display:flex; gap:10px; align-items:center;">
+                    <button type="submit" class="generate-btn">Create Album</button>
+                    <button type="button" id="album-cancel-edit-btn" class="secondary-btn"
+                        style="display:none; background:#ff6347;">Cancel Edit</button>
+                </div>
+            </form>
+
+            <hr style="border-color:#333; margin: 40px 0;">
+
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                <h2>Manage Existing Albums</h2>
+                <button id="refreshAlbumsBtn" class="secondary-btn">Refresh List</button>
+            </div>
+
+            <div id="albums-list"
+                style="background:#222; padding:15px; border-radius:5px; max-height:600px; overflow-y:auto; border:1px solid #333;">
+                <p>Loading albums...</p>
+            </div>
+        </div>
+
+        <!-- Subscribers List -->
+        <div class="form-section" id="subscribers-form-section">
+            <h2>Subscribers</h2>
+            <button id="refreshSubscribers" class="secondary-btn" style="margin-bottom:10px;">Refresh List</button>
+            <div id="subscribers-list"
+                style="background:#222; padding:15px; border-radius:5px; max-height:400px; overflow-y:auto;">
+                <p>Loading...</p>
+            </div>
+        </div>
+
+        <!-- Broadcast Form -->
+        <div class="form-section" id="broadcast-form-section">
+            <h2>Send Newsletter Broadcast</h2>
+            <form id="broadcastForm">
+                <div class="form-group full-width">
+                    <label>Subject</label>
+                    <input type="text" name="subject" required>
+                </div>
+                <div class="form-group full-width">
+                    <label>Message</label>
+                    <textarea name="message" rows="6" required></textarea>
+                </div>
+                <div class="grid-2">
+                    <div class="form-group"><label>Link URL</label><input type="text" name="link"></div>
+                    <div class="form-group"><label>Link Text</label><input type="text" name="linkText"></div>
+                </div>
+                <button type="submit" class="generate-btn" style="background: #a2d149; color: #000;">Send
+                    Broadcast</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Duplicate File Modal -->
+    <div id="upload-conflict-modal"
+        style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:2000; align-items:center; justify-content:center;">
+        <div
+            style="background:#222; padding:30px; border-radius:10px; max-width:500px; text-align:center; border:1px solid #444;">
+            <h3 style="color:#fff; margin-top:0;">File Already Exists</h3>
+            <p id="conflict-msg" style="color:#ccc;">The file "filename.webp" already exists.</p>
+
+            <div style="display:flex; flex-direction:column; gap:10px; margin-top:20px;">
+                <button id="btn-rename" class="generate-btn">Rename New (Auto-Increment)</button>
+                <button id="btn-replace" class="secondary-btn" style="background:#ff6347;">Replace Existing
+                    (Overwrite)</button>
+                <button id="btn-use-existing" class="secondary-btn" style="background:#4ec5ec; color:#000;">Use Existing
+                    File</button>
+                <button id="btn-cancel-upload" class="secondary-btn" style="background:#666;">Cancel Upload</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="scripts/admin.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.0/color-thief.umd.js"></script>
+</body>
+
+</html>

@@ -2,138 +2,174 @@
 
 // Gallery Detail Page Logic
 
+// Gallery Detail Page Logic
+
 document.addEventListener('DOMContentLoaded', () => {
+    console.log("Init Gallery Detail Called");
+
     // 1. Get ID from URL
     const params = new URLSearchParams(window.location.search);
     const id = params.get('id'); // ID is string now
 
-    // 2. Load Data from global galleryPosts (loaded via gallery-data.js)
-    if (typeof galleryPosts === 'undefined') {
-        document.querySelector('.detail-container').innerHTML = '<h1>Error loading data</h1>';
-        return;
-    }
+    // 2. Fetch Data from API
+    const API_URL = `http://localhost:5000/api/posts/${id}`;
 
-    const data = galleryPosts.find(p => p.id === id);
+    fetch(API_URL)
+        .then(res => {
+            if (!res.ok) throw new Error('Post not found');
+            return res.json();
+        })
+        .then(data => {
+            renderDetail(data);
+        })
+        .catch(err => {
+            console.error(err);
+            const container = document.querySelector('.detail-container');
+            if (container) container.innerHTML = '<h1>Post not found</h1><a href="gallery.html" style="color:#b2c982">Back to Gallery</a>';
+        });
 
-    if (!data) {
-        document.querySelector('.detail-container').innerHTML = '<h1>Post not found</h1><a href="gallery.html">Back to Gallery</a>';
-        return;
-    }
+    function renderDetail(data) {
 
-    // 3. Populate Header
-    document.title = `${data.title} - Sonos Vitae`;
-    document.getElementById('detail-title').innerText = data.title;
-    document.getElementById('detail-date').innerText = `${data.date}, ${data.year}`; // Combined date
-    document.getElementById('detail-location').innerText = data.location || "Sonos Vitae World";
-    document.getElementById('detail-main-text').innerHTML = `<p>${data.text}</p>`;
+        // 3. Populate Header
+        document.title = `${data.title} - Sonos Vitae`;
 
-    // Main Image
-    const mainImg = document.getElementById('detail-main-image');
-    const hasFeatured = data.featuredImage && typeof data.featuredImage === 'string' && data.featuredImage.trim() !== '';
+        // Inject Title (Refind elements)
+        const titleBlock = document.querySelector('.title-row');
+        const existingTitle = document.getElementById('detail-title');
+        if (existingTitle) existingTitle.remove();
 
-    if (hasFeatured) {
-        mainImg.src = data.featuredImage;
-        mainImg.onclick = () => openLightbox(data.featuredImage);
-        document.querySelector('.content-right').style.display = 'block';
-    } else {
-        document.querySelector('.content-right').style.display = 'none';
-        // HTML structure handles full width naturally now
-    }
+        if (titleBlock) {
+            const titleH1 = document.createElement('h1');
+            titleH1.id = 'detail-title';
+            titleH1.innerText = data.title;
+            titleBlock.appendChild(titleH1);
+        }
 
-    // 4. Render Sections (Synthesize from stackImages)
-    const sectionsContainer = document.getElementById('detail-sections');
-    sectionsContainer.innerHTML = ''; // Clear defaults
+        // Meta Section Updates
+        const dateEl = document.getElementById('detail-date');
+        if (dateEl) dateEl.innerText = `${data.date}, ${data.year}`;
 
-    // 4. Render Sections
-    sectionsContainer.innerHTML = ''; // Clear defaults
+        const locEl = document.getElementById('detail-location');
+        if (locEl) {
+            locEl.innerText = data.location || "Sonos Vitae World";
 
-    if (data.sections && data.sections.length > 0) {
-        data.sections.forEach(sec => {
-            const sectionEl = document.createElement('div');
-            sectionEl.className = 'detail-section';
+            // Create & Append Share Button (Next to Location)
+            let shareBtn = document.querySelector('.share-btn-sml');
+            if (!shareBtn) {
+                shareBtn = document.createElement('span');
+                shareBtn.className = 'share-btn-sml';
+                shareBtn.innerHTML = '<i class="fa-solid fa-share-nodes"></i> Share';
 
-            let imagesHtml = '';
-            if (sec.images && sec.images.length > 0) {
-                imagesHtml = `<div class="section-gallery">
-                    ${sec.images.map(src =>
-                    `<img src="${src}" class="section-img" onclick="openLightbox('${src}')" alt="Gallery Image">`
-                ).join('')}
-                </div>`;
+                shareBtn.onclick = () => {
+                    const shareData = {
+                        title: `Sonos Vitae: ${data.title}`,
+                        text: `Check out "${data.title}" on Sonos Vitae`,
+                        url: window.location.href
+                    };
+
+                    if (navigator.share) {
+                        navigator.share(shareData).catch(console.error);
+                    } else {
+                        navigator.clipboard.writeText(window.location.href);
+                        const original = shareBtn.innerHTML;
+                        shareBtn.innerHTML = '<i class="fa-solid fa-check"></i> Copied';
+                        setTimeout(() => shareBtn.innerHTML = original, 2000);
+                    }
+                };
+                locEl.parentNode.appendChild(shareBtn);
             }
+        }
 
-            sectionEl.innerHTML = `
-                <h2 class="section-subtitle">${sec.title} <div class="glowing-line"></div></h2>
-                <p class="section-text">${sec.text}</p>
+        const mainText = document.getElementById('detail-main-text');
+        if (mainText) mainText.innerHTML = `<p>${data.text}</p>`;
+
+        // Main Image
+        const mainImg = document.getElementById('detail-main-image');
+        // const contentRight = document.querySelector('.content-right');
+
+        const hasFeatured = data.featuredImage && typeof data.featuredImage === 'string' && data.featuredImage.trim() !== '';
+
+        if (mainImg) {
+            if (hasFeatured) {
+                mainImg.src = data.featuredImage;
+                mainImg.onclick = () => openLightbox(data.featuredImage);
+                if (document.querySelector('.content-right')) document.querySelector('.content-right').style.display = 'block';
+            } else {
+                if (document.querySelector('.content-right')) document.querySelector('.content-right').style.display = 'none';
+            }
+        }
+
+        // 4. Render Sections
+        const sectionsContainer = document.getElementById('detail-sections');
+        if (sectionsContainer) {
+            sectionsContainer.innerHTML = '';
+
+            if (data.sections && data.sections.length > 0) {
+                data.sections.forEach(sec => {
+                    const sectionEl = document.createElement('div');
+                    sectionEl.className = 'detail-section';
+
+                    let imagesHtml = '';
+                    if (sec.images && sec.images.length > 0) {
+                        imagesHtml = `<div class="section-gallery">
+                        ${sec.images.map(src =>
+                            `<img src="${src}" class="section-img" loading="lazy" onclick="openLightbox('${src}')" alt="Gallery Image">`
+                        ).join('')}
+                    </div>`;
+                    }
+
+                    sectionEl.innerHTML = `
+                    <h2 class="section-subtitle">${sec.title} <div class="glowing-line"></div></h2>
+                    <p class="section-text">${sec.text}</p>
+                    ${imagesHtml}
+                `;
+                    sectionsContainer.appendChild(sectionEl);
+                });
+
+            } else if (data.stackImages && data.stackImages.length > 0) {
+                const sectionEl = document.createElement('div');
+                sectionEl.className = 'detail-section';
+
+                const imagesHtml = `<div class="section-gallery">
+                ${data.stackImages.map(src =>
+                    `<img src="${src}" class="section-img" loading="lazy" onclick="openLightbox('${src}')" alt="Gallery Image">`
+                ).join('')}
+            </div>`;
+
+                sectionEl.innerHTML = `
+                <h2 class="section-subtitle">Gallery <div class="glowing-line"></div></h2>
                 ${imagesHtml}
             `;
-            sectionsContainer.appendChild(sectionEl);
-        });
+                sectionsContainer.appendChild(sectionEl);
+            }
+        }
 
-    } else if (data.stackImages && data.stackImages.length > 0) {
-        // Fallback for posts without sections (backward compatibility)
-        const sectionEl = document.createElement('div');
-        sectionEl.className = 'detail-section';
+        // 5. Render Downloads
+        const downloadsContainer = document.getElementById('detail-downloads');
+        if (downloadsContainer) {
+            if (data.attachments && data.attachments.length > 0) {
+                downloadsContainer.innerHTML = '<h3>Downloads</h3>';
+                data.attachments.forEach(file => {
+                    const link = document.createElement('a');
+                    link.href = file.link;
+                    link.className = 'download-link';
+                    link.innerHTML = `<i class="fa-solid fa-file-arrow-down"></i> ${file.name}`;
+                    downloadsContainer.appendChild(link);
+                });
+                downloadsContainer.style.display = 'block';
+            } else {
+                downloadsContainer.style.display = 'none';
+            }
+        }
 
-        const imagesHtml = `<div class="section-gallery">
-            ${data.stackImages.map(src =>
-            `<img src="${src}" class="section-img" onclick="openLightbox('${src}')" alt="Gallery Image">`
-        ).join('')}
-        </div>`;
+        // 6. Spawn Particles (REMOVED)
+        // initParticles();
 
-        sectionEl.innerHTML = `
-            <h2 class="section-subtitle">Gallery <div class="glowing-line"></div></h2>
-            ${imagesHtml}
-        `;
-        sectionsContainer.appendChild(sectionEl);
-    } else {
-        // No sections or stack images? Maybe just text. 
-        // We can leave it empty or add a 'full-width' class to content if needed.
-    }
-
-    // 5. Render Downloads
-    const downloadsContainer = document.getElementById('detail-downloads');
-    if (data.attachments && data.attachments.length > 0) {
-        downloadsContainer.innerHTML = '<h3>Downloads</h3>';
-        data.attachments.forEach(file => {
-            const link = document.createElement('a');
-            link.href = file.link;
-            link.className = 'download-link';
-            link.innerHTML = `<i class="fa-solid fa-file-arrow-down"></i> ${file.name}`;
-            downloadsContainer.appendChild(link);
-        });
-    } else {
-        downloadsContainer.style.display = 'none';
-    }
-
-    // 6. Spawn Particles
-    initParticles();
-
-    // 7. Lightbox Init
-    collectImages(data); // Pre-calculate image list
-    initLightbox();
-});
-
-// --- Particle System ---
-function initParticles() {
-    const container = document.querySelector('.particles-container');
-    const particleCount = 15;
-
-    for (let i = 0; i < particleCount; i++) {
-        const p = document.createElement('div');
-        p.className = 'wind-particle';
-
-        // Random delays and positions
-        const delay = Math.random() * 4; // 0-4s delay
-        const top = Math.random() * 100; // 0-100% height
-        const duration = 3 + Math.random() * 2; // 3-5s speed
-
-        p.style.top = `${top}%`;
-        p.style.animationDelay = `${delay}s`;
-        p.style.animationDuration = `${duration}s`;
-
-        container.appendChild(p);
-    }
-}
+        // 7. Lightbox Init
+        collectImages(data);
+        initLightbox();
+    } // End renderDetail
+}); // End DOMContentLoaded
 
 // --- Lightbox Carousel System ---
 let lightbox, lbImg, lbPrevImg, lbNextImg, lbFarLeftImg, lbFarRightImg;

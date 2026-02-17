@@ -497,7 +497,7 @@ body {
     padding-left: 40px;
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
+    align-items: stretch;
     gap: 30px;
     position: relative;
 }
@@ -651,7 +651,7 @@ body {
 .featured-image-container {
     flex: 1.5;
     /* Takes slightly less space than tex box */
-    height: 400px;
+    /* height: 400px; Removed to allow stretch */
     border-radius: 20px;
     overflow: hidden;
     border: 1px solid rgba(255, 255, 255, 0.1);

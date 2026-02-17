@@ -53,21 +53,14 @@ const closeBtn = document.querySelector('.close-modal');
 const modalDynamicBg = document.querySelector('.modal-dynamic-bg');
 
 // Create element for Album Type if not exists
-let typeLabel = document.querySelector('.album-type');
-if (!typeLabel) {
-    typeLabel = document.createElement('span');
-    typeLabel.className = 'album-type';
-    typeLabel.style.cssText = 'font-size: 0.8em; color: #888; text-transform: uppercase; letter-spacing: 2px; margin-top: 5px; display: block;';
-    const albumHeader = document.querySelector('.album-header');
-    if (albumHeader) {
-        albumHeader.appendChild(typeLabel);
-    }
-}
+// Element for Album Type is now static in HTML: .album-type-genre
 
 // --- Dynamic Grid Generation ---
 const musicListContainer = document.querySelector('.musiclist');
 
-function renderAlbumGrid() {
+window.renderAlbumGrid = function () {
+    // FIX: Re-query container
+    const musicListContainer = document.querySelector('.musiclist');
     if (!musicListContainer) return;
     musicListContainer.innerHTML = ''; // Clear existing static list
 
@@ -114,9 +107,10 @@ function renderAlbumGrid() {
     });
 }
 
+
 // Call render on load
 document.addEventListener('DOMContentLoaded', () => {
-    renderAlbumGrid();
+    window.renderAlbumGrid();
 });
 
 // --- Filtering Logic ---
@@ -230,40 +224,80 @@ function openModal(album) {
         // Reset color immediately to avoid old color flashing
         if (modalArtist) modalArtist.style.color = '';
 
-        // Extract color once loaded
-        modalCover.onload = () => {
-            // Prefer manual color if set
-            if (album.color) {
-                if (modalArtist) modalArtist.style.color = album.color;
-                return;
-            }
-
-            const dominantColor = getDominantColor(modalCover);
-            if (modalArtist && dominantColor) {
-                modalArtist.style.color = dominantColor;
-            }
-        };
-        // Handle case where image is cached and onload doesn't fire immediately but is complete
-        if (modalCover.complete) {
+        // Extract colors once loaded
+        const applyColors = () => {
+            // 1. Dominant (for Artist Name) - kept existing logic or use ColorThief
             // Prefer manual color if set
             if (album.color) {
                 if (modalArtist) modalArtist.style.color = album.color;
             } else {
+                // Use existing helper for dominant (average) or ColorThief
                 const dominantColor = getDominantColor(modalCover);
                 if (modalArtist && dominantColor) {
                     modalArtist.style.color = dominantColor;
                 }
             }
+
+            // 2. Secondary (for Album Type Text)
+            try {
+                if (typeof ColorThief === 'undefined') {
+                    console.error("ColorThief not loaded!");
+                    return;
+                }
+                const colorThief = new ColorThief();
+                // Get palette of 3 colors
+                const palette = colorThief.getPalette(modalCover, 3);
+                console.log("ColorThief Palette:", palette);
+
+                // Palette returns arrays of [r,g,b]
+                // 0 is dominant, 1 is secondary, 2 is tertiary
+                if (palette && palette.length > 1) {
+                    const secondary = palette[1]; // Use second color
+
+                    // Mix with White (50%) to brighten
+                    const r = Math.round((secondary[0] + 255) / 2);
+                    const g = Math.round((secondary[1] + 255) / 2);
+                    const b = Math.round((secondary[2] + 255) / 2);
+
+                    const secHex = "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+                    console.log("Brightened Secondary Hex:", secHex);
+
+                    const typeGenreLabel = document.querySelector('.album-type-genre');
+                    if (typeGenreLabel) {
+                        typeGenreLabel.style.color = secHex;
+                        typeGenreLabel.textContent = typeGenreLabel.textContent; // Force repaint if needed (unlikely)
+                    }
+                }
+            } catch (e) {
+                console.warn("ColorThief failed or image not ready", e);
+                // Fallback to css color if fails
+            }
+        };
+
+        if (modalCover.complete) {
+            applyColors();
+        } else {
+            modalCover.onload = applyColors;
         }
     }
     if (modalDynamicBg) modalDynamicBg.style.backgroundImage = `url('${album.coverUrl}')`;
 
-    // Set Type Label
-    if (album.type && typeLabel) {
-        typeLabel.textContent = album.type;
-        typeLabel.style.display = 'block';
-    } else if (typeLabel) {
-        typeLabel.style.display = 'none';
+    if (modalDynamicBg) modalDynamicBg.style.backgroundImage = `url('${album.coverUrl}')`;
+
+    // Set Type | Genre
+    const typeGenreLabel = document.querySelector('.album-type-genre');
+    if (typeGenreLabel) {
+        let typeText = album.type || 'ALBUM';
+        let html = typeText;
+
+        if (album.genre) {
+            // "make the genre text to be smaller"
+            html += ` <span class="genre-small">| ${album.genre.toUpperCase()}</span>`;
+        }
+        typeGenreLabel.innerHTML = html;
+
+        // Ensure inline display if it was hidden
+        typeGenreLabel.style.display = 'block';
     }
 
     // Update Links
@@ -295,11 +329,13 @@ function openModal(album) {
     const bcLink = album.bandcampLink || "https://sonosvitae.bandcamp.com";
 
     // Construct Iframe
-    // Using the style provided by user: style="border: 0; width: 100%; height: 472px;"
-    // artwork=none because we already show the cover in the modal
-    // Changed height to 100% to fill the new larger container
+    let embedType = 'album';
+    if (album.type === 'SINGLE' || album.type === 'TRACK') {
+        embedType = 'track';
+    }
+
     const iframeHtml = `<iframe style="border: 0; width: 100%; height: 100%; min-height: 472px;" 
-        src="https://bandcamp.com/EmbeddedPlayer/album=${bcId}/size=large/bgcol=333333/linkcol=4ec5ec/artwork=none/transparent=true/" 
+        src="https://bandcamp.com/EmbeddedPlayer/${embedType}=${bcId}/size=large/bgcol=333333/linkcol=4ec5ec/artwork=none/transparent=true/" 
         seamless>
         <a href="${bcLink}">${album.title} by ${album.artist}</a>
     </iframe>`;
@@ -324,7 +360,8 @@ function closeModal() {
     document.documentElement.style.overflow = "auto";
     document.querySelector('nav').classList.remove('nav-hidden');
     // Clear iframe to stop playback
-    bandcampContainer.innerHTML = "";
+    const bandcampContainer = document.getElementById('bandcamp-iframe-container');
+    if (bandcampContainer) bandcampContainer.innerHTML = "";
 }
 
 if (closeBtn) {
@@ -374,8 +411,50 @@ const contactForm = document.getElementById('contactForm');
 if (contactForm) {
     contactForm.addEventListener('submit', (e) => {
         const subjectInput = contactForm.querySelector('input[name="subject"]');
-        if (subjectInput && !subjectInput.value.startsWith('SITE: ')) {
-            subjectInput.value = `SITE: ${subjectInput.value}`;
+    });
+}
+
+// --- Newsletter Subscription Logic ---
+const newsletterForm = document.getElementById('newsletterForm');
+if (newsletterForm) {
+    newsletterForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const emailInput = newsletterForm.querySelector('input[name="email"]');
+        const submitBtn = newsletterForm.querySelector('button');
+        const originalBtnText = submitBtn.innerText;
+
+        if (!emailInput || !emailInput.value) return;
+
+        submitBtn.disabled = true;
+        submitBtn.innerText = 'Subscribing...';
+
+        try {
+            // Use local API in dev, relative path in prod if served together
+            const API_URL = 'http://localhost:5000/api/newsletter/subscribe';
+
+            const res = await fetch(API_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email: emailInput.value })
+            });
+
+            const result = await res.json();
+
+            if (res.ok) {
+                alert(result.msg || 'Subscribed successfully!');
+                newsletterForm.reset();
+            } else {
+                alert(result.msg || 'Failed to subscribe.');
+            }
+
+        } catch (err) {
+            console.error('Newsletter Error:', err);
+            alert('Network error. Please try again later.');
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.innerText = originalBtnText;
         }
     });
 }

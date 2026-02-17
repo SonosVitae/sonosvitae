@@ -147,6 +147,27 @@ nav.navbar {
     align-items: center;
     /* Vertical Center */
     gap: 20px;
+    flex-wrap: wrap;
+    /* Allow wrap for small screens */
+}
+
+.share-btn-sml {
+    margin-left: 15px;
+    font-size: 0.9em;
+    color: #666;
+    cursor: pointer;
+    border: 1px solid #444;
+    padding: 2px 10px;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.share-btn-sml:hover {
+    color: #b2c982;
+    border-color: #b2c982;
 }
 
 /* Back Button (Simplified) */
