@@ -26,9 +26,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
             try {
                 // Determine API URL (Localhost handling)
-                const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-                    ? 'http://localhost:5000/api/auth/login'
-                    : '/api/auth/login';
+                // Dynamic API URL
+                const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') && window.location.port !== '5000'
+                    ? 'http://localhost:5000'
+                    : '';
+                const API_URL = `${API_BASE}/api/auth/login`;
 
                 const res = await fetch(API_URL, {
                     method: 'POST',
@@ -144,13 +146,14 @@ document.addEventListener('DOMContentLoaded', () => {
             const originalText = pTag.innerText;
             pTag.innerText = "Checking...";
 
-            const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-                ? 'http://localhost:5000/api/upload'
-                : '/api/upload';
+            const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') && window.location.port !== '5000'
+                ? 'http://localhost:5000'
+                : '';
+            const API_UPLOAD_BASE = `${API_BASE}/api/upload`;
 
             try {
                 // 1. Check if file exists
-                const checkRes = await fetch(`${API_BASE}/check`, {
+                const checkRes = await fetch(`${API_UPLOAD_BASE}/check`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ filename: file.name })
@@ -275,13 +278,14 @@ document.addEventListener('DOMContentLoaded', () => {
     async function performUpload(file, statusCallback = () => { }) {
         statusCallback("Checking...");
 
-        const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-            ? 'http://localhost:5000/api/upload'
-            : '/api/upload';
+        const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') && window.location.port !== '5000'
+            ? 'http://localhost:5000'
+            : '';
+        const API_UPLOAD_BASE = `${API_BASE}/api/upload`;
 
         try {
             // 1. Check if file exists
-            const checkRes = await fetch(`${API_BASE}/check`, {
+            const checkRes = await fetch(`${API_UPLOAD_BASE}/check`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ filename: file.name })
@@ -309,8 +313,8 @@ document.addEventListener('DOMContentLoaded', () => {
             formData.append('image', file);
 
             // Add action param
-            const uploadUrl = action === 'rename' ? `${API_BASE}?action=rename` :
-                action === 'replace' ? `${API_BASE}?action=replace` : API_BASE;
+            const uploadUrl = action === 'rename' ? `${API_UPLOAD_BASE}?action=rename` :
+                action === 'replace' ? `${API_UPLOAD_BASE}?action=replace` : API_UPLOAD_BASE;
 
             const res = await fetch(uploadUrl, {
                 method: 'POST',
@@ -405,9 +409,10 @@ document.addEventListener('DOMContentLoaded', () => {
             btn.innerText = isEdit ? "Updating Album..." : "Creating Album...";
 
             try {
-                const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-                    ? (isEdit ? `http://localhost:5000/api/albums/${editModeId}` : 'http://localhost:5000/api/albums')
-                    : (isEdit ? `/api/albums/${editModeId}` : '/api/albums');
+                const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') && window.location.port !== '5000'
+                    ? 'http://localhost:5000'
+                    : '';
+                const API_URL = isEdit ? `${API_BASE}/api/albums/${editModeId}` : `${API_BASE}/api/albums`;
 
                 const method = isEdit ? 'PUT' : 'POST';
 
@@ -468,9 +473,10 @@ document.addEventListener('DOMContentLoaded', () => {
         listContainer.innerHTML = '<p>Loading albums...</p>';
 
         try {
-            const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-                ? 'http://localhost:5000/api/albums'
-                : '/api/albums';
+            const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') && window.location.port !== '5000'
+                ? 'http://localhost:5000'
+                : '';
+            const API_URL = `${API_BASE}/api/albums`;
 
             const res = await fetch(API_URL);
             const albums = await res.json();
@@ -525,9 +531,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!confirm(`Are you sure you want to delete "${title}"? This cannot be undone.`)) return;
 
         try {
-            const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-                ? `http://localhost:5000/api/albums/${id}`
-                : `/api/albums/${id}`;
+            const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') && window.location.port !== '5000'
+                ? 'http://localhost:5000'
+                : '';
+            const API_URL = `${API_BASE}/api/albums/${id}`;
 
             const res = await fetch(API_URL, { method: 'DELETE' });
             if (res.ok) {
@@ -710,9 +717,10 @@ document.addEventListener('DOMContentLoaded', () => {
             btn.innerText = isEdit ? "Updating..." : "Creating...";
 
             try {
-                const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-                    ? (isEdit ? `http://localhost:5000/api/posts/${editModeId}` : 'http://localhost:5000/api/posts')
-                    : (isEdit ? `/api/posts/${editModeId}` : '/api/posts');
+                const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') && window.location.port !== '5000'
+                    ? 'http://localhost:5000'
+                    : '';
+                const API_URL = isEdit ? `${API_BASE}/api/posts/${editModeId}` : `${API_BASE}/api/posts`;
 
                 const method = isEdit ? 'PUT' : 'POST';
 
@@ -769,9 +777,10 @@ document.addEventListener('DOMContentLoaded', () => {
         listContainer.innerHTML = '<p>Loading posts...</p>';
 
         try {
-            const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-                ? 'http://localhost:5000/api/posts'
-                : '/api/posts';
+            const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') && window.location.port !== '5000'
+                ? 'http://localhost:5000'
+                : '';
+            const API_URL = `${API_BASE}/api/posts`;
 
             const res = await fetch(API_URL);
             const posts = await res.json();

@@ -34,8 +34,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             // 4. Send Request
-            // Use local API in dev, relative path in prod if served together
-            const API_URL = 'http://localhost:5000/api/contact';
+            // Dynamic API URL: Use relative in prod/same-port, localhost:5000 for dev separate port
+            const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') && window.location.port !== '5000'
+                ? 'http://localhost:5000'
+                : '';
+            const API_URL = `${API_BASE}/api/contact`;
 
             const res = await fetch(API_URL, {
                 method: 'POST',

@@ -12,7 +12,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const id = params.get('id'); // ID is string now
 
     // 2. Fetch Data from API
-    const API_URL = `http://localhost:5000/api/posts/${id}`;
+    // Dynamic API URL
+    const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') && window.location.port !== '5000'
+        ? 'http://localhost:5000'
+        : '';
+    const API_URL = `${API_BASE}/api/posts/${id}`;
 
     fetch(API_URL)
         .then(res => {

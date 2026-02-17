@@ -14,11 +14,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Fetch Data from API ---
     // --- Fetch Data from API ---
     // Determine API URL based on current context
-    const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-    // If serving from port 5000 (backend), use relative path. Otherwise use absolute localhost:5000.
-    const API_URL = (isLocalhost && window.location.port === '5000')
-        ? '/api/posts'
-        : 'http://localhost:5000/api/posts';
+    // Dynamic API URL: Use relative in prod/same-port, localhost:5000 for dev separate port
+    const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') && window.location.port !== '5000'
+        ? 'http://localhost:5000'
+        : '';
+    const API_URL = `${API_BASE}/api/posts`;
 
     console.log("Fetching from:", API_URL);
 

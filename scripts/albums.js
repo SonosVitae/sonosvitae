@@ -4,9 +4,11 @@ let albums = [];
 async function fetchAlbums() {
     try {
         // Use local API in dev, relative in prod
-        const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-            ? 'http://localhost:5000/api/albums'
-            : '/api/albums';
+        // Dynamic API URL: Use relative in prod/same-port, localhost:5000 for dev separate port
+        const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') && window.location.port !== '5000'
+            ? 'http://localhost:5000'
+            : '';
+        const API_URL = `${API_BASE}/api/albums`;
 
         const res = await fetch(API_URL);
         if (!res.ok) throw new Error('Failed to fetch albums');
