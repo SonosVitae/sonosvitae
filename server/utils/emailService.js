@@ -1,17 +1,13 @@
-const nodemailer = require('nodemailer');
+const { Resend } = require('resend');
 const Subscriber = require('../models/Subscriber');
-require('dotenv').config();
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '../.env') });
 
-// Helper: Create Transporter
-const createTransporter = () => {
-    return nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-            user: process.env.EMAIL_USER,
-            pass: process.env.EMAIL_PASS
-        }
-    });
-};
+const apiKey = process.env.RESEND_API_KEY;
+if (!apiKey) {
+    console.error("CRITICAL: RESEND_API_KEY is missing from .env file!");
+}
+const resend = apiKey ? new Resend(apiKey) : null;
 
 /**
  * Send a broadcast email to all subscribers
@@ -26,23 +22,35 @@ const sendBroadcast = async (subject, htmlContent) => {
             return { success: true, count: 0, msg: 'No subscribers to notify.' };
         }
 
-        const transporter = createTransporter();
         const emails = subscribers.map(sub => sub.email);
 
-        // Send as BCC to protect privacy
-        const mailOptions = {
-            from: `"Sonos Vitae" <${process.env.EMAIL_USER}>`,
+        // Resend supports sending to multiple recipients in 'bcc' or loop for individual
+        // For privacy, using BCC or batch sending is best. 
+        // Resend Free Tier limits: 100 emails/day, 3000/mo.
+
+        if (!resend) {
+            return { success: false, msg: 'Email service not configured (Missing API Key)' };
+        }
+
+        // Note: 'from' must be a verified domain on Resend
+        const { data, error } = await resend.emails.send({
+            from: 'Sonos Vitae <onboarding@resend.dev>', // Update this after domain verification
+            to: ['delivered@resend.dev'], // Must send to verified address or self in testing
             bcc: emails,
             subject: `[Sonos Vitae Update] ${subject}`,
             html: htmlContent
-        };
+        });
 
-        await transporter.sendMail(mailOptions);
-        console.log(`Broadcast sent to ${subscribers.length} subscribers.`);
-        return { success: true, count: subscribers.length, msg: `Broadcast sent to ${subscribers.length} subscribers.` };
+        if (error) {
+            console.error("Resend Broadcast Error:", error);
+            return { success: false, msg: error.message };
+        }
+
+        console.log(`Broadcast sent. ID: ${data.id}`);
+        return { success: true, count: emails.length, msg: `Broadcast queued for ${emails.length} subscribers.` };
 
     } catch (err) {
-        console.error("Broadcast Error:", err);
+        console.error("Broadcast Logic Error:", err);
         return { success: false, msg: err.message };
     }
 };
@@ -53,20 +61,22 @@ const sendBroadcast = async (subject, htmlContent) => {
  */
 const sendWelcomeEmail = async (email) => {
     try {
-        const transporter = createTransporter();
-        const mailOptions = {
-            from: `"Sonos Vitae" <${process.env.EMAIL_USER}>`,
-            to: email,
+        if (!resend) return;
+
+        const { data, error } = await resend.emails.send({
+            from: 'Sonos Vitae <onboarding@resend.dev>', // Update this after domain verification
+            to: [email],
             subject: 'Welcome to Sonos Vitae Newsletter',
             html: `
                 <h3>Welcome!</h3>
                 <p>Thank you for subscribing to Sonos Vitae. You will be notified of new gallery posts and album releases.</p>
                 <p>- Filip</p>
             `
-        };
-        await transporter.sendMail(mailOptions);
+        });
+
+        if (error) console.error("Resend Welcome Error:", error);
     } catch (err) {
-        console.error("Welcome Email Error:", err);
+        console.error("Welcome Logic Error:", err);
     }
 };
 
