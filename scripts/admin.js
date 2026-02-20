@@ -86,6 +86,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (target === 'subscribers') {
                 loadSubscribers();
+            } else if (target === 'demoTracks') {
+                loadDemoTracks();
             }
         });
     });
@@ -213,18 +215,54 @@ document.addEventListener('DOMContentLoaded', () => {
         function processColor() {
             try {
                 const colorThief = new ColorThief();
-                const color = colorThief.getColor(img); // Returns [r, g, b]
+                const palette = colorThief.getPalette(img, 3); // Get 3 main colors
 
-                // Brighten the color
-                const brightened = brightenColor(color[0], color[1], color[2], 30); // Increase by 30% for safety to avoid black
-                const hex = rgbToHex(brightened[0], brightened[1], brightened[2]);
+                if (!palette || palette.length === 0) return;
 
                 const input = document.querySelector(inputSelector);
-                if (input) {
-                    input.value = hex;
-                    // Trigger change if needed
-                    input.dispatchEvent(new Event('change'));
-                }
+                const paletteContainer = document.getElementById('color-palette-container');
+
+                if (paletteContainer) paletteContainer.innerHTML = ''; // Clear old swatches
+
+                // Process up to 3 colors
+                palette.slice(0, 3).forEach((color, index) => {
+                    const brightened = brightenColor(color[0], color[1], color[2], 30);
+                    const hex = rgbToHex(brightened[0], brightened[1], brightened[2]);
+
+                    // Set default input to dominant (first) color
+                    if (index === 0 && input) {
+                        input.value = hex;
+                        input.dispatchEvent(new Event('change'));
+                    }
+
+                    // Create swatch UI if container exists
+                    if (paletteContainer && input) {
+                        const swatch = document.createElement('div');
+                        swatch.style.width = '35px';
+                        swatch.style.height = '35px';
+                        swatch.style.borderRadius = '50%';
+                        swatch.style.backgroundColor = hex;
+                        swatch.style.cursor = 'pointer';
+                        swatch.style.border = '2px solid transparent';
+                        swatch.style.boxShadow = '0 2px 5px rgba(0,0,0,0.5)';
+                        swatch.title = `Click to use ${hex}`;
+
+                        // Highlight active swatch on click
+                        swatch.addEventListener('click', () => {
+                            input.value = hex;
+                            input.dispatchEvent(new Event('change'));
+
+                            // Visual feedback
+                            Array.from(paletteContainer.children).forEach(c => c.style.border = '2px solid transparent');
+                            swatch.style.border = '2px solid #fff';
+                        });
+
+                        // Make dominant selected by default
+                        if (index === 0) swatch.style.border = '2px solid #fff';
+
+                        paletteContainer.appendChild(swatch);
+                    }
+                });
             } catch (e) {
                 console.warn("Color extraction failed:", e);
             }
@@ -232,12 +270,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function brightenColor(r, g, b, percent) {
-        // New Strategy: Mix with White (Tint)
-        // This ensures even black gets brighter (becomes grey)
+        // Mix with White (Tint) to brighten
         const factor = percent / 100;
 
         const newR = Math.round(r + ((255 - r) * factor));
-        const newG = 255; // User Request: Max out Green
+        const newG = Math.round(g + ((255 - g) * factor)); // Removed hardcoded 255
         const newB = Math.round(b + ((255 - b) * factor));
 
         return [newR, newG, newB];
@@ -310,7 +347,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // 2. Upload
             statusCallback("Uploading...");
             const formData = new FormData();
-            formData.append('image', file);
+            formData.append('media', file);
 
             // Add action param
             const uploadUrl = action === 'rename' ? `${API_UPLOAD_BASE}?action=rename` :
@@ -337,10 +374,171 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initialize Drop Zones
     setupDropZone('featured-drop', 'featured-preview', 'featuredImage');
-    // Important: For ColorThief to work with local images or cross-origin, standard "img" tag works if same domain. 
-    // Since uploads go to /assets/uploads (same origin), this works.
     setupDropZone('cover-drop', 'cover-preview', 'coverUrl');
     setupDropZone('helper-drop', null, null, true);
+    setupDropZone('audio-drop', null, 'audioUrl'); // Re-using dropzone logic for audio, though we manually handle the input value logic below
+
+    // --- DEMO TRACKS LOGIC ---
+    const demoTrackForm = document.getElementById('demoTrackForm');
+
+    // Override the drop zone specifically for the audio input because the helper looks for 'name' on input
+    const audioDropInputUrl = document.getElementById('demo-track-url');
+    // The setupDropZone above tried to look for input[name="audioUrl"], which doesn't exist. 
+    // Let's hook up the success callback for audio drop manually by listening to changes or just fixing the setupDropZone call:
+    // Actually, setting up custom logic for audio drop since it saves to audio folder:
+    const audioDropZone = document.getElementById('audio-drop');
+    if (audioDropZone) {
+        const audioFileInput = audioDropZone.querySelector('input[type="file"]');
+
+        audioDropZone.addEventListener('click', () => audioFileInput.click());
+
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            audioDropZone.addEventListener(eventName, e => { e.preventDefault(); e.stopPropagation(); });
+        });
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            audioDropZone.addEventListener(eventName, () => audioDropZone.classList.add('dragover'));
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            audioDropZone.addEventListener(eventName, () => audioDropZone.classList.remove('dragover'));
+        });
+
+        audioDropZone.addEventListener('drop', (e) => {
+            if (e.dataTransfer.files.length) handleAudioFile(e.dataTransfer.files[0]);
+        });
+
+        audioFileInput.addEventListener('change', function () {
+            if (this.files.length) handleAudioFile(this.files[0]);
+        });
+
+        async function handleAudioFile(file) {
+            const pTag = audioDropZone.querySelector('p');
+            pTag.innerText = "Uploading Audio...";
+            try {
+                const url = await performUpload(file, (msg) => pTag.innerText = msg);
+                audioDropInputUrl.value = url;
+            } catch (e) {
+                console.error("Audio upload failed", e);
+                pTag.innerText = "Error uploading audio";
+            }
+        }
+    }
+
+    if (demoTrackForm) {
+        demoTrackForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const title = document.getElementById('demo-track-title').value;
+            const url = document.getElementById('demo-track-url').value;
+
+            if (!url) {
+                alert("Please upload an audio file first.");
+                return;
+            }
+
+            try {
+                // Fetch current list
+                const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') && window.location.port !== '5000'
+                    ? 'http://localhost:5000' : '';
+
+                const listRes = await fetch(`${API_BASE}/api/demo-playlist`);
+                let tracks = [];
+                if (listRes.ok) {
+                    tracks = await listRes.json();
+                }
+
+                // Append new
+                tracks.push({
+                    id: 'track_' + Date.now(),
+                    title: title,
+                    url: url
+                });
+
+                // Save
+                const saveRes = await fetch(`${API_BASE}/api/demo-playlist`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(tracks)
+                });
+
+                if (saveRes.ok) {
+                    alert("Track added to Demo Playlist!");
+                    demoTrackForm.reset();
+                    document.getElementById('audio-drop').querySelector('p').innerText = "Drag & Drop Audio File Here";
+                    loadDemoTracks();
+                } else {
+                    alert("Failed to save playlist.");
+                }
+
+            } catch (err) {
+                console.error(err);
+                alert("Network error.");
+            }
+        });
+    }
+
+    const refreshDemoTracksBtn = document.getElementById('refreshDemoTracksBtn');
+    if (refreshDemoTracksBtn) refreshDemoTracksBtn.addEventListener('click', loadDemoTracks);
+
+    async function loadDemoTracks() {
+        const listContainer = document.getElementById('demo-playlist-list');
+        if (!listContainer) return;
+
+        listContainer.innerHTML = '<p>Loading tracks...</p>';
+        try {
+            const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') && window.location.port !== '5000'
+                ? 'http://localhost:5000' : '';
+
+            const listRes = await fetch(`${API_BASE}/api/demo-playlist`);
+            if (!listRes.ok) throw new Error("Failed to load");
+
+            const tracks = await listRes.json();
+
+            if (tracks.length === 0) {
+                listContainer.innerHTML = '<p>No demo tracks currently set.</p>';
+                return;
+            }
+
+            listContainer.innerHTML = '';
+            tracks.forEach((track, index) => {
+                const item = document.createElement('div');
+                item.style.cssText = 'display:flex; justify-content:space-between; align-items:center; padding:10px; border-bottom:1px solid #333; gap:10px; background:#1a1a1a; margin-bottom:5px;';
+
+                item.innerHTML = `
+                    <div style="display:flex; align-items:center; gap:15px; flex:1;">
+                        <div style="color:#a2d149; font-weight:bold; font-size:1.2em;">${String(index + 1).padStart(2, '0')}</div>
+                        <div>
+                            <div style="color:#fff; font-weight:bold;">${track.title}</div>
+                            <div style="color:#666; font-size:0.85em;">${track.url}</div>
+                        </div>
+                    </div>
+                    <div>
+                        <button class="delete-track-btn" data-id="${track.id}" style="background:#ff6347; color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer;">Delete</button>
+                    </div>
+                `;
+
+                item.querySelector('.delete-track-btn').addEventListener('click', async (e) => {
+                    if (!confirm("Remove track?")) return;
+                    const idToRemove = e.target.getAttribute('data-id');
+                    const updatedTracks = tracks.filter(t => t.id !== idToRemove);
+
+                    const saveRes = await fetch(`${API_BASE}/api/demo-playlist`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(updatedTracks)
+                    });
+
+                    if (saveRes.ok) loadDemoTracks();
+                });
+
+                listContainer.appendChild(item);
+            });
+
+        } catch (err) {
+            listContainer.innerHTML = '<p style="color:red;">Error loading tracks.</p>';
+        }
+    }
+
 
     // --- ALBUM FORM (API) ---
     const albumForm = document.getElementById('albumForm');

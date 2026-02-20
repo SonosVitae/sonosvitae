@@ -42,24 +42,19 @@ nav {
 }
 
 .nav-links a {
-    color: #CDE8E5;
+    color: #b2c982;
+    text-shadow: 0 0 10px rgba(178, 201, 130, 0.4);
     text-decoration: none;
     letter-spacing: 3px;
     font-weight: bold;
     font-size: 14px;
     margin-right: 4vw;
     transition: all 0.3s ease;
+    display: inline-block;
+    /* Helps with transform scale */
 }
 
-/* Gallery Button Highlight (Text Only) */
-.nav-links a.nav-highlight {
-    color: #b2c982;
-    text-shadow: 0 0 10px rgba(178, 201, 130, 0.4);
-    margin-right: 4vw;
-    /* Restore margin */
-}
-
-.nav-links a.nav-highlight:hover {
+.nav-links a:hover {
     color: #d4eac8;
     text-shadow: 0 0 15px rgba(178, 201, 130, 0.8), 0 0 30px rgba(178, 201, 130, 0.4);
     transform: scale(1.1);
@@ -140,10 +135,6 @@ nav {
 
     .nav-links a {
         margin-right: 0%;
-    }
-
-    .nav-links a.nav-highlight {
-        margin-right: 0;
     }
 }
 

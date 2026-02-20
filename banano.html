@@ -10,7 +10,8 @@
     <link rel="stylesheet" href="styles/pages/admin.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-    <script src="https://kit.fontawesome.com/97f62d1a93.js" crossorigin="anonymous"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.0/color-thief.umd.js"></script>
     <style>
         /* Extra Admin Styles */
@@ -78,6 +79,7 @@
             <button class="tab-btn active" data-tab="gallery">Gallery Posts</button>
             <button class="tab-btn" data-tab="album">Albums</button>
             <button class="tab-btn" data-tab="subscribers">Subscribers</button>
+            <button class="tab-btn" data-tab="demoTracks">Demo Tracks</button>
             <button class="tab-btn" data-tab="broadcast"
                 style="background: #a2d149; color: #000; font-weight: bold;">Broadcast</button>
         </div>
@@ -217,8 +219,13 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Color (Hex)</label>
-                    <input type="color" name="color">
+                    <label>Color (Hex) - Auto-detected palette</label>
+                    <div style="display:flex; align-items:center; gap: 15px;">
+                        <input type="color" name="color">
+                        <div id="color-palette-container" style="display:flex; gap:10px;">
+                            <!-- Swatches injected by JS -->
+                        </div>
+                    </div>
                 </div>
                 <div class="form-group full-width">
                     <label>Description</label>
@@ -295,6 +302,41 @@
             <div id="subscribers-list"
                 style="background:#222; padding:15px; border-radius:5px; max-height:400px; overflow-y:auto;">
                 <p>Loading...</p>
+            </div>
+        </div>
+
+        <!-- Demo Tracks Setup -->
+        <div class="form-section" id="demoTracks-form-section">
+            <h2>Manage Demo Playlist</h2>
+
+            <div style="background:#222; padding:20px; border-radius:5px; border:1px solid #333; margin-bottom: 30px;">
+                <h3>Add New Track</h3>
+                <form id="demoTrackForm">
+                    <div class="form-group">
+                        <label>Track Title (Displayed in Player)</label>
+                        <input type="text" name="trackTitle" id="demo-track-title" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Audio File (.mp3, .wav)</label>
+                        <div class="drop-zone" id="audio-drop">
+                            <p>Drag & Drop Audio File Here</p>
+                            <input type="file" style="display:none;" accept="audio/*">
+                        </div>
+                        <input type="text" id="demo-track-url" class="api-url-input" required readonly
+                            placeholder="Uploaded URL will appear here">
+                    </div>
+                    <button type="submit" class="generate-btn">Add to Playlist</button>
+                </form>
+            </div>
+
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                <h2>Current Playlist</h2>
+                <button id="refreshDemoTracksBtn" class="secondary-btn">Refresh List</button>
+            </div>
+
+            <div id="demo-playlist-list"
+                style="background:#222; padding:15px; border-radius:5px; max-height:600px; overflow-y:auto; border:1px solid #333;">
+                <p>Loading tracks...</p>
             </div>
         </div>
 

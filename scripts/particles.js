@@ -13,6 +13,8 @@ let input = {
     y: null,
     isMoving: false
 };
+let isVisible = true;
+let observer;
 
 // Create particle class
 class Particle {
@@ -84,7 +86,9 @@ class Particle {
 function init() {
     if (!canvas) return;
     particlesArray = [];
-    let numberOfParticles = (canvas.height * canvas.width) / 9000;
+    // Significantly reduce particle count on smaller screens for performance
+    let density = window.innerWidth < 768 ? 15000 : 9000;
+    let numberOfParticles = (canvas.height * canvas.width) / density;
     for (let i = 0; i < numberOfParticles; i++) {
         let x = Math.random() * canvas.width;
         let y = Math.random() * canvas.height;
@@ -94,7 +98,12 @@ function init() {
 
 function animate() {
     if (!canvas || !ctx) return;
-    animationId = requestAnimationFrame(animate);
+
+    // Only request the next frame if the canvas is visible
+    if (isVisible) {
+        animationId = requestAnimationFrame(animate);
+    }
+
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     updateMouseCoordinates();
     for (let i = 0; i < particlesArray.length; i++) {
@@ -185,10 +194,30 @@ window.initParticles = function () {
 
     setCanvasSize();
     setupResizeObserver(); // Start observing bounds
+
+    // Setup IntersectionObserver to pause animation when off-screen
+    if (observer) observer.disconnect();
+    observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            isVisible = entry.isIntersecting;
+            if (isVisible && !animationId) {
+                animate(); // Resume
+            } else if (!isVisible && animationId) {
+                cancelAnimationFrame(animationId);
+                animationId = null; // Pause
+            }
+        });
+    }, { threshold: 0 });
+    observer.observe(canvas);
+
     init();
 
-    if (animationId) cancelAnimationFrame(animationId);
-    animate();
+    if (animationId) {
+        cancelAnimationFrame(animationId);
+        animationId = null;
+    }
+
+    if (isVisible) animate();
 }
 
 // Auto-start

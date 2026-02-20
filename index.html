@@ -63,12 +63,18 @@
         <h2>About Me</h2>
         <div class="about-text-bg">
           <p>
-            Sonos Vitae is an exploration of sound and emotion. Through a blend of atmospheric textures and melodic
-            storytelling, the music aims to transport listeners to otherworldly landscapes.
+            Sonos Vitae is a single-person project created by Filip Bogusłowicz. I specialize in composing immersive,
+            natural-sounding music that bridges the gap between your vision and the final product. As a classically
+            trained percussionist and sound designer, my philosophy is that game music (whether instrumental or
+            electronic) must fully immerse the player in the world they inhabit. My style ranges from atmospheric, dark,
+            organic electronic textures to majestic, grand orchestral scores.
           </p>
           <p>
-            Currently focusing on creating immersive soundscapes that bridge the gap between ambient, electronic, and
-            cinematic compositions. Every track is a journey, designed to evoke deep feelings and inspire imagination.
+            I have several notable projects under my belt: the highly praised, jazzy soundtrack for the detective visual
+            novel Beyond R: Rule Ripper, the unsettling horror-centric music for the Isaac: Epiphany mod, and my current
+            work on Drehmal: Apotheosis (blending live instruments with massive electronic soundscapes). With experience
+            including three scores performed live at the Białystok Philharmonic Hall, I provide a full-service audio
+            experience from the initial arrangement to the final mix and master.
           </p>
         </div>
       </div>
@@ -90,7 +96,51 @@
             <path d="M5 12h14M12 5l7 7-7 7" />
           </svg>
         </button>
+
+        <!-- Gallery Link moved under images -->
+        <div class="about-gallery-link">
+          <p>
+            More news/posts on:
+            <i class="fas fa-chevron-down animated-arrow"></i>
+          </p>
+          <a href="gallery.html" class="btn-to-gallery">
+            Gallery <i class="fas fa-arrow-right"></i>
+          </a>
+        </div>
       </div>
+
+      <!-- New Demo Playlist & Gallery Link -->
+      <div class="about-extras">
+
+        <!-- Demo Playlist Widget -->
+        <div class="demo-playlist" oncontextmenu="return false;">
+          <div class="player-header">
+            <i class="fas fa-headphones-alt"></i>
+            <h3>Music showcase</h3>
+          </div>
+
+          <!-- Waveform container -->
+          <div class="custom-player-controls">
+            <div class="play-pause-btn" id="play-pause-btn">
+              <i class="fas fa-play"></i>
+            </div>
+            <div id="waveform-container" style="flex:1;">
+              <div id="waveform"></div>
+              <div class="time-display"
+                style="display:flex; justify-content:space-between; font-size:0.8rem; color:#888; font-family:monospace; margin-top:5px;">
+                <span id="current-time">0:00</span>
+                <span id="duration">0:00</span>
+              </div>
+            </div>
+          </div>
+
+          <ul class="playlist-tracks" id="dynamic-playlist">
+            <li>Loading tracks...</li>
+          </ul>
+        </div>
+
+      </div>
+
     </section>
 
     <!-- Contact Section -->
@@ -264,6 +314,9 @@
   <!-- JavaScript for Navigation and Parallax -->
   <script src="scripts/albums.js"></script>
   <script src="scripts/app.js"></script>
+  <!-- Load WaveSurfer before player.js -->
+  <script src="https://unpkg.com/wavesurfer.js@7/dist/wavesurfer.min.js"></script>
+  <script src="scripts/player.js"></script>
   <script src="scripts/particles.js"></script>
   <script src="scripts/contact.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/lax.js"></script>

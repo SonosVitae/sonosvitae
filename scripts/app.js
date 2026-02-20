@@ -1,19 +1,28 @@
-// Parallax Scroll
+// Parallax Scroll - Optimized with RequestAnimationFrame
+let ticking = false;
+
 window.addEventListener('scroll', function () {
     const scrollTop = window.pageYOffset;
 
-    // Move the background slower
-    const greenBg = document.querySelector('.green');
-    if (greenBg) {
-        greenBg.style.transform = `translateY(${scrollTop * 0.6}px)`;
-    }
+    if (!ticking) {
+        window.requestAnimationFrame(function () {
+            // Move the background slower
+            const greenBg = document.querySelector('.green');
+            if (greenBg) {
+                // Using translate3d forces hardware acceleration
+                greenBg.style.transform = `translate3d(0, ${scrollTop * 0.6}px, 0)`;
+            }
 
-    // Move the foreground faster
-    const leavesBg = document.querySelector('.leaves');
-    if (leavesBg) {
-        leavesBg.style.transform = `translateY(${scrollTop * 0.225}px)`;
+            // Move the foreground faster
+            const leavesBg = document.querySelector('.leaves');
+            if (leavesBg) {
+                leavesBg.style.transform = `translate3d(0, ${scrollTop * 0.225}px, 0)`;
+            }
+            ticking = false;
+        });
+        ticking = true;
     }
-});
+}, { passive: true }); // Passive listener improves scroll perf
 
 // Navigation Slide-in for Mobile
 const navSlide = () => {
@@ -401,8 +410,21 @@ function openModal(album) {
 
     // Construct Iframe
     let embedType = 'album';
+
+    // 1. Check database type
     if (album.type === 'SINGLE' || album.type === 'TRACK') {
         embedType = 'track';
+    }
+
+    // 2. Smart override based on URL structure (prevents 404s if admin selected wrong type)
+    if (album.bandcampLink) {
+        if (album.bandcampLink.includes('/track/')) embedType = 'track';
+        if (album.bandcampLink.includes('/album/')) embedType = 'album';
+    }
+
+    // 3. Prevent broken default fallback
+    if (!album.bandcampId || bcId === "3867229439") {
+        embedType = 'album'; // Default ID is an album ID
     }
 
     const iframeHtml = `<iframe style="border: 0; width: 100%; height: 100%; min-height: 472px;" 

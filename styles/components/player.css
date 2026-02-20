@@ -1,0 +1,237 @@
+/* Player and Gallery Link Styles */
+
+.about-extras {
+    margin-top: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* Center the listen widget */
+    width: 100%;
+    /* Force onto full width to center independently of flex items */
+    gap: 30px;
+}
+
+/* Custom Audio Player */
+.demo-playlist {
+    width: 100%;
+    max-width: 480px;
+    /* Limit width to look coherent when centered */
+    background: rgba(255, 255, 255, 0.03);
+    padding: 20px;
+    border-radius: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.player-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+    color: #aeaeae;
+}
+
+.player-header h3 {
+    font-family: "Poppins", sans-serif;
+    font-size: 1.2em;
+    font-weight: 500;
+    color: rgb(160, 195, 155);
+    margin: 0;
+}
+
+.custom-player-controls {
+    display: flex;
+    align-items: flex-start;
+    /* changed from center to align precisely with waveform */
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.play-pause-btn {
+    background: rgba(162, 209, 73, 0.2);
+    color: #a2d149;
+    border: 1px solid rgba(162, 209, 73, 0.3);
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+    /* (60px waveform - 40px button) / 2 = 10px */
+}
+
+.play-pause-btn:hover {
+    background: rgba(162, 209, 73, 0.4);
+    transform: scale(1.05);
+}
+
+.play-pause-btn i {
+    font-size: 14px;
+    margin-left: 2px;
+    /* Slight offset for play icon visually centering */
+}
+
+.play-pause-btn.playing i {
+    margin-left: 0;
+}
+
+
+
+.playlist-tracks {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.playlist-track {
+    padding: 10px 15px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    font-size: 0.95em;
+}
+
+.playlist-track:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.playlist-track.active {
+    background: rgba(162, 209, 73, 0.15);
+    border-left: 3px solid #a2d149;
+    color: #fff;
+}
+
+.track-number {
+    color: #666;
+    margin-right: 15px;
+    font-size: 0.9em;
+}
+
+.playlist-track.active .track-number {
+    color: #a2d149;
+}
+
+
+/* Gallery Link Section - No Window */
+.about-gallery-link {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.about-gallery-link p {
+    margin: 0 !important;
+    font-size: 0.95em !important;
+    color: #aeaeae;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Animated downward pointing arrow */
+.animated-arrow {
+    display: inline-block;
+    animation: bounceDown 1.5s infinite;
+    color: #a2d149;
+    font-size: 1.2em;
+}
+
+@keyframes bounceDown {
+
+    0%,
+    20%,
+    50%,
+    80%,
+    100% {
+        transform: translateY(0);
+    }
+
+    40% {
+        transform: translateY(-8px);
+    }
+
+    60% {
+        transform: translateY(-4px);
+    }
+}
+
+.btn-to-gallery {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 25px;
+    background: transparent;
+    color: #fff;
+    text-decoration: none;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 30px;
+    font-family: "Poppins", sans-serif;
+    font-weight: 500;
+    font-size: 1.05em;
+    transition: all 0.3s ease;
+}
+
+.btn-to-gallery:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: #fff;
+    transform: translateY(-2px);
+}
+
+.btn-to-gallery i {
+    transition: transform 0.3s ease;
+}
+
+.btn-to-gallery:hover i {
+    transform: translateX(5px);
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 500px) {
+    .demo-playlist {
+        padding: 15px;
+    }
+
+    .player-header {
+        margin-bottom: 15px;
+        gap: 10px;
+    }
+
+    .player-header h3 {
+        font-size: 1.1em;
+    }
+
+    .custom-player-controls {
+        gap: 10px;
+        margin-bottom: 15px;
+    }
+
+    .play-pause-btn {
+        width: 36px;
+        height: 36px;
+    }
+
+    .playlist-track {
+        padding: 8px 12px;
+        font-size: 0.85em;
+    }
+
+    .track-number {
+        margin-right: 10px;
+    }
+}

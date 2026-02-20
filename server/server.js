@@ -28,6 +28,7 @@ app.use('/api/newsletter', require('./routes/newsletter'));
 app.use('/api/albums', require('./routes/albums'));
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/upload', require('./routes/upload'));
+app.use('/api/demo-playlist', require('./routes/demoPlaylist'));
 
 // Serve Assets Statically (for uploads)
 app.use('/assets', express.static(path.join(__dirname, '../assets')));
