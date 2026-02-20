@@ -24,30 +24,34 @@ const sendBroadcast = async (subject, htmlContent) => {
 
         const emails = subscribers.map(sub => sub.email);
 
-        // Resend supports sending to multiple recipients in 'bcc' or loop for individual
-        // For privacy, using BCC or batch sending is best. 
-        // Resend Free Tier limits: 100 emails/day, 3000/mo.
-
         if (!resend) {
             return { success: false, msg: 'Email service not configured (Missing API Key)' };
         }
 
-        // Note: 'from' must be a verified domain on Resend
-        const { data, error } = await resend.emails.send({
-            from: 'Sonos Vitae <onboarding@resend.dev>', // Update this after domain verification
-            to: ['delivered@resend.dev'], // Must send to verified address or self in testing
-            bcc: emails,
-            subject: `[Sonos Vitae Update] ${subject}`,
-            html: htmlContent
+        // Send emails individually instead of BCC to bypass Resend test domain restrictions
+        // and prevent accidentally exposing user emails in the "To" field.
+        const sendPromises = emails.map(email => {
+            return resend.emails.send({
+                from: 'Sonos Vitae <onboarding@resend.dev>', // Update this after domain verification
+                to: [email],
+                subject: `[Sonos Vitae Update] ${subject}`,
+                html: htmlContent
+            }).catch(err => {
+                console.error(`Failed to send to ${email}:`, err);
+                return { error: err };
+            });
         });
 
-        if (error) {
-            console.error("Resend Broadcast Error:", error);
-            return { success: false, msg: error.message };
+        // Wait for all individual emails to dispatch
+        const results = await Promise.all(sendPromises);
+
+        // Count successful deliveries
+        let successCount = 0;
+        for (const res of results) {
+            if (!res.error && res.data) successCount++;
         }
 
-        console.log(`Broadcast sent. ID: ${data.id}`);
-        return { success: true, count: emails.length, msg: `Broadcast queued for ${emails.length} subscribers.` };
+        return { success: true, count: successCount, msg: `Broadcast queued individually for ${successCount} subscribers.` };
 
     } catch (err) {
         console.error("Broadcast Logic Error:", err);

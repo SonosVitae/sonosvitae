@@ -30,7 +30,10 @@ const navSlide = () => {
     const nav = document.querySelector('.nav-links');
     const navLinks = document.querySelectorAll('.nav-links li');
 
-    burger.addEventListener('click', () => {
+    burger.addEventListener('click', (e) => {
+        // Prevent default behavior to stop jumping to top of page on some mobile browsers
+        if (e && e.preventDefault) e.preventDefault();
+
         nav.classList.toggle('nav-active');
         document.body.classList.toggle('no-scroll');
 
@@ -45,6 +48,21 @@ const navSlide = () => {
 
         // Burger animation
         burger.classList.toggle('toggle');
+    });
+
+    // Auto-close menu when a link is clicked
+    navLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            if (nav.classList.contains('nav-active')) {
+                nav.classList.remove('nav-active');
+                document.body.classList.remove('no-scroll');
+                burger.classList.remove('toggle');
+
+                navLinks.forEach(l => {
+                    l.style.animation = '';
+                });
+            }
+        });
     });
 }
 navSlide();

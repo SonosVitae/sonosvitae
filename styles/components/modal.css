@@ -91,8 +91,10 @@
     flex: 1;
     /* 2/5 of space approx */
     display: flex;
-    /* align-items: center; Removed to allow full height stretch */
+    align-items: center;
+    /* Center vertically to fix "moved up" issue */
     justify-content: center;
+    /* Center horizontally */
     height: 100%;
 }
 
@@ -266,13 +268,13 @@
 /* Bandcamp Embed Container */
 #bandcamp-embed-container {
     width: 100%;
+    max-width: 450px;
+    /* Constrain width so it visually centers properly */
     border-radius: 10px;
     overflow: hidden;
     background: transparent;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-    /* Remove fixed/min heights to allow centering */
     height: auto;
-    /* Or set specific height if needed for embed to render correctly */
     min-height: 472px;
 }
 
@@ -370,6 +372,16 @@
         gap: 50px;
     }
 
+    .album-content-right {
+        align-items: flex-start;
+        justify-content: flex-start;
+    }
+
+    .album-content-right {
+        align-items: flex-start;
+        justify-content: flex-start;
+    }
+
     /* Scale up the cover */
     .modal-cover {
         width: 350px;
@@ -398,8 +410,13 @@
     }
 
     #bandcamp-embed-container {
-        height: 100%;
-        min-height: 600px;
+        /* Base width fixed, height dynamically mapped to parent boundary */
+        width: 400px !important;
+        max-width: 400px !important;
+        height: calc(100% / 1.2) !important;
+        min-height: 0 !important;
+        transform: scale(1.2);
+        transform-origin: top left;
     }
 }
 
@@ -429,7 +446,12 @@
     }
 
     #bandcamp-embed-container {
-        min-height: 700px;
+        width: 500px !important;
+        max-width: 500px !important;
+        height: calc(100% / 1.5) !important;
+        min-height: 0 !important;
+        transform: scale(1.5);
+        transform-origin: top left;
     }
 }
 
@@ -464,6 +486,11 @@
     }
 
     #bandcamp-embed-container {
-        min-height: 900px;
+        width: 600px !important;
+        max-width: 600px !important;
+        height: calc(100% / 2.0) !important;
+        min-height: 0 !important;
+        transform: scale(2.0);
+        transform-origin: top left;
     }
 }

@@ -235,3 +235,116 @@
         margin-right: 10px;
     }
 }
+
+/* 2K Screens (1920px+) */
+@media screen and (min-width: 1920px) {
+    .demo-playlist {
+        max-width: 550px;
+        padding: 35px;
+    }
+
+    .player-header h3 {
+        font-size: 1.5em;
+    }
+
+    .play-pause-btn {
+        width: 55px;
+        height: 55px;
+        margin-top: 15px;
+        /* Adjust for larger waveform */
+    }
+
+    .play-pause-btn i {
+        font-size: 20px;
+    }
+
+    .playlist-track {
+        font-size: 1.1em;
+        padding: 15px 20px;
+    }
+
+    .about-gallery-link p {
+        font-size: 1.1em !important;
+    }
+
+    .btn-to-gallery {
+        font-size: 1.25em;
+        padding: 15px 35px;
+    }
+
+    .animated-arrow {
+        font-size: 1.5em;
+    }
+}
+
+/* 4K / Ultrawide Screens (2560px+) */
+@media screen and (min-width: 2560px) {
+    .demo-playlist {
+        max-width: 800px;
+        padding: 50px;
+    }
+
+    .player-header {
+        margin-bottom: 30px;
+        gap: 20px;
+    }
+
+    .player-header h3 {
+        font-size: 2.2em;
+    }
+
+    .player-header i {
+        font-size: 2em;
+    }
+
+    .custom-player-controls {
+        gap: 25px;
+        margin-bottom: 30px;
+    }
+
+    .play-pause-btn {
+        width: 80px;
+        height: 80px;
+        margin-top: 20px;
+    }
+
+    .play-pause-btn i {
+        font-size: 30px;
+    }
+
+    .playlist-track {
+        font-size: 1.5em;
+        padding: 20px 30px;
+        border-radius: 15px;
+    }
+
+    .track-number {
+        font-size: 1.2em;
+        margin-right: 25px;
+    }
+
+    .time-display {
+        font-size: 1.1rem !important;
+        margin-top: 10px !important;
+    }
+
+    .about-gallery-link {
+        margin-top: 40px;
+        gap: 25px;
+    }
+
+    .about-gallery-link p {
+        font-size: 1.6em !important;
+    }
+
+    .btn-to-gallery {
+        font-size: 1.8em;
+        padding: 25px 60px;
+        border-radius: 50px;
+        border-width: 2px;
+    }
+
+    .animated-arrow {
+        font-size: 2.2em;
+    }
+}

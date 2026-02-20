@@ -14,10 +14,21 @@ const storage = multer.memoryStorage();
 
 // Filter
 const fileFilter = (req, file, cb) => {
-    if (file.mimetype.startsWith('image/') || file.mimetype.startsWith('audio/')) {
+    // Standard Mimetypes
+    const validMimes = ['image/', 'audio/', 'application/zip', 'application/x-zip-compressed', 'application/pdf', 'application/x-rar-compressed', 'application/x-7z-compressed'];
+
+    // Fallback Physical Extensions
+    const ext = path.extname(file.originalname).toLowerCase();
+    const validExts = ['.zip', '.rar', '.7z', '.pdf', '.mp3', '.wav', '.ogg'];
+
+    const hasValidMime = validMimes.some(mime => file.mimetype.startsWith(mime) || file.mimetype.includes('zip') || file.mimetype.includes('rar') || file.mimetype.includes('pdf'));
+    const hasValidExt = validExts.includes(ext);
+
+    // Some OS drag-drops mask mimetypes as empty string or arbitrary octet-stream, so we accept via extension fallback too
+    if (hasValidMime || hasValidExt) {
         cb(null, true);
     } else {
-        cb(new Error('Invalid file type! Please upload an image or audio file.'), false);
+        cb(new Error(`Invalid file type! Received MIME: ${file.mimetype}, Ext: ${ext}. Please upload an image, audio, or archive file.`), false);
     }
 };
 
@@ -73,11 +84,13 @@ router.post('/', upload.any(), async (req, res) => {
         // Sanitize string
         const sanitized = nameWithoutExt.replace(/[^a-z0-9]/gi, '_').toLowerCase();
 
-        const isAudio = req.file.mimetype.startsWith('audio');
-        const ext = isAudio ? path.extname(req.file.originalname).toLowerCase() : '.webp';
+        const mimeString = req.file.mimetype || '';
+        const isAudio = mimeString.startsWith('audio');
+        const isGeneric = !mimeString.startsWith('image') && !isAudio;
+        const originalExt = path.extname(req.file.originalname).toLowerCase();
 
-        // Default to mp3 if no ext found on audio (for the initial temp name)
-        let finalExt = ext;
+        // Final extension determination
+        let finalExt = originalExt;
         if (isAudio && !finalExt) {
             if (req.file.mimetype.includes('wav')) finalExt = '.wav';
             else if (req.file.mimetype.includes('ogg')) finalExt = '.ogg';
@@ -85,11 +98,11 @@ router.post('/', upload.any(), async (req, res) => {
         }
 
         // Target extensions
-        let targetExt = isAudio ? '.opus' : '.webp';
+        let targetExt = isAudio ? '.opus' : (isGeneric ? finalExt : '.webp');
         let targetFilename = sanitized + targetExt;
 
         // Branch save directory based on type
-        const folderName = isAudio ? 'audio' : 'uploads';
+        const folderName = isAudio ? 'audio' : (isGeneric ? 'files' : 'uploads');
         const uploadPath = path.join(__dirname, `../../assets/${folderName}`);
 
         // Ensure directory exists
@@ -137,6 +150,10 @@ router.post('/', upload.any(), async (req, res) => {
                     });
             });
 
+        } else if (isGeneric) {
+            // Save Generic Files Directly without processing
+            const finalPath = path.join(uploadPath, targetFilename);
+            fs.writeFileSync(finalPath, req.file.buffer);
         } else {
             // Process Image with Sharp
             const finalPath = path.join(uploadPath, targetFilename);

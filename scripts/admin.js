@@ -88,6 +88,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 loadSubscribers();
             } else if (target === 'demoTracks') {
                 loadDemoTracks();
+            } else if (target === 'files') {
+                loadFileTracker();
             }
         });
     });
@@ -169,9 +171,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     // HELPER: Instant Upload
                     try {
                         const url = await performUpload(file, (msg) => pTag.innerText = msg);
+                        if (!url) throw new Error("Server returned empty URL");
                         if (urlInput) urlInput.value = url;
                         setTimeout(() => pTag.innerText = originalText, 2000);
-                    } catch (e) { console.warn(e); }
+                    } catch (e) {
+                        console.warn(e);
+                        alert("Helper Upload Failed: " + file.name + "\n" + e.message);
+                    }
                 } else {
                     // FORM: Defer
                     pendingFiles[inputName] = file;
@@ -198,8 +204,170 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     };
+    // --- STACK IMAGES MULTI-UPLOAD LOGIC ---
+    let currentStackImages = [];
+    const stackPreviewContainer = document.getElementById('stack-images-preview');
+    const hiddenStackImagesInput = document.getElementById('hidden-stack-images');
+
+    function renderStackImages() {
+        if (!stackPreviewContainer) return;
+        stackPreviewContainer.innerHTML = '';
+        currentStackImages.forEach((url, idx) => {
+            const card = document.createElement('div');
+            card.style.cssText = 'position:relative; width:100%; aspect-ratio:1; border:1px solid #444; border-radius:4px; overflow:hidden; background:#222;';
+            card.innerHTML = `
+                <img src="${url}" style="width:100%; height:100%; object-fit:cover;">
+                <button type="button" class="remove-stack-img" data-index="${idx}" style="position:absolute; top:2px; right:2px; background:rgba(255,0,0,0.8); color:white; border:none; border-radius:3px; padding:2px 6px; cursor:pointer; font-size:0.8em;">X</button>
+            `;
+            stackPreviewContainer.appendChild(card);
+        });
+
+        // Bind removes
+        document.querySelectorAll('.remove-stack-img').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const idx = parseInt(e.target.getAttribute('data-index'));
+                currentStackImages.splice(idx, 1);
+                updateStackImagesDict();
+            });
+        });
+    }
+
+    function updateStackImagesDict() {
+        if (hiddenStackImagesInput) {
+            // Join array into comma separated string to match existing payload format
+            hiddenStackImagesInput.value = currentStackImages.join(', ');
+        }
+        renderStackImages();
+    }
+
+    const setupStackDropZone = () => {
+        const dropZone = document.getElementById('stack-drop');
+        if (!dropZone) return;
+
+        const fileInput = dropZone.querySelector('input[type="file"]');
+        const pTag = dropZone.querySelector('p');
+        const originalText = pTag.innerText;
+
+        dropZone.addEventListener('click', () => fileInput.click());
+
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, e => { e.preventDefault(); e.stopPropagation(); }, false);
+        });
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZone.addEventListener(eventName, () => dropZone.classList.add('dragover'), false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, () => dropZone.classList.remove('dragover'), false);
+        });
+
+        dropZone.addEventListener('drop', (e) => handleFiles(e.dataTransfer.files));
+        fileInput.addEventListener('change', function () { handleFiles(this.files); });
+
+        async function handleFiles(files) {
+            if (files.length === 0) return;
+            pTag.innerText = `Uploading ${files.length} images...`;
+
+            const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') && window.location.port !== '5000'
+                ? 'http://localhost:5000'
+                : '';
+
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                if (!file.type.startsWith('image/')) continue; // Skip non-images
+
+                try {
+                    const formData = new FormData();
+                    formData.append('file', file);
+                    const res = await fetch(`${API_BASE}/api/upload?action=rename`, {
+                        method: 'POST',
+                        body: formData
+                    });
+                    if (res.ok) {
+                        const data = await res.json();
+                        currentStackImages.push(data.url);
+                        updateStackImagesDict();  // Update visual grid actively
+                    } else {
+                        const errData = await res.text();
+                        alert(`Stack Upload failed for ${file.name}:\n` + errData);
+                    }
+                } catch (err) {
+                    console.error("Stack Image Upload Error:", err);
+                    alert(`Network error uploading ${file.name}`);
+                }
+            }
+
+            pTag.innerText = originalText;
+            fileInput.value = ''; // Reset
+        }
+    };
 
 
+
+    const setupAttachmentDropZone = () => {
+        const dropZone = document.getElementById('att-drop');
+        if (!dropZone) return;
+
+        const pTag = dropZone.querySelector('p');
+        const originalText = pTag.innerText;
+        const fileInput = dropZone.querySelector('input[type="file"]');
+
+        const handleFiles = async (files) => {
+            if (!files || files.length === 0) return;
+            pTag.innerText = `Uploading ${files.length} attachment(s)...`;
+
+            const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') && window.location.port !== '5000'
+                ? 'http://localhost:5000'
+                : '';
+
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                try {
+                    const formData = new FormData();
+                    formData.append('file', file);
+                    const res = await fetch(`${API_BASE}/api/upload?action=rename`, {
+                        method: 'POST',
+                        body: formData
+                    });
+                    if (res.ok) {
+                        const data = await res.json();
+                        currentAttachments.push({ name: file.name, link: data.url });
+                        updateAttachmentsJson();
+                    } else {
+                        const errData = await res.text();
+                        alert(`Attachment Upload failed for ${file.name}:\n` + errData);
+                    }
+                } catch (err) {
+                    console.error("Attachment Drop Error:", err);
+                    alert(`Network error uploading ${file.name}`);
+                }
+            }
+            pTag.innerText = originalText;
+            if (fileInput) fileInput.value = '';
+        };
+
+        if (fileInput) {
+            dropZone.addEventListener('click', () => fileInput.click());
+            fileInput.addEventListener('change', function () { handleFiles(this.files); });
+        }
+
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, e => { e.preventDefault(); e.stopPropagation(); }, false);
+        });
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZone.addEventListener(eventName, () => dropZone.classList.add('dragover'), false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, () => dropZone.classList.remove('dragover'), false);
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            handleFiles(e.dataTransfer.files);
+        });
+    };
 
     // --- COLOR EXTRACTION ---
     function extractColor(img, inputSelector) {
@@ -375,6 +543,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize Drop Zones
     setupDropZone('featured-drop', 'featured-preview', 'featuredImage');
     setupDropZone('cover-drop', 'cover-preview', 'coverUrl');
+    setupStackDropZone();
+    setupAttachmentDropZone();
     setupDropZone('helper-drop', null, null, true);
     setupDropZone('audio-drop', null, 'audioUrl'); // Re-using dropzone logic for audio, though we manually handle the input value logic below
 
@@ -801,6 +971,109 @@ document.addEventListener('DOMContentLoaded', () => {
     const sectionsContainer = document.getElementById('sections-container');
     const addSectionBtn = document.getElementById('add-section-btn');
 
+    // --- ATTACHMENTS LOGIC ---
+    let currentAttachments = [];
+    const btnAddAttachment = document.getElementById('btn-add-attachment');
+    const attachList = document.getElementById('attachments-display-list');
+    const hiddenAttJson = document.getElementById('hidden-attachments-json');
+
+    function renderAttachments() {
+        if (!attachList) return;
+        attachList.innerHTML = '';
+        currentAttachments.forEach((att, index) => {
+            const li = document.createElement('li');
+            li.style.cssText = 'display:flex; justify-content:space-between; background:#333; padding:5px 10px; border-radius:4px; align-items:center;';
+            li.innerHTML = `
+                <span><strong>${att.name || 'Unnamed'}</strong> <br> <a href="${att.link}" target="_blank" style="color:#b2c982; font-size:0.8em; word-break: break-all;">${att.link}</a></span>
+                <button type="button" class="remove-att-btn" data-index="${index}" style="background:#ff6347; color:white; border:none; border-radius:3px; cursor:pointer; padding: 3px 8px;">X</button>
+            `;
+            attachList.appendChild(li);
+        });
+
+        // Bind remove buttons
+        document.querySelectorAll('.remove-att-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const idx = parseInt(e.target.getAttribute('data-index'));
+                currentAttachments.splice(idx, 1);
+                updateAttachmentsJson();
+            });
+        });
+    }
+
+    function updateAttachmentsJson() {
+        if (hiddenAttJson) {
+            hiddenAttJson.value = JSON.stringify(currentAttachments);
+        }
+        renderAttachments();
+    }
+
+    if (btnAddAttachment) {
+        btnAddAttachment.addEventListener('click', async () => {
+            const nameInput = document.getElementById('att-name');
+            const urlInput = document.getElementById('att-url');
+            const fileInput = document.getElementById('att-file');
+
+            let name = nameInput.value.trim();
+            let link = urlInput.value.trim();
+            const file = fileInput.files[0];
+
+            if (!name && !file && !link) {
+                alert("Please provide at least a file or a URL.");
+                return;
+            }
+
+            const originalBtnText = btnAddAttachment.innerText;
+            btnAddAttachment.disabled = true;
+
+            try {
+                if (file) {
+                    if (!name) name = file.name;
+                    btnAddAttachment.innerText = "Uploading...";
+
+                    const formData = new FormData();
+                    formData.append('file', file);
+
+                    const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') && window.location.port !== '5000'
+                        ? 'http://localhost:5000'
+                        : '';
+
+                    const res = await fetch(`${API_BASE}/api/upload?action=rename`, {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    if (!res.ok) throw new Error("Failed to upload file");
+                    const data = await res.json();
+                    link = data.url;
+                }
+
+                if (!link) {
+                    alert("A valid URL or file upload is required.");
+                    btnAddAttachment.disabled = false;
+                    btnAddAttachment.innerText = originalBtnText;
+                    return;
+                }
+
+                if (!name) name = link.split('/').pop() || "Attachment";
+
+                currentAttachments.push({ name, link });
+                updateAttachmentsJson();
+
+                // Clear inputs
+                nameInput.value = '';
+                urlInput.value = '';
+                fileInput.value = '';
+
+            } catch (err) {
+                console.error("Attachment Error:", err);
+                alert("Error adding attachment.");
+            } finally {
+                btnAddAttachment.disabled = false;
+                btnAddAttachment.innerText = originalBtnText;
+            }
+        });
+    }
+
     // Section Logic
     if (addSectionBtn && sectionsContainer) {
         addSectionBtn.addEventListener('click', () => {
@@ -963,6 +1236,16 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('featured-preview').style.display = 'none';
         }
 
+        // Reset Attachments
+        if (hiddenAttJson) {
+            currentAttachments = [];
+            updateAttachmentsJson();
+        }
+
+        // Reset Stack Images
+        currentStackImages = [];
+        updateStackImagesDict();
+
         // Enable ID field in case it was disabled during edit
         galleryForm.querySelector('input[name="id"]').readOnly = false;
         galleryForm.querySelector('input[name="id"]').style.backgroundColor = '';
@@ -1068,13 +1351,20 @@ document.addEventListener('DOMContentLoaded', () => {
             preview.style.display = 'block';
         }
 
-        galleryForm.querySelector('input[name="stackImages"]').value = post.stackImages ? post.stackImages.join(', ') : '';
+        // 1.5 Populate Stack Images
+        if (post.stackImages && post.stackImages.length > 0) {
+            currentStackImages = [...post.stackImages];
+        } else {
+            currentStackImages = [];
+        }
+        updateStackImagesDict();
 
         if (post.attachments) {
-            galleryForm.querySelector('textarea[name="attachments"]').value = JSON.stringify(post.attachments);
+            currentAttachments = [...post.attachments];
         } else {
-            galleryForm.querySelector('textarea[name="attachments"]').value = '';
+            currentAttachments = [];
         }
+        updateAttachmentsJson();
 
         // 2. Populate Sections
         if (sectionsContainer) {
@@ -1176,6 +1466,129 @@ document.addEventListener('DOMContentLoaded', () => {
                 btn.disabled = false; btn.innerText = originalText;
             }
         });
+    }
+
+    // --- FILE MANAGER LOGIC ---
+    let allServerFiles = [];
+    const fileGrid = document.getElementById('file-tracker-grid');
+    const fileFilterSelect = document.getElementById('file-filter-select');
+    const refreshFilesBtn = document.getElementById('refresh-files-btn');
+
+    if (refreshFilesBtn) refreshFilesBtn.addEventListener('click', loadFileTracker);
+    if (fileFilterSelect) fileFilterSelect.addEventListener('change', renderFileTracker);
+
+    async function loadFileTracker() {
+        if (!fileGrid) return;
+        fileGrid.innerHTML = '<p>Scanning directories and databases... This may take a moment.</p>';
+
+        const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+            ? 'http://localhost:5000/api/files'
+            : '/api/files';
+
+        try {
+            const res = await fetch(API_URL);
+            allServerFiles = await res.json();
+            renderFileTracker();
+        } catch (err) {
+            console.error(err);
+            fileGrid.innerHTML = '<p style="color:red;">Error connecting to file server.</p>';
+        }
+    }
+
+    function renderFileTracker() {
+        if (!fileGrid) return;
+        fileGrid.innerHTML = '';
+
+        const filterValue = fileFilterSelect ? fileFilterSelect.value : 'all';
+
+        const filteredFiles = allServerFiles.filter(f => {
+            if (filterValue === 'used') return f.isUsed;
+            if (filterValue === 'unused') return !f.isUsed;
+            return true;
+        });
+
+        if (filteredFiles.length === 0) {
+            fileGrid.innerHTML = '<p>No files matched the filter criteria.</p>';
+            return;
+        }
+
+        filteredFiles.forEach(f => {
+            const card = document.createElement('div');
+            card.style.cssText = `
+                background: #2a2a2a; 
+                border: 1px solid ${f.isUsed ? '#4caf50' : '#f44336'}; 
+                border-radius: 5px; 
+                padding: 10px; 
+                display: flex; 
+                flex-direction: column; 
+                gap: 10px;
+            `;
+
+            // Convert bytes to MB
+            const mbSize = (f.size / (1024 * 1024)).toFixed(2);
+
+            card.innerHTML = `
+                <div style="flex-grow: 1;">
+                    <a href="${window.location.origin}/${f.path}" target="_blank" style="color: #fff; text-decoration: none; word-break: break-all; font-weight: bold; font-size: 0.9em; display:block; margin-bottom: 5px;">
+                        ${f.filename}
+                    </a>
+                    <div style="font-size: 0.8em; color: #aaa;">
+                        <div>Dir: <b>${f.directory}</b></div>
+                        <div>Size: <b>${mbSize} MB</b></div>
+                        <div style="margin-top: 5px; color: ${f.isUsed ? '#4caf50' : '#f44336'};">
+                            ${f.isUsed ? '<i class="fa-solid fa-check"></i> Used' : '<i class="fa-solid fa-triangle-exclamation"></i> Orphan'}
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Sub-list of links if used
+            if (f.isUsed && f.usedIn && f.usedIn.length > 0) {
+                const usageList = document.createElement('ul');
+                usageList.style.cssText = 'font-size: 0.75em; padding-left: 15px; margin: 0; color: #88ce02;';
+                f.usedIn.forEach(item => {
+                    usageList.innerHTML += `<li>${item}</li>`;
+                });
+                card.appendChild(usageList);
+            } else {
+                const delBtn = document.createElement('button');
+                delBtn.className = 'delete-btn';
+                delBtn.style.cssText = 'width: 100%; padding: 5px; font-size: 0.85em; margin-top: auto;';
+                delBtn.innerHTML = 'Delete Asset';
+                delBtn.onclick = () => deletePhysicalFile(f.path, card);
+                card.appendChild(delBtn);
+            }
+
+            fileGrid.appendChild(card);
+        });
+    }
+
+    async function deletePhysicalFile(filePath, cardElement) {
+        if (!confirm(`Are you sure you want to completely delete ${filePath} from the server? This cannot be undone.`)) return;
+
+        const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+            ? 'http://localhost:5000/api/files'
+            : '/api/files';
+
+        try {
+            const res = await fetch(API_URL, {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ filePath })
+            });
+
+            if (res.ok) {
+                cardElement.remove();
+                // Optional: remove from array locally
+                allServerFiles = allServerFiles.filter(f => f.path !== filePath);
+            } else {
+                const data = await res.json();
+                alert(data.msg || "Failed to delete file.");
+            }
+        } catch (err) {
+            console.error(err);
+            alert("Network error. Could not delete file.");
+        }
     }
 
     // --- SUBSCRIBERS LOGIC ---
