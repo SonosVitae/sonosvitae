@@ -582,7 +582,7 @@ function closeModal() {
     document.documentElement.style.overflow = "auto";
     document.querySelector('nav').classList.remove('nav-hidden');
     // Clear iframe to stop playback
-    const bandcampContainer = document.getElementById('bandcamp-iframe-container');
+    const bandcampContainer = document.getElementById('bandcamp-embed-container');
     if (bandcampContainer) bandcampContainer.innerHTML = "";
 }
 

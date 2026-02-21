@@ -163,11 +163,7 @@ body {
 }
 
 /* Add mask to bottom of images to fade them out before the cut */
-.green,
-.leaves {
-    mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
-    -webkit-mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
-}
+/* Removed heavy mask-image performance killer, .hero-fade handles the gradient cut automatically */
 
 /* Parallax Shapes */
 :root {
@@ -190,16 +186,16 @@ body {
     position: absolute;
     border-radius: 50%;
     opacity: 0.8;
-    mix-blend-mode: screen;
 
-    /* RESTORED: Beautiful soft blur the user wanted */
+    /* Removed mix-blend-mode: screen; to fix WebKit rendering lag */
+    /* Restored original aesthetic blur instead of gradient */
     filter: blur(100px);
     background-color: var(--shape-color);
 
     transition: background-color 1s ease-in-out;
     animation: glow 10s infinite alternate ease-in-out, float 25s infinite ease-in-out;
 
-    /* Hardware acceleration for 60fps blur rendering */
+    /* Hardware acceleration for 60fps rendering */
     will-change: transform, filter, opacity;
     transform: translateZ(0);
 }

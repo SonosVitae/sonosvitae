@@ -11,7 +11,7 @@
     overflow-y: auto;
     /* Ensure modal itself is the scroll container */
     background-color: rgba(0, 0, 0, 0.8);
-    backdrop-filter: blur(5px);
+    /* removed blur */
     align-items: center;
     justify-content: center;
     /* max-height: 95vh; Removed to fix background cutoff */

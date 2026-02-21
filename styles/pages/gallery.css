@@ -111,7 +111,7 @@
     align-items: center;
     justify-content: center;
     transition: all 0.3s ease;
-    backdrop-filter: blur(5px);
+    /* removed blur */
 }
 
 .view-toggle-btn:hover {
@@ -356,8 +356,7 @@ body {
     border-radius: 50px;
     border: 1px solid rgba(255, 255, 255, 0.1);
     background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    /* removed blur */
     color: white;
     font-family: 'Poppins', sans-serif;
     font-size: 1.1em;
@@ -507,8 +506,7 @@ body {
     flex: 2;
     /* Takes mostly left space of right column */
     background: rgba(255, 255, 255, 0.03);
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
+    /* removed blur */
     border: 1px solid rgba(255, 255, 255, 0.05);
     border-radius: 20px;
     padding: 30px;
@@ -620,8 +618,7 @@ body {
     width: 100%;
     height: 50px;
     /* Blur the text underneath */
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
+    /* removed blur */
     /* Make the blur itself fade in (so top text is sharp) */
     mask-image: linear-gradient(to bottom, transparent, black 100%);
     -webkit-mask-image: linear-gradient(to bottom, transparent, black 100%);

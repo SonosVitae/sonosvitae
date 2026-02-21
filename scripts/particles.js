@@ -36,10 +36,7 @@ class Particle {
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
         ctx.fillStyle = 'rgba(178, 201, 130,' + this.opacity + ')';
-        ctx.shadowBlur = 5;
-        ctx.shadowColor = 'rgba(178, 201, 130, 0.8)';
         ctx.fill();
-        ctx.shadowBlur = 0;
     }
 
     update() {
@@ -86,8 +83,8 @@ class Particle {
 function init() {
     if (!canvas) return;
     particlesArray = [];
-    // Significantly reduce particle count on smaller screens for performance
-    let density = window.innerWidth < 768 ? 15000 : 9000;
+    // Significantly reduce particle count on smaller screens for performance, but preserve original density on PC
+    let density = window.innerWidth < 768 ? 25000 : 9000;
     let numberOfParticles = (canvas.height * canvas.width) / density;
     for (let i = 0; i < numberOfParticles; i++) {
         let x = Math.random() * canvas.width;
