@@ -18,6 +18,8 @@
 
 .music img {
     width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
     cursor: pointer;
     border-radius: 25px;
     margin: 0px;
@@ -58,23 +60,85 @@ li::marker {
 
 .show-more-btn {
     background: transparent;
-    border: 1px solid #b2c982;
+    border: 2px solid #b2c982;
     color: #b2c982;
-    font-family: "Poppins", sans-serif;
-    font-size: 1.2em;
-    padding: 15px 40px;
-    border-radius: 50px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
     cursor: pointer;
     transition: all 0.3s ease;
-    text-transform: uppercase;
-    letter-spacing: 2px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    animation: bounce 2s infinite ease-in-out;
+}
+
+@keyframes bounce {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
 }
 
 .show-more-btn:hover {
     background: #b2c982;
     color: #000;
     box-shadow: 0 0 20px rgba(178, 201, 130, 0.4);
-    transform: translateY(-3px);
+    /* Remove translate on hover so it doesn't fight the keyframes */
+}
+
+/* Arrow Rotation */
+.show-more-btn i {
+    transition: transform 0.4s ease-in-out;
+}
+
+.show-more-btn.expanded i {
+    transform: rotate(180deg);
+}
+
+/* Grid Container Transition */
+.musiclist {
+    transition: max-height 0.5s ease-in-out, padding-bottom 0.5s ease-in-out;
+    max-height: 5000px;
+    /* Large enough default fallback */
+    overflow: hidden;
+    /* Prevent items spilling during animation */
+}
+
+/* Grid Fade Masking State */
+.grid-fade-bottom {
+    mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
+}
+
+/* Expanded State */
+.grid-expanded {
+    max-height: 5000px;
+    /* Javascript will calculate precision */
+    mask-image: none;
+    -webkit-mask-image: none;
+}
+
+/* Reveal Animations */
+.hidden-by-limit {
+    transition: opacity 0.3s ease-out, transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    will-change: opacity, transform;
+}
+
+.album-hidden {
+    opacity: 0;
+    transform: scale(0.9) translateY(20px);
+}
+
+.album-reveal {
+    opacity: 1;
+    transform: scale(1) translateY(0);
 }
 
 
@@ -221,4 +285,11 @@ li::marker {
         font-size: 2.2em;
         padding: 30px 80px;
     }
+}
+
+/* View Transitions Overrides */
+::view-transition-old(*),
+::view-transition-new(*) {
+    animation-duration: 0.5s;
+    animation-timing-function: cubic-bezier(0.25, 1, 0.5, 1);
 }

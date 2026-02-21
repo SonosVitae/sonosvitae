@@ -1,20 +1,22 @@
 // Parallax Scroll - Optimized with RequestAnimationFrame
 let ticking = false;
 
+// Cache the DOM nodes to prevent layout thrashing on every frame
+const greenBg = document.querySelector('.green');
+const leavesBg = document.querySelector('.leaves');
+
 window.addEventListener('scroll', function () {
     const scrollTop = window.pageYOffset;
 
     if (!ticking) {
         window.requestAnimationFrame(function () {
             // Move the background slower
-            const greenBg = document.querySelector('.green');
             if (greenBg) {
                 // Using translate3d forces hardware acceleration
                 greenBg.style.transform = `translate3d(0, ${scrollTop * 0.6}px, 0)`;
             }
 
             // Move the foreground faster
-            const leavesBg = document.querySelector('.leaves');
             if (leavesBg) {
                 leavesBg.style.transform = `translate3d(0, ${scrollTop * 0.225}px, 0)`;
             }
@@ -88,23 +90,19 @@ const musicListContainer = document.querySelector('.musiclist');
 const INITIAL_ALBUM_LIMIT = 10;
 let isExpanded = false;
 
+let isGridInitialized = false;
 
-window.renderAlbumGrid = function (filter = 'all') {
+window.renderAlbumGrid = function (filter = 'all', forceRebuild = false) {
     console.log("Rendering Album Grid...");
 
-    // Determine limit based on screen width
-    // Mobile (< 768px): 2 cols * 3 rows = 6 items
-    // Desktop: 5 cols * 2 rows = 10 items
     let limit = 10;
     if (window.innerWidth < 768) {
         limit = 6;
     }
 
-    // FIX: Re-query container
     const musicListContainer = document.querySelector('.musiclist');
     if (!musicListContainer) return;
 
-    // Check if Show More button exists, if not create wrapper
     let paginationContainer = document.querySelector('.pagination-container');
     if (!paginationContainer) {
         paginationContainer = document.createElement('div');
@@ -112,93 +110,199 @@ window.renderAlbumGrid = function (filter = 'all') {
         musicListContainer.after(paginationContainer); // Place after grid
     }
 
-    // Clear list but NOT the pagination container (it's outside)
-    musicListContainer.innerHTML = '';
-
-    // Filter albums first if needed (though usually we render all and toggle visibility)
-    // But for "Show More", we are manipulating the *rendered* list from the *full* set.
-    // However, if we filter by category, we should probably ignore the limit or apply it to the filtered set?
-    // Let's assume Limit applies to "All" view primarily.
-
-    let displayedCount = 0;
-    let musicIndex = 0;
-    let hasHiddenItems = false;
-
-    albums.forEach(album => {
-        // Map types to categories for filtering
-        let category = 'album';
-        if (album.type === 'SINGLE') category = 'single';
-        if (album.type === 'SOUNDTRACK') category = 'ost';
-
-        // Check Filter
-        let isVisible = (filter === 'all' || filter === category || category === 'all');
-        if (!isVisible) return; // Skip non-matching
-
-        // Check Limit (Only if filter is 'all')
-        let shouldRender = true;
-
-        // If we are filtering by specific category, show all of them.
-        // If we are on 'all', respect the limit unless expanded.
-        if (filter === 'all' && !isExpanded) {
-            if (displayedCount >= limit) {
-                shouldRender = false; // We render it but hide it? Or not render?
-                // If we don't render, filterEvents won't find them to unhide later.
-                // Better to render them with a special class.
-            }
+    // 1. Initialize DOM exactly once to preserve image loaded states during transitions
+    if (!isGridInitialized || forceRebuild) {
+        if (!albums || albums.length === 0) {
+            // Guard against DOMContentLoaded firing before the async fetch finishes in albums.js
+            return;
         }
 
-        const li = document.createElement('li');
-        li.className = 'music';
-        li.dataset.category = category;
-        li.dataset.id = album.id;
-        li.style.viewTransitionName = `conf-${++musicIndex}`;
+        musicListContainer.innerHTML = '';
+        let musicIndex = 0;
 
-        li.innerHTML = `
-            <img src="${album.coverUrl}" alt="${album.title} Cover" loading="lazy">
-            <h3 class="albumname">${album.title}</h3>
-        `;
+        albums.forEach(album => {
+            let category = 'album';
+            if (album.type === 'SINGLE') category = 'single';
+            if (album.type === 'SOUNDTRACK') category = 'ost';
 
-        li.addEventListener('click', () => openModal(album));
+            const li = document.createElement('li');
+            li.className = 'music';
+            li.dataset.category = category;
+            li.dataset.id = album.id;
+            li.style.viewTransitionName = `conf-${++musicIndex}`; // Crucial for startViewTransition magic
 
-        li.addEventListener('mouseenter', () => {
-            const root = document.documentElement;
-            if (album.color) root.style.setProperty('--shape-color', album.color);
+            li.innerHTML = `
+                <img src="${album.coverUrl}" alt="${album.title} Cover" loading="lazy">
+                <h3 class="albumname">${album.title}</h3>
+            `;
+
+            li.addEventListener('click', () => openModal(album));
+
+            li.addEventListener('mouseenter', () => {
+                const root = document.documentElement;
+                if (album.color) root.style.setProperty('--shape-color', album.color);
+            });
+
+            li.addEventListener('mouseleave', () => {
+                const root = document.documentElement;
+                root.style.setProperty('--shape-color', 'rgba(162, 209, 73, 0.8)');
+            });
+
+            musicListContainer.appendChild(li);
         });
+        isGridInitialized = true;
+    }
 
-        li.addEventListener('mouseleave', () => {
-            const root = document.documentElement;
-            root.style.setProperty('--shape-color', 'rgba(162, 209, 73, 0.8)');
-        });
+    // 2. Evaluate Visibility Logic for all nodes
+    let displayedCount = 0;
+    let hasHiddenItems = false;
+    const allItems = musicListContainer.querySelectorAll('.music');
 
+    musicListContainer.classList.remove('grid-fade-bottom');
+
+    allItems.forEach(li => {
+        let category = li.dataset.category;
+        let isVisible = (filter === 'all' || filter === category || category === 'all');
+
+        if (!isVisible) {
+            // Filtered out vertically
+            li.style.display = 'none';
+            li.classList.remove('hidden-by-limit', 'album-hidden', 'album-reveal');
+            return;
+        }
+
+        // Visible by filter, apply limits
         if (filter === 'all' && !isExpanded && displayedCount >= limit) {
-            li.classList.add('hidden-by-limit');
+            li.classList.add('hidden-by-limit', 'album-hidden');
+            li.classList.remove('album-reveal');
             li.style.display = 'none';
             hasHiddenItems = true;
+        } else if (filter === 'all' && isExpanded && displayedCount >= limit) {
+            li.classList.add('hidden-by-limit', 'album-reveal');
+            li.classList.remove('album-hidden');
+            li.style.display = 'block';
+            hasHiddenItems = true;
+        } else {
+            // Unrestricted
+            li.classList.remove('hidden-by-limit', 'album-hidden', 'album-reveal');
+            li.style.display = 'block';
         }
 
-        musicListContainer.appendChild(li);
         displayedCount++;
     });
 
+    if (hasHiddenItems && !isExpanded) {
+        musicListContainer.classList.add('grid-fade-bottom');
+    }
+
     // Handle "Show More" Button
-    updateShowMoreButton(hasHiddenItems, paginationContainer);
+    updateShowMoreButton(hasHiddenItems, paginationContainer, musicListContainer);
 }
 
-function updateShowMoreButton(show, container) {
-    container.innerHTML = ''; // Clear existing
+function updateShowMoreButton(show, paginationContainer, musicListContainer) {
+    paginationContainer.innerHTML = ''; // Clear existing
     if (show) {
         const btn = document.createElement('button');
         btn.className = 'show-more-btn';
-        btn.textContent = 'Show More';
+        if (isExpanded) btn.classList.add('expanded');
+        btn.innerHTML = '<i class="fa-solid fa-chevron-down"></i>';
         btn.onclick = () => {
-            isExpanded = true;
-            document.querySelectorAll('.hidden-by-limit').forEach(el => {
-                el.style.display = 'block'; // Or 'list-item'? block works for li in grid usually
-                el.classList.remove('hidden-by-limit');
-            });
-            btn.remove(); // Remove self
+            const toggleItems = document.querySelectorAll('.hidden-by-limit');
+
+            if (!isExpanded) {
+                // *** EXPANDING ***
+                isExpanded = true;
+                btn.classList.add('expanded');
+
+                // 1. Temporarily disable CSS transitions to lock the anchor height instantly
+                musicListContainer.style.transition = 'none';
+
+                const startHeight = musicListContainer.offsetHeight;
+                musicListContainer.style.maxHeight = startHeight + 'px';
+                void musicListContainer.offsetHeight; // force reflow
+
+                // 2. Add elements into the flow instantly to measure total target height
+                toggleItems.forEach((el, index) => {
+                    el.style.display = 'block';
+                    el.style.transitionDelay = `${index * 30}ms`;
+                });
+
+                // Measure new height
+                const targetHeight = musicListContainer.scrollHeight;
+
+                // 3. Restore CSS transitions and force reflow so the browser knows they are back
+                musicListContainer.style.transition = '';
+                void musicListContainer.offsetHeight;
+
+                // 4. Fire the height transition down smoothly
+                setTimeout(() => {
+                    // Remove mask so new items show through clearly
+                    musicListContainer.classList.remove('grid-fade-bottom');
+                    musicListContainer.classList.add('grid-expanded');
+
+                    musicListContainer.style.maxHeight = targetHeight + 'px';
+
+                    // And trigger their opacity fade-ins
+                    toggleItems.forEach((el) => {
+                        el.classList.remove('album-hidden');
+                        el.classList.add('album-reveal');
+                    });
+                }, 10);
+
+                // Wait for the full height transition to finish, then unlock max-height for responsive resizing
+                setTimeout(() => {
+                    if (isExpanded) {
+                        musicListContainer.style.maxHeight = '5000px';
+                    }
+                }, 600);
+
+            } else {
+                // *** COLLAPSING ***
+                isExpanded = false;
+                btn.classList.remove('expanded');
+
+                // 1. Lock height to the EXACT current height with transitions disabled
+                musicListContainer.style.transition = 'none';
+
+                const startHeight = musicListContainer.offsetHeight;
+                musicListContainer.style.maxHeight = startHeight + 'px';
+                void musicListContainer.offsetHeight; // force reflow
+
+                // 2. Find target height if items were gone
+                toggleItems.forEach(el => el.style.display = 'none');
+                const targetHeight = musicListContainer.scrollHeight;
+                toggleItems.forEach(el => el.style.display = 'block'); // Switch back to allow opacity animation
+                void musicListContainer.offsetHeight; // force reflow
+
+                // 3. Restore CSS transitions and flush
+                musicListContainer.style.transition = '';
+                void musicListContainer.offsetHeight;
+
+                // 4. Immediately start fading out items
+                toggleItems.forEach((el) => {
+                    el.style.transitionDelay = '0ms'; // collapse instantly
+                    el.classList.remove('album-reveal');
+                    el.classList.add('album-hidden');
+                });
+
+                // Re-apply the fade mask so the bottom fades out during the transition instead of clipping hard
+                musicListContainer.classList.remove('grid-expanded');
+                musicListContainer.classList.add('grid-fade-bottom');
+
+                // 5. Concurrently, shrink the container height
+                setTimeout(() => {
+                    musicListContainer.style.maxHeight = targetHeight + 'px';
+                }, 10);
+
+                // 6. After the transitions are done (max 600ms), remove elements from layout completely
+                setTimeout(() => {
+                    if (!isExpanded) {
+                        toggleItems.forEach(el => el.style.display = 'none');
+                    }
+                }, 600);
+            }
         };
-        container.appendChild(btn);
+        paginationContainer.appendChild(btn);
     }
 }
 
@@ -226,18 +330,25 @@ if (filterList) {
         button.addEventListener("click", (e) => {
             let confCategory = e.target.getAttribute("data-filter");
 
-            // If filtering, we should likely reset expansion or keep it?
-            // Let's re-render the grid with the new filter.
-            // This is cleaner than toggling hidden attributes manually.
+            // Reset expansion and height locks when changing filter categories
+            const resetGridState = () => {
+                isExpanded = false;
+                const grid = document.querySelector('.musiclist');
+                if (grid) {
+                    grid.style.maxHeight = '5000px';
+                    grid.classList.add('grid-fade-bottom');
+                    grid.classList.remove('grid-expanded');
+                }
+                updateActiveButton(e.target);
+                window.renderAlbumGrid(confCategory);
+            };
 
             if (typeof document.startViewTransition === 'function') {
                 document.startViewTransition(() => {
-                    updateActiveButton(e.target);
-                    window.renderAlbumGrid(confCategory);
+                    resetGridState();
                 });
             } else {
-                updateActiveButton(e.target);
-                window.renderAlbumGrid(confCategory);
+                resetGridState();
             }
         });
     });

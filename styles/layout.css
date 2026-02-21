@@ -16,7 +16,7 @@
     text-align: center;
     margin-top: 1em;
     font-weight: normal;
-    font-size: 10em;
+    font-size: clamp(3.5rem, 15vw, 10rem);
     line-height: 1.5em;
     font-family: "Massivertical";
     color: #b2c982;

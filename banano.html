@@ -348,7 +348,7 @@
             <h2>Manage Demo Playlist</h2>
 
             <div style="background:#222; padding:20px; border-radius:5px; border:1px solid #333; margin-bottom: 30px;">
-                <h3>Add New Track</h3>
+                <h3 id="demo-form-title">Add New Track</h3>
                 <form id="demoTrackForm">
                     <div class="form-group">
                         <label>Track Title (Displayed in Player)</label>
@@ -363,7 +363,14 @@
                         <input type="text" id="demo-track-url" class="api-url-input" required readonly
                             placeholder="Uploaded URL will appear here">
                     </div>
-                    <button type="submit" class="generate-btn">Add to Playlist</button>
+
+                    <input type="hidden" id="edit-demo-id" value="">
+                    <div style="display:flex; gap:10px; align-items:center; margin-top:10px;">
+                        <button type="submit" class="generate-btn" id="submit-demo-track-btn"
+                            style="background: #a2d149; color: #000;">Add to Playlist</button>
+                        <button type="button" id="cancel-demo-edit-btn" class="secondary-btn"
+                            style="display:none; background:#ff6347;">Cancel</button>
+                    </div>
                 </form>
             </div>
 

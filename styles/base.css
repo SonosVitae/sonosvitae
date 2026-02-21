@@ -8,6 +8,8 @@ html {
     scroll-behavior: smooth;
     scroll-padding-top: 9vh;
     /* Offset for fixed navbar */
+    scrollbar-width: thin;
+    scrollbar-color: #555 transparent;
 }
 
 html,

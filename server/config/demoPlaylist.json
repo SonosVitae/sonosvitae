@@ -1,7 +1,37 @@
 [
   {
-    "id": "track_1771552463382",
-    "title": "ambient - dark tower - otherworldly - desert",
-    "url": "assets/audio/tower_croze_pre_preview.opus"
+    "id": "track_1771693759296",
+    "title": "lush - instrumental - orchestral - fantasy",
+    "url": "assets/audio/1.opus"
+  },
+  {
+    "id": "track_1771693859990",
+    "title": "otherwordly - lost - dark - desert",
+    "url": "assets/audio/2.opus"
+  },
+  {
+    "id": "track_1771693935411",
+    "title": "final battle - all motifs combined - emotional - orchestral",
+    "url": "assets/audio/3.opus"
+  },
+  {
+    "id": "track_1771693987381",
+    "title": "jazz - bar - character - background",
+    "url": "assets/audio/4.opus"
+  },
+  {
+    "id": "track_1771694066435",
+    "title": "another dimention - strange - relaxing",
+    "url": "assets/audio/5.opus"
+  },
+  {
+    "id": "track_1771694112774",
+    "title": "east inspired - full sounding - epic drums - spirit gateway",
+    "url": "assets/audio/6.opus"
+  },
+  {
+    "id": "track_1771694237823",
+    "title": "curious - desert location - wonder - sinister",
+    "url": "assets/audio/7.opus"
   }
 ]

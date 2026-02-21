@@ -600,6 +600,8 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             const title = document.getElementById('demo-track-title').value;
             const url = document.getElementById('demo-track-url').value;
+            const editId = document.getElementById('edit-demo-id').value;
+            const submitBtn = document.getElementById('submit-demo-track-btn');
 
             if (!url) {
                 alert("Please upload an audio file first.");
@@ -617,12 +619,21 @@ document.addEventListener('DOMContentLoaded', () => {
                     tracks = await listRes.json();
                 }
 
-                // Append new
-                tracks.push({
-                    id: 'track_' + Date.now(),
-                    title: title,
-                    url: url
-                });
+                if (editId) {
+                    // Update Mode
+                    const idx = tracks.findIndex(t => t.id === editId);
+                    if (idx !== -1) {
+                        tracks[idx].title = title;
+                        tracks[idx].url = url;
+                    }
+                } else {
+                    // Create Mode
+                    tracks.push({
+                        id: 'track_' + Date.now(),
+                        title: title,
+                        url: url
+                    });
+                }
 
                 // Save
                 const saveRes = await fetch(`${API_BASE}/api/demo-playlist`, {
@@ -632,9 +643,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
 
                 if (saveRes.ok) {
-                    alert("Track added to Demo Playlist!");
-                    demoTrackForm.reset();
-                    document.getElementById('audio-drop').querySelector('p').innerText = "Drag & Drop Audio File Here";
+                    alert(editId ? "Track Updated!" : "Track added to Demo Playlist!");
+                    resetDemoForm();
                     loadDemoTracks();
                 } else {
                     alert("Failed to save playlist.");
@@ -645,6 +655,28 @@ document.addEventListener('DOMContentLoaded', () => {
                 alert("Network error.");
             }
         });
+    }
+
+    const cancelDemoEditBtn = document.getElementById('cancel-demo-edit-btn');
+    if (cancelDemoEditBtn) {
+        cancelDemoEditBtn.addEventListener('click', resetDemoForm);
+    }
+
+    function resetDemoForm() {
+        if (demoTrackForm) demoTrackForm.reset();
+        document.getElementById('edit-demo-id').value = '';
+        document.getElementById('audio-drop').querySelector('p').innerText = "Drag & Drop Audio File Here";
+        const btn = document.getElementById('submit-demo-track-btn');
+        if (btn) btn.innerText = "Add to Playlist";
+
+        const titleEl = document.getElementById('demo-form-title');
+        if (titleEl) {
+            titleEl.innerText = "Add New Track";
+            titleEl.style.color = "";
+        }
+
+        if (cancelDemoEditBtn) cancelDemoEditBtn.style.display = 'none';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     const refreshDemoTracksBtn = document.getElementById('refreshDemoTracksBtn');
@@ -682,11 +714,34 @@ document.addEventListener('DOMContentLoaded', () => {
                             <div style="color:#666; font-size:0.85em;">${track.url}</div>
                         </div>
                     </div>
-                    <div>
+                    <div style="display: flex; gap: 5px;">
+                        <button class="edit-track-btn" data-id="${track.id}" data-title="${track.title}" data-url="${track.url}" style="background:#4ec5ec; color:black; border:none; padding:5px 10px; border-radius:4px; cursor:pointer;">Edit</button>
                         <button class="delete-track-btn" data-id="${track.id}" style="background:#ff6347; color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer;">Delete</button>
                     </div>
                 `;
 
+                // Handle Edit Click
+                item.querySelector('.edit-track-btn').addEventListener('click', (e) => {
+                    const t = e.target;
+                    const trackTitle = t.getAttribute('data-title');
+                    document.getElementById('demo-track-title').value = trackTitle;
+                    document.getElementById('demo-track-url').value = t.getAttribute('data-url');
+                    document.getElementById('edit-demo-id').value = t.getAttribute('data-id');
+
+                    document.getElementById('submit-demo-track-btn').innerText = "Update Track";
+
+                    const titleEl = document.getElementById('demo-form-title');
+                    if (titleEl) {
+                        titleEl.innerText = "Editing Track: " + trackTitle;
+                        titleEl.style.color = "#4ec5ec";
+                    }
+
+                    if (cancelDemoEditBtn) cancelDemoEditBtn.style.display = 'block';
+
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                });
+
+                // Handle Delete Click
                 item.querySelector('.delete-track-btn').addEventListener('click', async (e) => {
                     if (!confirm("Remove track?")) return;
                     const idToRemove = e.target.getAttribute('data-id');
