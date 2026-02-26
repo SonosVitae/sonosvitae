@@ -419,8 +419,8 @@ body {
 
     .leaves {
         object-position: top center;
-        top: 35vh;
-        /* Raise image */
+        top: 55vh;
+        /* Match default perspective */
     }
 }
 
